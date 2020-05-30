@@ -1,0 +1,364 @@
+{% load sunny %}
+{% load jalali_tags %}
+<style>
+	.hide-tab {
+		display: none;
+	}
+
+	header,
+	footer {
+		display: none;
+	}
+
+	.gui-select {
+		padding: 5px 20px;
+	}
+
+	.searchresult {
+		left: unset;
+		width: 265;
+	}
+
+	.accept-time {
+		background: #759872;
+		border: none;
+		color: #f0f8f8;
+	}
+
+	.failed-time {
+		background: #9c3131;
+		color: aliceblue;
+		border: none;
+	}
+
+	.none-time {
+		background: #0000000d;
+		border: none;
+		padding: 15px;
+	}
+
+
+	/* ---------- modal ------------ */
+	.modal-overlay {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 5;
+		background-color: rgba(0, 0, 0, 0.07);
+		opacity: 0;
+		visibility: hidden;
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+		transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), visibility 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+	}
+
+	.modal-overlay.active {
+		opacity: 1;
+		visibility: visible;
+
+	}
+
+
+	.modal {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		margin: 0 auto;
+		background-color: #fff;
+		width: 600px;
+		margin-right: 38%;
+		max-width: 75rem;
+		min-height: 20rem;
+		padding: 1rem;
+		border-radius: 3px;
+		opacity: 0;
+		overflow-y: auto;
+		visibility: hidden;
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+		-webkit-transform: scale(1.2);
+		transform: scale(1.2);
+		transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+	}
+
+	.modal .close-modal {
+		position: absolute;
+		cursor: pointer;
+		top: 5px;
+		right: 15px;
+		opacity: 0;
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+		transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+		transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+		transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), transform 0.6s cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+		transition-delay: 0.3s;
+	}
+
+	.modal .close-modal svg {
+		width: 1.75em;
+		height: 1.75em;
+	}
+
+	.modal .modal-content {
+		opacity: 0;
+		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
+		transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+		transition-delay: 0.3s;
+	}
+
+	.modal.active {
+		visibility: visible;
+		opacity: 1;
+		margin-right: 38%;
+		-webkit-transform: scale(1);
+		transform: scale(1);
+	}
+
+	.modal.active .modal-content {
+		opacity: 1;
+	}
+
+	.modal.active .close-modal {
+		-webkit-transform: translateY(10px);
+		transform: translateY(10px);
+		opacity: 1;
+	}
+
+	.end-loop-project {
+		top: 0px;
+		right: 0px;
+		background: #0000008f;
+		height: 100%;
+		width: 100%;
+		border-radius: 5px;
+		z-index: 99;
+		box-shadow: 0 1px 4px 0 #000000;
+	}
+
+	.zindex {
+		z-index: 999;
+	}
+</style>
+<div class="colm12 colm  margin-auto">
+	<div class="spacer-t25">
+		<div class="rtl"></div>
+		<div class="body-form  wow fadeInUpBig spacer-b30" data-wow-duration="1s">
+			<div class="flex">
+				<div class="colm3 font-s10 colm pull-right taga">
+					<a href="#">
+						<div class="{% if request.user.startup.status == 'not_complete' %} tab1 {%else%} tabfin {% endif %} flex-center sg-tab" data-id="4">ثبت نام</div>
+					</a>
+				</div>
+				<div class="colm3 font-s10 colm pull-right taga ">
+					<a href="#">
+						<div class="{% if request.user.startup.status == 'accepted_document' %} tab1 {%else%} tabfin {% endif %} flex-center sg-tab " data-id="1">تایید اطلاعات</div>
+					</a>
+				</div>
+				<div class="colm3 font-s10 colm pull-right taga">
+					<a href="#">
+
+						<div class="{% if request.user.startup.status == 'select_not_presence_referees' or request.user.startup.status == 'select_presence_referee'%} tab1{%else%} tabfin {% endif %} flex-center sg-tab" data-id="2">داوری</div>
+					</a>
+				</div>
+				<div class="colm3 font-s10 colm pull-right taga">
+					<a href="#">
+
+						<div class="{% if request.user.startup.status == 'add_investor' %} tab1{%else%} tabfin5 {% endif %} flex-center sg-tab" data-id="2">جذب سرمایه</div>
+					</a>
+				</div>
+		
+				<div class="clearfix"></div>
+			</div>
+
+			
+		</div>
+	</div>
+	<div class="pad-table">
+		<div class="frm-row pad-t40">
+			<div class="overflow-scroll pad-b40">
+				<table class="table color6 retable">
+					<thead>
+						<tr>
+							<th>ردیف</th>
+							<th>استارت آپ / کاربر</th>
+							<th>فعالیت</th>
+							<th>تاریخ</th>
+							<th>متن</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for track in activities %}
+					{% if track.status != None %}
+					 <tr class="list">
+						 <td>{{ forloop.counter}}</td>
+						 <td>{% if track.user %}{{ track.user.first_name }} {{ track.user.last_name }}{% else %}{{track.user_ip}}{% endif %}</td>
+						 <td>{{ track.the_status.get_name_display }}</td>
+						 <td>{{ track.created_date|to_jalali:'%Y/%m/%d'}}</td>
+						 <td {% if track.the_status.name == 'send-email' %} data-toltip="{% if '/forget-password/' in track.url %}برای تغییر رمزعبور اکانت خود وارد لینک زیر شوید{% else %}{{ track.usercontent.first.content }}{% endif %}"{% endif %}>{{ track.status}}</td>
+					 </tr>
+					 {% endif %}
+{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+		<div class="pad-t20">
+			{% for th_event in the_event %}
+			{% if now_time >= th_event.startuptime.first.to_date %}
+			{%else%}
+			<div class="body-form relative spacer-t30 relative">
+				<div class="bg-chart2 body-form-top absolute flex-center zindex">
+					<i class="fa fa-handshake vertical font-s30 color-white"></i>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18">
+						<span class="color-dashboard font-s13">وقت گیری از مربیان صداستارتاپ</span>
+					</h3>
+				</div>
+				<span class="color-dashboard font-s12 pull-left pad-10">تاریخ پایان جلسه : {{ th_event.startuptime.first.to_date|to_jalali:'%y/%m/%d'}}</span>
+				<span class="color-dashboard font-s12 pull-left pad-10">تاریخ شروع جلسه : {{ th_event.startuptime.first.the_date|to_jalali:'%y/%m/%d'}}<span class=""></span></span>
+				<div class="frm-row pad-t40">
+					<div class="overflow-scroll pad-b40">
+						<table class="table color6 retable">
+							<thead>
+
+								<tr>
+									<th>مربی</th>
+									{% for h_time in th_event.startuptime.all %}
+									<th>
+								<div class="flex-center">
+									<p class="font-s11 color-startup  ">{{ h_time.from_time|time:"H:i" }} تا {{ h_time.to_time|time:"H:i" }}</p>
+								</div>
+								<!-- <div class="flex-center">
+									<p class="font-s11 color-startup  ">تاریخ ثبت نشده</p>
+								</div> -->
+							</th>
+							{% endfor %}
+							{% if th_event.startuptime.count == 8 %}
+							{% else %}
+							{% list_counter th_event.startuptime.count as c %}
+							{% for item in 'x'|rjust:c %}
+							<th>
+								<div class="flex-center">
+									<p class="font-s11 color-startup  ">تاریخ ثبت نشده</p>
+								</div>
+								<!-- <div class="flex-center">
+									<p class="font-s11 color-startup  ">تاریخ ثبت نشده</p>
+								</div> -->
+							</th>
+						{% endfor %}
+						{% endif %}
+								</tr>
+
+							</thead>
+
+							<tbody>
+
+								{% get_create_event th_event as all_events %}
+								{% for coach_event in all_events %}
+								<tr id="{{coach_event.pk}}" class="">
+									<td class="colm4">
+										<div class="colm12 relative pull-right pad-5 pad-b20">
+											<div class="relative">
+												<span class="icon-gui flex-center pad-t15"><i
+														class=" fa fa-chalkboard-teacher vertical"></i></span>
+												<div class="search_companion referee-name gui-input iransans">{{coach_event.content_object.first_name}} {{coach_event.content_object.last_name}}</div>
+											</div>
+										</div>
+									</td>
+									{% get_count_coach th_event.pk as g_c %}
+									{% for is_full in coach_event.theevent_coachevent.all %}
+									<td class="colm1">
+										<div class="colm12 align-center relative pull-right pad-5 pad-b20">
+											<div class="relative pad-b20">
+												<div class="input-mentor {% if is_full.th_time == 1  %} accept-time {% else %} failed-time {% endif %} {% if g_c.event_counter == 2 %}no-reserve{% elif not coach_event.wantsmeet.first.startup and is_full.th_time == 1 %}add-coach{% else %}no-reserve{% endif %} gui-select save-s s1 iransans "
+												data-name="{{coach_event.content_object.first_name}} {{coach_event.content_object.last_name}}"
+												data-coach-id="{{ coach_event.pk }}"
+												data-status="{{is_full.th_time}}"
+												data-title=" ایجاد جلسه با آقای "
+												data-the-event="{{th_event.pk}}"
+												data-meeting="{{is_full.pk}}">
+												{% if is_full.th_time == 1  %} آزاد {% else %} پر {% endif %}
+											</div>
+									</div>
+								</div>
+							</td>
+							<!-- modal -->
+<div class="modal-overlay2">
+	<div class="modal2">
+
+		<a class="close-modal">
+			<svg viewBox="0 0 20 20">
+				<path fill="#000000"
+					d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z">
+				</path>
+			</svg>
+		</a><!-- close modal -->
+
+		<div class="modal-content" id="modal-delete">
+			<div class="colm12">
+				<div class="margin-auto align-center">
+					<h2><span class="title"> </span><span class="name color-red"> </span></h2>
+				</div>
+			</div>
+			<div class="clom12 colm spacer-t40">
+				<div class="flex-center">
+					<button type="submit" name="interest" value=""
+						class="btn-interest bg-dis spacer-t40 colm12 colm"></button>
+				</div>
+				<div class="clearfix"></div>
+				<span class="loader-request spacer-t40"></span>
+			</div>
+		</div><!-- content -->
+	</div><!-- modal -->
+</div><!-- overlay -->
+							{% endfor %}
+							{% if coach_event.theevent_coachevent.count == 8 %}
+							{% else %}
+							{% list_counter coach_event.theevent_coachevent.count as c %}
+							{% for item in 'x'|rjust:c %}
+							<td class="colm1">
+								<div class="colm12 align-center relative pull-right pad-5 pad-b20">
+									<div class="relative pad-b20">
+										<div class="input-mentor none-time gui-select save-s s1 iransans "
+
+										
+									</div>
+							</div>
+						</div>
+						</td>
+						{% endfor %}
+						{% endif %}
+						</tr>
+						{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+			{% endfor %}
+
+		</div>
+	</div>
+</div>
+
+<div id="toast-investor">
+	<div id="img">وضعیت</div>
+	<div id="desc">ایجاد ملاقات با موفقیت انجام شد</div>
+</div>
+<div id="toast-not-investor">
+	<div id="img-not">وضعیت</div>
+	<div id="desc-not">شما قادر به ایجاد ملاقات نیستید</div>
+</div>
+

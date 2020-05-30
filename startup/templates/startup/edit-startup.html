@@ -1,0 +1,1067 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}ویرایش استارتاپ{% endblock %}
+{% load jalali_tags %}
+
+{% block body %}    
+<style>
+        header , footer ,.mobile{
+            display: none;
+        }
+        .hide-tab{
+            display: none;
+        }
+        .bg-cat{
+            background:#58bb58;
+            color:#fff;
+        }
+        input[type=checkbox] + label:before {
+    visibility: hidden;
+    }
+    </style>
+
+    <div class="colm12 colm  margin-auto">
+        <div class="spacer-t25">
+            <div class="colm9 colm12-tab colm margin-auto pad-5">
+                {% for message in messages %}
+                {% if 'edit_startup_form_error' in message.extra_tags %}
+                <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+                    data-wow-duration="1.5s">
+                    <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>{{ message.tags }}</h2>
+                </div>
+                {% endif %}
+                {% endfor %}
+                <form method="post" class="smart-validate" enctype="multipart/form-data" action="" id="form">{% csrf_token %}
+                    <div class="body-form relative  spacer-b30 pad-15 pad-25 pad-r35 pad-l35 pad-5-mob">
+                        <div class="bg-chart1 body-form-top absolute flex-center">
+                            <i class="fa fa-rocket vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="absolute title-panel">
+                            <h3 class="font-w300 font-s18 pad-r20">اطلاعات استــارت آپ ها</h3>
+                        </div>
+
+                        <div class="frm-row pad-40 pad-0 spacer-t30-tab spacer-t30-mob">
+                            <div id="avatarbox" class="avatar-box flex-center pad-10">
+                                <img class="img-avatar not" src="{% if startupform1.instance.image %}{{ startupform1.instance.image.url }}{% else %}{% static 'images/uplod.png' %}{% endif %}">
+                            </div>
+                            <input type="file" class="uploadlogo" name="avatar" id="avatar">
+                            <textarea  name="avatar_base64" class="avatar-base64 hide"></textarea>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="startup-name" class="gui-label pad-5">نام استارتاپ  <span class="color-red">*</span></label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="fa fa-rocket vertical"></i></span>
+                                    <input type="text" class="gui-input sans-digit" id="startup-name" value="{{ startupform1.instance.title }}" name="title" placeholder="مثال : رویداد" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="website" class="gui-label pad-5">سایت استارتاپ </label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="fa fa-desktop vertical"></i></span>
+                                    <input type="text" dir="ltr" class="gui-input sans-digit" value="{{ startupform1.instance.site }}" name="site" id="website" placeholder="http://100startup.ir" data-rule-website="true" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="start-date" class="gui-label pad-5">تاریخ شروع به کار <span class="color-red">*</span></label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                                    <input dir="ltr" class="gui-input sans-digit" name="start_date" value="{{ startupform1.instance.start_date|to_jalali:'%Y/%m/%d' }}" id="start-date" autocomplete="off" readonly placeholder="1398/10/02" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="province-startup" class="gui-label pad-5"> استان محل استقرار</label>
+                                <label class="relative">
+                                    <select id="province-startup" class="province gui-input sans-digit" name="province_startup" data-value="{{ startupform1.instance.province_startup }}" required />
+                                    <option value="">لطفا یک استان را انتخاب کنید</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="city-tstartup" class="gui-label pad-5">شهر محل استقرار</label>
+                                <label class="relative">
+                                    <select id="city-startup" class="city gui-input sans-digit" name="city_startup" data-value="{{ startupform1.instance.city_startup }}" required />
+                                    <option value="{{ startupform1.instance.city_startup }}">لطفا یک شهر را انتخاب کنید</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="prototype" class="gui-label pad-5">نمونه اولیه <span class="color-red">*</span></label>
+                                <label class="relative">
+								<span for="prototype" class="flex-center icon-select">
+                                    <i class="fa fa-chevron-down vertical"></i>
+                                </span>
+                                    <select class="gui-select sans-digit" id="prototype" name="prototype" >
+                                        <option value="">انتخاب کنید</option>
+                                        <option {% if startupform1.instance.prototype == 'yes' %} selected {% endif %} value="yes">بله</option>
+                                        <option {% if startupform1.instance.prototype == 'no' %} selected {% endif %} value="no">خیر</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="investment" class="gui-label pad-5 font-s13">جذب سرمایه <span class="color-red">*</span></label>
+                                <label class="relative">
+								<span class="icon-select flex-center">
+                                    <i class="fa fa-chevron-down vertical"></i>
+                                </span>
+                                    <select class="gui-select sans-digit" id="investment" name="investment" >
+                                        <option value="">انتخاب کنید</option>
+                                        <option {% if startupform1.instance.investment == "yes" %} selected {% endif %} value="yes">بله</option>
+                                        <option {% if startupform1.instance.investment == "no" %} selected {% endif %} value="no">خیر</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="align-center colm4 colm6-tab colm pull-right pad-t30">
+                                <div class="frm-row">
+                                    <div class="create colm12 colm">
+                                        <div class="pad-5 char-count">
+                                            <label for="introduction" class="gui-label pad-5"> توضیح استارتاپ در 70 کاراکتر </label>
+                                            <label class="relative text-counter">
+                                                <textarea name="explain_startup" id="introduction" maxlength="70" class="gui-textarea"
+                                                    value="{% if startupform1.instance.explain_startup %}{{ startupform1.instance.explain_startup }}{% endif %}"
+                                                    placeholder="آموزش آنلاین - فروشگاه آنلاین ابزار صنعتی"
+                                                    required>{% if startupform1.instance.explain_startup %}{{ startupform1.instance.explain_startup }}{% endif %}</textarea>
+                                                <p class="align-left font-w200 font-s12 color-blue pad-l5">
+                                                    {{ startupform1.instance.explain_startup|length }}</p>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="relative">
+                                    <a class="button-pop font-s13" id="catc" href="#open-modal1">انتخاب دسته بندی</a>
+                                </label>
+                                <div class="margin-auto align-center pad-5 catname color-blue font-s12 pad-t20"></div>
+                            </div>
+                            <div id="open-modal1" class="modal-window">
+                                <div class="content colm6 colm margin-auto">
+                                    <a href="#modal-close" title="بستن" class="modal-close"><i class="fa fa-times"></i></a>
+                                    <h1 class="digit">حداکثر 3 دسته بندی انتخاب شود</h1>
+                                    <div class="contentt">
+                                        <div class="spacer-t10">
+
+                                                    {% for cat in categories %}
+                                <div class="colm2 colm6-mob align-center pull-right cat-image">
+                                    <input class="cat-check" id="{{ cat.pk }}" name="category" value="{{ cat.pk }}"
+                                        type="checkbox" title="{{cat.title}}"
+                                    {% if startupform1.instance.category %}
+                                           {% if cat in startupform1.instance.category.all %}
+                                           checked
+                                           {% endif %}
+                                           {% endif %}
+                                    />
+                                    <label for="{{ cat.pk }}">
+                                        <img width="" src="{% if cat.image %}{{ cat.image.url }}{% endif %}" />
+                                        <div class="cat-title">{{ cat.title }}</div>
+                                    </label>
+                                </div>
+                                {% endfor %}
+
+                                            <div class="clearfix"></div>
+                                            <div class="align-center pad-t25">
+                                                <a href="#modal-close" class="btn-web margin-auto show">ثبت</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                    <div class="body-form relative  spacer-b30 pad-25 pad-r35 pad-l35 pad-5-mob">
+                        <div class="bg-chart2 body-form-top absolute flex-center">
+                            <i class="fa fa-portrait vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="absolute title-panel">
+                            <h3 class="font-w300 font-s18 pad-r20">اطلاعات pitch deck</h3>
+                        </div>
+                        <div class="frm-row pad-40 pad-0 spacer-t30-tab spacer-t30-mob">
+                            <div class="pad-5">
+                                <label for="description" class="gui-label pad-5"> <span class="color-red">*</span>  معرفی مختصر استارت آپ </label>
+                                <label class="relative">
+                                    <textarea name="about_start" class="gui-textarea sans-digit"  maxlength="500" id="description" >{% if startupform1.instance.about_start %}{{ startupform1.instance.about_start }}{% endif %}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="problem" class="gui-label pad-5"> <span class="color-red">*</span>  چه مشکلی را حل می کنید ؟ </label>
+                                <label class="relative">
+                                    <textarea name="problem" class="gui-textarea sans-digit"  maxlength="500" id="problem" >{% if startupform3.instance.problem %}{{ startupform3.instance.problem }}{% endif %}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="mysolution" class="gui-label pad-5"><span class="color-red">*</span> راه حل شما چیست ؟ </label>
+                                <label class="relative">
+                                    <textarea name="mysolution" class="gui-textarea sans-digit" maxlength="500" id="mysolution" >{% if startupform3.instance.mysolution %}{{ startupform3.instance.mysolution }}{% endif %}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="solution" class="gui-label pad-5"><span class="color-red">*</span>  راه حل های موجود چیست ؟ </label>
+                                <label class="relative">
+                                    <textarea name="solution" class="gui-textarea sans-digit" maxlength="500" id="solution" >{% if startupform3.instance.solution %}{{ startupform3.instance.solution }}{% endif %}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="market-size" class="gui-label pad-5"><span class="color-red">*</span> اندازه بازار برای اینکار چقدر است ؟  </label>
+                                <label class="relative">
+                                    <textarea name="market_size" class="gui-textarea sans-digit" maxlength="500" id="market-size" >{% if startupform3.instance.market_size %}{{ startupform3.instance.market_size }}{% endif %}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="defect" class="gui-label pad-5"><span class="color-red">*</span> رقبای داخلی و خارجی شما چه کسانی هستند ؟ </label>
+                                <label class="relative">
+                                    <textarea name="defect" class="gui-textarea sans-digit" id="defect" >{% if startupform3.instance.defect %}{{ startupform3.instance.defect }}{% endif %}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="amount" class="gui-label pad-5 pad-b20"> میزان سرمایه درخواستی (تومان): </label>
+                                <label class="relative">
+                                    <input name="require_money" class="gui-input sans-digit" id="amount" maxlength="14" value="{% if startupform3.instance.require_money %}{{ startupform3.instance.require_money }}{% endif %}" placeholder="مثال: 50000000" required>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <div class="relative">
+                                    {% if startup_e.instance.attachfile_e %}
+        
+                                    <div class="toggle-element2 pad-b20">
+                                        <label class="gui-label pad-5">پیش بینی مالی :</label>
+                                        <div class="pointer predict-inp width45 colm pull-right" id="download-pitch">
+                                            <a class="color-blue font-s14" href="{{startup_e.instance.attachfile_e}}"
+                                                download>دانلود فایل پیش بینی مالی</a>
+                                        </div>
+                                        <div class="pointer predict-inp width45 colm pull-left" id="" data-type="toggle-3">
+                                            <span class="align-center font-s14 toggle-btn2">تغییر فایل پیش بینی مالی</span>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="pdf22 pad-b20 hide">
+                                        <label for="pitch-deck" class="gui-label pad-5">
+                                            فایل پیش بینی مالی خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                        </label>
+                                        <label class="relative upload-show">
+                                            <div action="{% url 'usercp:pgdeckxwlt' startup_e.instance.pk %}" class="dropzone"
+                                                id="upload-pdf2">
+                                            </div>
+                                        </label>
+                                    </div>
+                                    {% else %}
+        
+                                    <div class="pad-b20">
+                                        <label for="pitch-deck" class="gui-label pad-5">
+                                            فایل پیش بینی مالی خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                        </label>
+                                        <label class="relative upload-show">
+                                            <div action="{% url 'usercp:pgdeckxwlt' startup_e.instance.pk %}" class="dropzone"
+                                                id="upload-pdf2">
+                                            </div>
+                                        </label>
+                                    </div>
+                                    {% endif %}
+                                    <div class="clearfix"></div>
+                                </div>
+        
+                                {% if startup_p.instance.attachfile_p %}
+                                <div class="toggle-element1 pad-b30">
+                                    <label class="gui-label pad-5">پیچ دک :</label>
+                                    <div class="pointer predict-inp width45 colm pull-right" id="download-pitch">
+                                        <a class="color-blue font-s14" href="{{ startup_p.instance.attachfile_p }}"
+                                            download>دانلود
+                                            فایل پیچ دک</a>
+                                    </div>
+                                    <div class="pointer predict-inp width45 colm pull-left" id="change-pitch"
+                                        data-type="toggle-1">
+                                        <span class="align-center font-s14 toggle-btnn">تغییر فایل پیچ دک</span>
+                                    </div>
+                                </div>
+                                <div class="pdf11 hide">
+                                    <label for="pitch-deck" class="gui-label pad-5">
+                                        مدل کسب و کار (پیچ دک) خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                        <a href="{% static 'files/Pitch-Deck.pdf' %}" class="font-s15 pull-left" download>دانلود نمونه</a>
+                                    </label>
+                                    <label class="relative upload-show">
+                                        <div action="{% url 'usercp:pgdeck_pdf' startup_p.instance.pk %}" class="dropzone"
+                                            id="upload-pdf">
+                                        </div>
+                                    </label>
+                                </div>
+                                {% else %}
+                                <div class="">
+                                    <label for="pitch-deck" class="gui-label pad-5">
+                                        مدل کسب و کار (پیچ دک) خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                        <a href="{% static 'files/Pitch-Deck.pdf' %}" class="font-s15 pull-left" download>دانلود نمونه</a>
+                                    </label>
+                                    <label class="relative upload-show">
+                                        <div action="{% url 'usercp:pgdeck_pdf' startup_p.instance.pk %}" class="dropzone"
+                                            id="upload-pdf">
+                                        </div>
+                                    </label>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <!-- <div class="pad-5 pad-b40 pad-t10">
+                                <label for="download-pitch" class="gui-label pad-5 pad-t10">پیش بینی مالی :</label>
+                                <div class="pointer predict-inp width45 colm pull-right">
+                                    <a class="color-blue font-s12" href="{% if startupform6.instance.attachfile_e %}{{ startupform6.instance.attachfile_e.url }}{% endif%}" download>دانلود پیش بینی مالی</a>
+                                </div>
+                                <div class="relative pointer predict-inp width45 colm pull-left">
+                                    <span class="align-center absolute pointer font-s12">تغییر پیش بینی مالی<span id="file-upload-filename"></span></span>
+                                    <input type="file" class="sans-digit predict" name="attachfile_e" id="file-upload">
+                                </div>
+                            </div> -->
+                            <!-- <div class="pad-5 toggle-element pad-b40 spacer-t30">
+
+
+
+                                {% if startup_p.instance.attachfile_p %}
+
+                                <label class="gui-label pad-5">پیچ دک :</label>
+                                <div class="pointer predict-inp width45 colm pull-right" id="download-pitch">
+                                    <a class="color-blue font-s14" href="{% if startup_p.instance.attachfile_p %}{{ startup_p.instance.attachfile_p }}{% endif %}"
+                                        download>دانلود فایل پیچ دک</a>
+                                </div>
+                                <div class="pointer predict-inp width45 colm pull-left" id="change-pitch" data-type="toggle-1">
+                                    <span class="align-center font-s14" data-type="toggle-btn">تغییر فایل پیچ دک</span>
+                                </div>
+                                {% else %}
+                                <div class="" data-type="toggle-2">
+                                    <label for="pitch-deck" class="gui-label pad-5">
+                                        مدل کسب و کار (پیچ دک) خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                        <a href="" class="font-s15 pull-left" download>دانلود نمونه</a>
+                                    </label>
+                                    <label class="relative upload-show">
+                                        <div action="{% url 'usercp:pgdeck_pdf' startupform1.instance.pk %}" class="dropzone" id="upload-pdf">
+                                        </div>
+                                    </label>
+                                </div>
+        
+                                {% endif %}
+
+                                
+                            </div> -->
+                        </div>
+                    </div>
+
+                    {% if startupform2.instance.video %}
+                        <div class="body-form relative spacer-b30 pad-25 pad-r35 pad-l35 pad-5-mob">
+                            <div class="bg-chart4 body-form-top absolute flex-center">
+                                <i class="fa fa-play vertical font-s30 color-white"></i>
+                            </div>
+                            <div class="absolute title-panel">
+                                <h3 class="font-w300 font-s18 ">ویدیوی معرفی</h3>
+                            </div>
+                            <div class="frm-row pad-t30">
+                                <div class="colm12 pad-5 pad-t20">
+                                    <video width="100%" controls>
+                                        <source src="{{ startupform2.instance.video.url }}" type="video/mp4"></source>
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    <div class="body-form relative  spacer-b30 pad-25 pad-r35 pad-l35 pad-5-mob">
+                        <div class="bg-chart3 body-form-top absolute flex-center">
+                            <i class="fa fa-user-edit vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="absolute title-panel">
+                            <h3 class="font-w300 font-s18 pad-r20">اطلاعات تکمیلی</h3>
+                        </div>
+<!--                        {{ userprofile_form }}-->
+                        <div class="frm-row pad-40 pad-0 spacer-t30-tab spacer-t30-mob">
+                            <div class="pad-5">
+                                <label for="introduction" class="gui-label pad-5">نحوه آشنایی اعضای تیم با یکدیگر </label>
+                                <label class="relative text-counter">
+                                    <textarea  name="how_mem_meet" maxlength="300"  class="gui-textarea"  >{{ startupform5.instance.how_mem_meet }}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="better" class="gui-label pad-5">چه چیز باعث شده شما بهتر از بقیه باشید ؟</label>
+                                <label class="relative">
+                                    <textarea name="what_m_better" maxlength="300" id="team-excerpt1" class="gui-textarea" >{{ startupform5.instance.what_m_better }}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5">
+                                <label for="defect" class="gui-label pad-5"> تیمتون چه چیزی کم داره ؟</label>
+                                <label class="relative">
+                                    <textarea name="what_u_need" id="team-excerpt2"  maxlength="280" class="gui-textarea" >{{ startupform5.instance.what_u_need }}</textarea>
+                                </label>
+                            </div>
+                            <div class="pad-5 char-count">
+                                <label for="reagent" class="gui-label pad-5">معرف شما چه کسی بوده ؟</label>
+                                <label class="relative">
+                                    <textarea name="who_sent_you" id="reagent" required  maxlength="255" class="gui-textarea" required>{{ startupform5.instance.who_sent_you }}</textarea>
+                                    <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+                                </label>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="body-form relative  spacer-b30 pad-25 pad-r35 pad-l35 pad-5-mob">
+                        <div class="bg-chart4 body-form-top absolute flex-center">
+                            <i class="fa fa-user-tie  vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="absolute title-panel">
+                            <h3 class="font-w300 font-s18 pad-r20">اطلاعات رهبر تیم</h3>
+                        </div>
+<!--                        {{ leader_form }}-->
+                        <div class="frm-row pad-40 pad-0 spacer-t30-tab spacer-t30-mob">
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="first-name" class="gui-label pad-5">نام :</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>
+                                    <input type="text" class="gui-input sans-digit" id="first-name" value="{{ leader_form.instance.first_name }}" name="first_name" placeholder="مثال : محمد" data-rule-lettersonly="true" autocomplete="off" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="first-name" class="gui-label pad-5">نام خانوادگی :</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="  fa fa-user vertical"></i></span>
+                                    <input type="text" class="gui-input sans-digit" value="{{ leader_form.instance.last_name }}" name="last_name" placeholder="مثال : محمدی" data-rule-lettersonly="true" id="last-name" autocomplete="off" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="mobile" class="gui-label pad-5"> شماره همراه:</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="   fa fa-mobile"></i></span>
+                                    <input dir="ltr" class="gui-input sans-digit" name="phone" data-rule-customphone="true" value="{{ leader_form.instance.phone }}" id="mobile" autocomplete="off" placeholder="09XXXXXXXX" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="email" class="gui-label pad-5">ایمیل :</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="   fa fa-at"></i></span>
+                                    <input dir="ltr" type="email" class="gui-input sans-digit" name="email" value="{{ leader_form.instance.email}}" id="email" placeholder="example@gmail.com" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="social" class="gui-label pad-5">لینکدین :</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="   fab fa-linkedin-in vertical"></i></span>
+                                    <input dir="ltr" type="text" class="gui-input sans-digit" value="{% if leader_form.instance.linkdin %}{{ leader_form.instance.linkdin }}{% endif %}"  name="linkdin" id="linkedin" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="birthday" class="gui-label pad-5"> تاریخ تولد :</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="fa fa-birthday-cake"></i></span>
+                                    <input dir="ltr" class="gui-input sans-digit datepicker-gregorian" name="birth_date" value="{{ leader_form.instance.birth_date|to_jalali:'%Y/%m/%d' }}" id="birthday" autocomplete="off" readonly placeholder="1398/10/02" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="expertise" class="gui-label pad-5">تخصص:</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class=" fa fa-laptop-code vertical"></i></span>
+                                    <input type="text" class="gui-input sans-digit" name="skill" value="{{ leader_form.instance.skill }}" id="expertise" placeholder="مثال : نرم افزار" >
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label class="gui-label pad-5">تحصیلات:</label>
+                                <label  class="relative">
+                                    <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                                    <select class="gui-input sans-digit" name="grade">
+                                        <option value="">میزان تحصیلات خود را انتخاب کنید</option>
+                                        <option {% if leader_form.instance.grade == "diploma" %} selected {% endif %} value="diploma">دیپلم</option>
+                                        <option {% if leader_form.instance.grade == "associate" %} selected {% endif %} value="associate">کاردانی</option>
+                                        <option {% if leader_form.instance.grade == "bachelor" %} selected {% endif %} value="bachelor">کارشناسی</option>
+                                        <option {% if leader_form.instance.grade == "master" %} selected {% endif %} value="master">کارشناسی ارشد</option>
+                                        <option {% if leader_form.instance.grade == "phd" %} selected {% endif %} value="phd">دکتری</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="colm4 colm6-tab colm pull-right pad-5">
+                                <label for="stock" class="gui-label pad-5">میزان سهام :</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class=" fa fa-percentage vertical"></i></span>
+                                    <input type="number" min="0" max="100" class="gui-input sans-digit" name="saham" value="{{ userprofile_form.instance.saham }}" id="stock" placeholder="مثال :  20 درصد" >
+                                </label>
+                            </div>
+                            <div class="colm6 colm6-tab colm pull-right pad-5">
+                                <label for="average" class="gui-label pad-5"> زمان اختصاص داده شده به استارتاپ در طول ماه:</label>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class=" fa fa-clock vertical"></i></span>
+                                    <input type="number" min="0" max="200" class="gui-input sans-digit" name="duration_per_month" value="{{ userprofile_form.instance.duration_per_month }}" id="average" placeholder="مثال : 100 ساعت" >
+                                </label>
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                    <!------ Foreach ------>
+                    {% for the_team in team_member %}
+                    <!-- <div class="team">
+                        <div class="relative">
+                            <input type="hidden" name="team_id" value="{{the_team.pk}}">
+                            <div style="position: relative;" class="remove-group align-right pointer close_user relative close-ta"  data-url="{% url 'usercp:remove_team_member'%}" data-idss="{{the_team.pk}}">
+                                <div class="absolute font-s16 flex-center close-u">
+                                    <span class="">
+                                        <i class="fa fa-times-circle color-red"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <h2 class="relative bold font-s20 pad-15 bg-gray border-ra5 spacer-t20 ">عضو گروه</h2>
+  
+                            <div class="frm-row">
+                                <div class="colm6 colm pull-right pad-5">
+                                    <label for="first-namel" class="gui-label pad-5">نام :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-user verticall"></i></span>
+                                        <input type="text" class="gui-input sans-digit" value="{{ the_team.t_first_name }}"
+                                            name="first_namel[]" placeholder="مثال : محمد" data-rule-lettersonly="true"
+                                            autocomplete="off" required aria-selected="true">
+                                    </label>
+                                </div>
+                                <div class="colm6 colm pull-right pad-5">
+                                    <label for="last-namel" class="gui-label pad-5">نام خانوادگی :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                                        <input type="text" class="gui-input sans-digit" value="{{ the_team.t_last_name }}"
+                                            name="last_namel[]" placeholder="مثال : محمدی" data-rule-lettersonly="true"
+                                            autocomplete="off" required>
+                                    </label>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="frm-row">
+                                <div class="colm6 colm pull-right pad-5">
+                                    <label for="mobilel" class="gui-label pad-5"> شماره همراه:</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-mobile"></i></span>
+                                        <input dir="ltr" class="gui-input sans-digit" name="mobilel[]"
+                                            data-rule-customphone="true" value="{{ the_team.t_phone }}" autocomplete="off"
+                                            placeholder="09000000000" required>
+                                    </label>
+                                </div>
+                                <div class="colm6 colm pull-right pad-5">
+                                    <label for="email-l" class="gui-label pad-5">ایمیل :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class="fa fa-at"></i></span>
+                                        <input dir="ltr" type="email" class="gui-input sans-digit" name="email_l[]"
+                                            value="{% if the_team.t_email %}{{ the_team.t_email }}{% endif %}"
+                                            placeholder="example@gmail.com" required>
+                                    </label>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="frm-row">
+                                <div class="colm6 colm pull-right pad-5">
+                                    <label class="gui-label pad-5">لینکدین :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fab fa-linkedin-in vertical"></i></span>
+                                        <input dir="ltr" type="text" class="gui-input sans-digit"
+                                            value="{% if the_team.t_linkdin %}{{ the_team.t_linkdin }}{% endif %}"
+                                            name="linkdinl[]">
+                                    </label>
+                                </div>
+                                <div class="colm6 colm pull-right pad-5">
+                                    <label for="birthdayl" class="gui-label pad-5"> تاریخ تولد :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+                                        <input dir="ltr" class="gui-input sans-digit datepicker" name="birthdayl[]"
+                                            value="{{ the_team.t_birth_date|to_jalali:'%Y/%m/%d' }}" autocomplete="off"
+                                            placeholder="1398/10/02" required>
+                                    </label>
+                                </div>
+        
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="frm-row">
+                                <div class="colm6 colm pull-right pad-5">
+                                    <label for="expertisel" class="gui-label pad-5">تخصص:</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-laptop-code vertical"></i></span>
+                                        <input type="text" class="gui-input sans-digit" name="expertisel[]"
+                                            value="{{ the_team.t_skill }}" placeholder="مثال : نرم افزار" required>
+                                    </label>
+                                </div>
+        
+                                <div class="colm6 colm pull-right pad-5">
+        
+                                    <label class="gui-label pad-5">تحصیلات:</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                                        <select class="gui-input sans-digit" name="educationl1[]">
+                                            <option value="{{ the_team.tgrade }}">میزان تحصیلات
+                                                خود
+                                                را انتخاب کنید</option>
+                                                <option {% if the_team.tgrade == 'diploma' %}selected{% endif %} value="diploma">دیپلم</option>
+                                                <option {% if the_team.tgrade == 'associate' %}selected{% endif %} value="associate">کاردانی</option>
+                                                <option {% if the_team.tgrade == 'bachelor' %}selected{% endif %} value="bachelor">کارشناسی</option>
+                                                <option {% if the_team.tgrade == 'master' %}selected{% endif %} value="master">کارشناسی ارشد</option>
+                                                <option {% if the_team.tgrade == 'phd' %}selected{% endif %} value="phd">دکتری</option>
+                                        </select>
+                                    </label>
+        
+                                </div>
+        
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="frm-row">
+                                <div class="colm12 colm pad-5">
+                                    <label for="sidel" class="gui-label pad-5"> سمت در استارت آپ :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-book-reader"></i></span>
+                                        <input dir="rtl" class="gui-input sans-digit" name="sidel[]"
+                                            value="{% if the_team.t_the_role %}{{ the_team.t_the_role }}{% endif %}"
+                                            autocomplete="off" placeholder="سمت استارت آپ" required>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="frm-row">
+                                <div class="colm6 colm pad-5 pull-right">
+                                    <label for="averagel" class="gui-label pad-5"> زمان اختصاص داده شده به استارتاپ در طول
+                                        ماه:</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-clock vertical"></i></span>
+                                        <input type="number" min="0" max="200" class="gui-input sans-digit" name="averagel[]"
+                                            value="{{ the_team.t_duration_per_month }}" placeholder="مثال : 100 ساعت">
+                                    </label>
+                                </div>
+                                <div class="colm6 colm pad-5 pull-right">
+                                    <label for="stockl" class="gui-label pad-5">میزان سهام :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-percentage vertical"></i></span>
+                                        <input type="number" min="0" max="100" class="gui-input sans-digit" name="stockl[]"
+                                            value="{{ the_team.t_saham }}" placeholder="مثال :  20 درصد">
+                                    </label>
+                                </div>
+                                <div class="colm6 colm pad-5 pull-right">
+                                    <input type="file" class="myfile" name="cv[]" >
+                                    <input type="hidden" class="myfilehide" name="sss123" value="">
+                                    
+                                </div>
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="clearfix"></div> -->
+                        <div class="body-form relative  spacer-b30 pad-25 pad-r35 pad-l35 pad-5-mob">
+
+                            <input type="hidden" name="id[]" value="{{the_team.pk}}" />
+
+                            <div class="body-form-top absolute flex-center">
+                                <i class="fa fa-users vertical font-s30 color-white"></i>
+                            </div>
+
+                            <div class="absolute title-panel">
+                                <h3 class="font-w300 font-s18 pad-r20">اطلاعات اعضای تیم</h3>
+                            </div>
+
+                            <div class="frm-row pad-40 pad-0 spacer-t30-tab spacer-t30-mob">
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label for="first-name" class="gui-label pad-5">نام :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>
+                                        <input type="text" class="gui-input sans-digit" name="first_namel[]" value="{{ the_team.t_first_name }}"  placeholder="مثال : محمد" data-rule-lettersonly="true" autocomplete="off" >
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label for="first-name" class="gui-label pad-5">نام خانوادگی :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class="  fa fa-user vertical"></i></span>
+                                        <input type="text" name="last_namel[]" class="gui-input sans-digit" value="{{ the_team.t_last_name }}" placeholder="مثال : محمدی" data-rule-lettersonly="true" id="last-name" autocomplete="off" >
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label class="gui-label pad-5"> شماره همراه:</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class="fa fa-mobile"></i></span>
+                                        <input dir="ltr" class="gui-input sans-digit" name="mobilel[]" data-rule-customphone="true" value="{{ the_team.t_phone }}" autocomplete="off" placeholder="09XXXXXXX" >
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label for="email" class="gui-label pad-5">ایمیل :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class="fa fa-at"></i></span>
+                                        <input dir="ltr" type="email"  name="email_l[]" class="gui-input sans-digit" value="{{ the_team.t_email }}"  placeholder="example@gmail.com" >
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label for="social" class="gui-label pad-5">لینکدین :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class="fab fa-linkedin-in vertical"></i></span>
+                                        <input dir="ltr" type="text"  name="linkdinl[]" class="gui-input sans-digit" value="{{ the_team.t_linkdin }}" >
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label for="birthday" class="gui-label pad-5"> تاریخ تولد :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class="   fa fa-birthday-cake"></i></span>
+                                        <input dir="ltr" name="birthdayl[]" class="gui-input sans-digit datepicker-gregorian"  value="{{ the_team.t_birth_date|to_jalali:'%Y/%m/%d' }}"  autocomplete="off" readonly placeholder="1398/10/02" >
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label for="expertise" class="gui-label pad-5">تخصص:</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-laptop-code vertical"></i></span>
+                                        <input type="text" class="gui-input sans-digit" name="expertisel[]" value="{{ the_team.t_skill }}" placeholder="مثال : نرم افزار" required>
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label class="gui-label pad-5">تحصیلات:</label>
+                                    <label  class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                                        <select class="gui-input sans-digit" name="educationl1[]">
+                                            <option value="">میزان تحصیلات خود را انتخاب کنید</option>
+                                            <option {% if the_team.tgrade == "diploma" %} selected {% endif %} value="diploma">دیپلم</option>
+                                            <option {% if the_team.tgrade == "associate" %} selected {% endif %} value="associate">کاردانی</option>
+                                            <option {% if the_team.tgrade == "bachelor" %} selected {% endif %} value="bachelor">کارشناسی</option>
+                                            <option {% if the_team.tgrade == "master" %} selected {% endif %} value="master">کارشناسی ارشد</option>
+                                            <option {% if the_team.tgrade == "phd" %} selected {% endif %} value="phd">دکتری</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="colm4 colm6-tab colm pull-right pad-5">
+                                    <label class="gui-label pad-5">میزان سهام :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-percentage vertical"></i></span>
+                                        <input type="number" min="0" max="100" class="gui-input sans-digit" name="stockl[]" value="{{ the_team.t_saham }}"  placeholder="مثال :  20 درصد" >
+                                    </label>
+                                </div>
+                                <div class="colm6 colm6-tab colm pull-right pad-5">
+                                    <label for="sidel" class="gui-label pad-5"> سمت در استارت آپ :</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-book-reader"></i></span>
+                                        <input dir="rtl" class="gui-input sans-digit " name="sidel[]" value="{{ the_team.t_the_role }}"  autocomplete="off" placeholder="سمت استارت آپ" required>
+                                    </label>
+                                </div>
+                                <div class="colm6 colm6-tab colm pull-right pad-5">
+                                    <label class="gui-label pad-5"> زمان اختصاص داده شده به استارتاپ در طول ماه:</label>
+                                    <label class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-clock vertical"></i></span>
+                                        <input type="number" min="0" max="200" class="gui-input sans-digit" name="averagel[]" value="{{ the_team.t_duration_per_month }}"  placeholder="مثال : 100 ساعت" >
+                                    </label>
+                                </div>
+                                    <div class="colm12 pad-5">
+                                        <label for="stockl" class="gui-label pad-5">آپلود رزومه :
+                                            {% if the_team.t_cv %}
+                                            <a class="color-dashboard font-s12 pull-left" href="{{the_team.t_cv.url}}">دانلود رزومه: {{the_team.t_cv}}</a>
+                                            {% endif %}
+                                        </label>
+                                        <label class="relative">
+                                            <input type="file" class="gui-input myfile" name="cv[]" >
+                                            <input type="hidden" class="myfilehide" name="cv_index" value="">
+                                        </label>
+                                    <div class="colm12 pad-5">
+                                        <label for="stockl" class="gui-label pad-5">آپلود تصویر عضو :
+                                            {% if the_team.t_avatar %}
+                                            <img width="50" height="50" src="{{the_team.t_avatar.url}}" alt="">
+                                            <!-- <a class="color-dashboard font-s12 pull-left" href="{{the_team.t_avatar.url}}">دانلود رزومه: {{the_team.t_cv}}</a> -->
+                                            {% endif %}
+                                        </label>
+                                        <label class="relative">
+                                            <input type="file" class="gui-input myfile" name="t_avatar[]" >
+                                            <input type="hidden" class="myavatarhide" name="avatar_index" value="">
+                                        </label>
+                                    </div>  
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+
+
+                    <div class="align-center pad-t10">
+                        <button type="submit" name="submit" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+                    </div>
+                </form>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+<div class="popup-frame hide">
+  <div class="resize-frame pad-20">
+    <div class="crop-image">
+      <img id="imgs" src="{% static 'images/avatar.png' %}">
+    </div>
+    <div id="crop" class="btn-ui align-center font-s14 font-w3">بـرش تصویر</div>
+    <img src="{% static 'images/button-close.png' %}" class="closeicon"/>
+  </div>
+<style>
+
+    .predict {
+        opacity: 0;
+        width: 100%;
+    }
+    .width45 {
+        width: 45%;
+    }
+    .predict-inp {
+        color: #747474;
+        font-size: 13px;
+        border: 1px solid #bbb;
+        padding: 8px 18px 8px 20px;
+        border-radius: 24px;
+    }
+
+</style>
+{% endblock %}
+{% block script %}
+<script>
+    jQuery(document).ready(function ($) {
+
+        $(".cat-check:checked").each(function () {
+            var title = $(this).attr('title');
+            $(".catname").append(title, " / ");
+            $(".show-error").hide();
+        })
+        $(".cat-check").change(function () {
+
+            var max = 3;
+            if ($(".cat-check:checked").length == max) {
+                $(".cat-check").attr('disabled', 'disabled');
+                $(".cat-check:checked").removeAttr('disabled');
+            } else {
+                $(".cat-check").removeAttr('disabled');
+            }
+
+            var min = 0;
+            if ($(".cat-check:checked").length > min) {
+                $(".btn-web").prop("disabled", false);
+            } else {
+                $(".btn-web").prop("disabled", true);
+            }
+            if ($(".cat-check:checked").length > min) {
+                $(".button-pop").addClass("bg-cat");
+            } else {
+                $(".button-pop").removeClass("bg-cat");
+            }
+            if ($(".cat-check:checked").length > min) {
+                $(".show-error").hide();
+            } else {
+                $(".show-error").show();
+            }
+            var title = '';
+            if ($(".cat-check").is(':checked')) {
+                $(".cat-check:checked").each(function () {
+                    title += $(this).attr('title') + '/';
+                    $(".catname").html(title);
+                })
+            } else {
+                title = '';
+                $(".catname").html(title);
+            }
+        })
+        $('.cat-check').each(function () {
+
+            var max = 3;
+            if ($(".cat-check:checked").length == max) {
+                $(".cat-check").attr('disabled', 'disabled');
+                $(".cat-check:checked").removeAttr('disabled');
+            } else {
+                $(".cat-check").removeAttr('disabled');
+            }
+            if ($(".cat-check:checked").length > 0) {
+                $(".button-pop").addClass("bg-cat");
+            } else {
+                $(".button-pop").removeClass("bg-cat");
+                $(".show-error").show();
+            }
+        })
+        var min = 0;
+        if ($(".cat-check:checked").length > min) {
+            $(".btn-web").prop("disabled", false);
+        } else {
+            $(".btn-web").prop("disabled", true);
+
+
+        }
+
+        $(document).on("change", ".myfile", function () {
+             var nme = $(".myfile");
+             var val=nme.val();    
+             var val1=$(this).val 
+             var dad= $(this).parent(); 
+             var child=dad.children(".myfilehide");
+             if(val1.length < 1) {
+                child.val(0);
+             }else{
+                child.val(1);
+             }
+        });
+
+
+
+        var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
+        $(".delete").click(function () {
+            $(".upload-hide").hide();
+            $(".upload-show").removeClass('hide');
+        });
+
+        // $('#change-pitch').click(function () {
+        //     $('#download-pitch').addClass('hide');
+        // })
+    });
+</script>
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    jQuery(document).ready(function ($) {
+
+        (function ($) {
+
+            $(function () {
+
+                var $form = $("#form");
+                var $input = $form.find("#amount");
+
+                $input.on("keyup", function (event) {
+
+
+                    var selection = window.getSelection().toString();
+                    if (selection !== '') {
+                        return;
+                    }
+
+                    if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+                        return;
+                    }
+
+                    var $this = $(this);
+
+                    var input = $this.val();
+
+                    var input = input.replace(/[\D\s\._\-]+/g, "");
+                    input = input ? parseInt(input, 10) : 0;
+
+                    $this.val(function () {
+                        return (input === 0) ? "" : input.toLocaleString("en-US");
+                    });
+                });
+            });
+        })(jQuery);
+        var csrftoken = getCookie('csrftoken');
+        console.log(csrftoken)
+        Dropzone.prototype.defaultOptions.dictFallbackMessage = "مرورگر شما آپلود فایل drag'n'drop را پشتیبانی نمی کند.";
+        Dropzone.prototype.defaultOptions.dictFallbackText = "Please use the fallback form below to upload your files like in the olden days.";
+        Dropzone.prototype.defaultOptions.dictFileTooBig = "فایل خیلی بزرگ است ({{filesize}}MB)  حداکثر اندازه فایل: {{maxFilesize}}MB";
+        Dropzone.prototype.defaultOptions.dictInvalidFileType = "شما مجاز به بارگذاری این نوع فایل نیستید";
+        Dropzone.prototype.defaultOptions.dictResponseError = "Server responded with {{statusCode}} code.";
+        Dropzone.prototype.defaultOptions.dictCancelUpload = "انصراف از بارگذاری";
+        Dropzone.prototype.defaultOptions.dictCancelUploadConfirmation = "آیا مطمئن هستید که میخواهید این بارگذاری را لغو کنید؟";
+        Dropzone.prototype.defaultOptions.dictRemoveFile = "حذف فایل";
+        Dropzone.prototype.defaultOptions.dictRemoveFileConfirmation = null;
+        Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "شما فقط می توانید {{maxFiles}} فایل بارگذاری کنید  .";
+        Dropzone.prototype.defaultOptions.dictDefaultMessage = "برای بارگذاری فایل کلیک کنید";
+        Dropzone.options.uploadPdf = {
+            params: {
+                file_type: "pdf",
+                csrfmiddlewaretoken: csrftoken,
+            },
+            timeout: 1800000,
+            maxFiles: 1,
+            maxFilesize: 20,
+            paramName: "attachfile_p",
+            addRemoveLinks: true,
+            acceptedFiles: '.pdf',
+            init: function () {
+                var self = this;
+                this.on("success", function (file, responseText) {
+                    console.log(responseText);
+                });
+                this.on('error', function (file, response) {
+                    $('.text-error').text(response);
+                    $('.message-alert').fadeIn();
+                    $('.message-alert').delay(4000).fadeOut();
+                });
+                self.on("maxfilesexceeded", function (file) {
+                    self.removeAllFiles();
+                    self.addFile(file);
+                });
+                $("#send-ppt").click(function (e) {
+                    e.preventDefault();
+                    self.processQueue();
+                });
+                self.options.dictRemoveFile = "حذف";
+                self.on("addedfile", function (file) {
+
+                });
+                self.on("removedfile", function (file) {
+
+                });
+            }
+        }
+        Dropzone.options.uploadPdf2 = {
+            params: {
+                file_type: "attachfile_e",
+                csrfmiddlewaretoken: csrftoken,
+            },
+            timeout: 1800000,
+            maxFiles: 1,
+            maxFilesize: 20,
+            paramName: "attachfile_e",
+            addRemoveLinks: true,
+            acceptedFiles: '.pdf',
+            init: function () {
+                var self = this;
+                this.on("success", function (file, responseText) {
+                    console.log(responseText);
+                });
+                this.on('error', function (file, response) {
+                    $('.text-error').text(response);
+                    $('.message-alert').fadeIn();
+                    $('.message-alert').delay(4000).fadeOut();
+                });
+                self.on("maxfilesexceeded", function (file) {
+                    self.removeAllFiles();
+                    self.addFile(file);
+                });
+                $("#send-ppt").click(function (e) {
+                    e.preventDefault();
+                    self.processQueue();
+                });
+                self.options.dictRemoveFile = "حذف";
+                self.on("addedfile", function (file) {
+
+                });
+                self.on("removedfile", function (file) {
+
+                });
+            }
+        }
+        // document.querySelectorAll('.toggle-element').forEach(element => {
+        //     element.addEventListener('DOMSubtreeModified', () => {
+        //         const toggle1 = element.querySelector('[data-type="toggle-1"]');
+        //         if (toggle1) {
+        //             const toggleButton = toggle1.querySelector('[data-type="toggle-btn"]');
+        //             toggleButton.addEventListener('click', function () {
+        //                 toggle1.classList.add('hide');
+        //                 toggle2.classList.remove('hide');
+        //             });
+        //         }
+        //         const toggle2 = element.querySelector('[data-type="toggle-2"]');
+
+
+        //     });
+        // });
+
+        $(".toggle-btnn").click(function() {
+            $('.toggle-element1').hide();
+            $('.pdf11').show();
+
+        });
+        $(".toggle-btn2").click(function() {
+            $('.toggle-element2').hide();
+            $('.pdf22').show();
+
+        });
+    })
+
+</script>
+{% endblock %}

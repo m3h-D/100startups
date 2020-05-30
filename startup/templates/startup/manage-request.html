@@ -1,0 +1,369 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load sunny %}
+{% load jalali_tags %}
+{% block title %}مدیریت درخواست ها{% endblock %}
+{% block body %}
+
+    <div class="frm-row">
+        <div>
+            <div class="colm3 colm12-tab colm pull-right pad-15 wow pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart3 icon-cat-panel absolute  flex-center">
+                            <i class="fa fa-poll-h vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">همه درخواست ها</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests.count }}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                        <span>
+							آمار همه درخواست ها
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="colm3 colm12-tab colm pull-right pad-15 wow pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart4 icon-cat-panel absolute flex-center">
+                            <i class="fa fa-hourglass-half  vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">در حال انتظار</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests|request_status:'waiting'}}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                        <span>
+							آمار درخواست های در حال انتظار
+						</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart2 icon-cat-panel absolute  flex-center">
+                            <i class="fa fa-user-check vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">تایید شده راهبر</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests|request_status:'accepted_leader'}}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 verticall"></i>
+						</span>
+                        <span>
+							آمار درخواست های تایید شده راهبر
+                    </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart6 icon-cat-panel absolute flex-center">
+                            <i class="fa fa-user-times vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">تایید نشده راهبر</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests|request_status:'failed_leader'}}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                        <span>
+							آمار درخواست های تایید نشده راهبر
+						</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart3 icon-cat-panel absolute flex-center">
+                            <i class="fa fa-money-bill-alt vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">تایید شده مالی</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests|request_status:'accepted_investor'}}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                        <span>
+							آمار درخواست های تایید شده مالی
+						</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart4 icon-cat-panel absolute flex-center">
+                            <i class="fa fa-money-bill vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">تایید نشده مالی</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests|request_status:'failed_investor'}}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                        <span>
+							آمار درخواست های تایید نشده مالی
+						</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart2 icon-cat-panel absolute  flex-center">
+                            <i class="fa fa-clipboard-check vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">تایید شده اسناد</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests|request_status:'accept_document'}}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 verticall"></i>
+						</span>
+                        <span>
+							آمار درخواست های تایید شده اسناد
+                    </span>
+                    </div>
+                </div>
+            </div>
+            <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+                <div class="body-form pad-15 relative">
+                    <div class="pad-b10">
+                        <div class="bg-chart6 icon-cat-panel absolute flex-center">
+                            <i class="fa fa-window-close vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="align-right">
+                            <a href="" class="color-darkgray font-w200 font-s15">تایید نشده اسناد</a>
+                            <h4 class="font-w300 font-s20 title-panel">{{ the_requests|request_status:'failed_document'}}</h4>
+                        </div>
+                    </div>
+                    <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                        <span>
+							آمار درخواست های تایید نشده اسناد
+						</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="spacer-t20">
+        <div class="colm12 colm12-tab colm12-tab colm pull-right pad-15 pad-5-mob">
+            <div class="body-form relative pad-b10">
+                <div class="payam">
+                    <div class="bg-chart5  body-form-top absolute flex-center">
+                        <i class="fa fa-history vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="absolute title-panel">
+                        <h3 class="font-w300 font-s18">لیست درخواست ها</h3>
+                    </div>
+                </div>
+                <div class="pad-table overflow-scroll">
+
+                    <table class="table color6">
+                        <thead>
+                        <tr>
+                            <th class="center">نام استارتاپ</th>
+                            <th class="center">عنوان</th>
+                            <th class="center">مبلغ</th>
+                            <th class="center">تاریخ</th>
+                            <th class="center">وضعیت</th>
+                            <th class="center">جزئیات</th>
+                            <th class="center">عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for req in the_requests %}
+                            <tr class="{{req.pk}}">
+                                <td class="center">{{ req.startup.title }}</td>
+                                <td class="center">{{ req.request_title }}</td>
+                                <td class="center">{{ req.request_money }}</td>
+                                <td class="center">{{ req.created_date|to_jalali:'%y/%m/%d' }}</td>
+                                <td class="center">{{ req.get_status_display }}</td>
+                                <td class="center">
+                                    <a class="color-silver" title="نمایش" href="{% url 'startup:single_requestmoney' req.pk %}">
+                                    <span>
+	                                	<i class="align-center font-s20 fa fa-address-card"></i>
+									</span>
+                                    </a>
+                                </td>
+                                <td class="center">
+                                    <span class="color-silver btn pointer btn-requste" data-modal="{{req.pk}}"  data-url="{% url 'startup:pop_up' req.pk %}">
+                                        <span>
+                                            <i class="align-center font-s20 fa fa-file-import"></i>
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+
+                        {% empty %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal -->
+    <div class="modal-overlay">
+        <div class="modal">
+
+            <a class="close-modal">
+                <svg viewBox="0 0 20 20">
+                    <path fill="#000000" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                </svg>
+            </a><!-- close modal -->
+
+            <div class="modal-content result-ajax modal-content result-ajax colm10">
+
+            </div><!-- content -->
+        </div><!-- modal -->
+    </div><!-- overlay -->
+    <style>
+
+        header , footer{
+            display: none;
+        }
+              .active-step {
+            background: #25aae1!important;
+            color: #fff!important;
+        }
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons inside the tab */
+        .tabst {
+            background: #eeeeee;
+            color: #222;
+            position: relative;
+            height: 40px;
+            padding-right: 32px;
+            padding-top: 10px;
+            font-size: 12px;
+        }
+        .tabst:focus {
+            background: #222;
+        }
+        .tabst::after {
+            content: '';
+            width: 32px;
+            background: red;
+            height: 32px;
+            position: absolute;
+            -webkit-border-radius: 5px 2px 5px 0;
+            -moz-border-radius: 5px 2px 5px 0;
+            -o-border-radius: 5px 2px 5px 0;
+            border-radius: 5px 2px 5px 0;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+            background-color: inherit;
+            border-color: inherit;
+            top: 4px;
+            z-index: 1;
+            left: -17px;
+            border-bottom: 1px solid #fff;
+            border-left: 1px solid #fff;
+        }
+        .active-st {
+            background: #3b8eb4;
+            color: #fff;
+        }
+        /* Change background color of buttons on hover */
+
+
+        /* Create an active/current tablink class */
+
+        /* Style the tab content */
+        .tabcontent {
+
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+    </style>
+
+{% endblock %}
+{% block script %}
+    <script>
+        window.onclick = function(event) {
+            if (event.target.className === "modal") {
+            }
+        }
+
+    </script>
+    <script>
+
+        jQuery(document).ready(function($){
+            var elements = $('.modal-overlay, .modal');
+
+            $('.btn-requste').click(function(){
+                elements.addClass('active');
+                // var modalId = $(this).attr('data-modal');
+
+                var modalId = $(this).data('modal');
+                var url = $(this).data('url');
+                console.log(modalId);
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function(result){
+                        console.log(result);
+                        jQuery(".result-ajax").html(result);
+                    }});
+
+            });
+
+            $('.close-modal').click(function(){
+                elements.removeClass('active');
+                jQuery(".result-ajax").html().remove();
+            });
+
+        });
+
+    </script>
+{% endblock %}

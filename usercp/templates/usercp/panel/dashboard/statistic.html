@@ -1,0 +1,142 @@
+   {% load sunny %}
+    {% if request.user.is_admin or request.user.user_type == 'manager' %}
+    <a href="" class="color-darkgray font-w200 font-s15">
+        <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob wow fadeInDown" data-wow-duration="1s">
+            <div class="body-form pad-15 relative">
+                <div class="pad-b10">
+                    <div class="bg-chart1 icon-cat-panel absolute  flex-center">
+                        <i class="fa fa-rocket vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="align-right">
+                        <span class="color-darkgray font-w200 font-s15"> استارتاپ ها</span>
+                        <h4 class="font-w300 font-s20 title-panel">{{ subscriber.count }}</h4>
+                    </div>
+                </div>
+                <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 verticall"></i>
+						</span>
+                    <span>
+							آمار استــارتاپ های سایت
+						</span>
+                </div>
+            </div>
+        </div>
+    </a>
+
+
+    <a href="" class="color-darkgray font-w200 font-s15">
+        <div class="colm3 colm12-tab colm pull-right pad-15 wow pad-5-mob spacer-b25-mob fadeInDown" data-wow-duration="1s">
+            <div class="body-form pad-15 relative">
+                <div class="pad-b10">
+                    <div class="bg-chart6 icon-cat-panel absolute flex-center">
+                        <i class="fa fa-users vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="align-right">
+                        <span class="color-darkgray font-w200 font-s15">داوران</span>
+                        <h4 class="font-w300 font-s20 title-panel">{% dashboard_role_counter referee %}</h4>
+                    </div>
+                </div>
+                <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                    <span>
+							آمار داوران سایت
+						</span>
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="" class="color-darkgray font-w200 font-s15">
+        <div class="colm3 colm12-tab colm pull-right pad-15 wow pad-5-mob spacer-b25-mob fadeInDown" data-wow-duration="2s">
+            <div class="body-form pad-15 relative">
+                <div class="pad-b10">
+                    <div class="bg-chart3 icon-cat-panel absolute flex-center">
+                        <i class="fa fa-gem  vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="align-right">
+                        <span class="color-darkgray font-w200 font-s15">سرمایه گذاران</span>
+                        <h4 class="font-w300 font-s20 title-panel">{% dashboard_role_counter investor %}</h4>
+                    </div>
+                </div>
+                <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                    <span>
+							آمار سرمایه گذاران سایت
+						</span>
+                </div>
+            </div>
+        </div>
+    </a>
+    <a href="" class="color-darkgray font-w200 font-s15">
+        <div class="colm3 colm12-tab colm pull-right pad-15 wow pad-5-mob spacer-b25-mob fadeInDown" data-wow-duration="2.5s">
+            <div class="body-form pad-15 relative">
+                <div class="pad-b10">
+                    <div class="bg-chart4 icon-cat-panel absolute  flex-center">
+                        <i class="fa fa-chalkboard-teacher vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="align-right">
+                        <span class="color-darkgray font-w200 font-s15">مربی  ها</span>
+                        <h4 class="font-w300 font-s20 title-panel">{% dashboard_role_counter coach %}</h4>
+                    </div>
+                </div>
+                <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                    <span>
+							آمار مربی  های سایت
+						</span>
+                </div>
+            </div>
+        </div>
+    </a>
+{% endif %}
+    <!-- <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob wow fadeInDown" data-wow-duration="1s">
+        <div class="body-form pad-15 relative">
+            <div class="pad-b10">
+                <div class="bg-chart2 icon-cat-panel absolute flex-center">
+                    <i class="fa fa-check vertical font-s30 color-white"></i>
+                </div>
+                <div class="align-right">
+                    <a href="#" class="color-darkgray font-w200 font-s15">داوری غیر حضوری</a>
+                    <h4 class="font-w300 font-s20 title-panel">{{not_presence_referee}}</h4>
+                </div>
+            </div>
+            <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                <span>
+														 آمار استارتاپ های داوری غیر حضوری
+						</span>
+            </div>
+        </div>
+    </div>
+    <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob wow fadeInDown" data-wow-duration="1.5s">
+        <div class="body-form pad-15 relative">
+            <div class="pad-b10">
+                <div class="bg-chart3 icon-cat-panel absolute flex-center">
+                    <i class="fa fa-times  vertical font-s30 color-white"></i>
+                </div>
+                <div class="align-right">
+                    <a href="#" class="color-darkgray font-w200 font-s15">در انتظار داوری</a>
+                    <h4 class="font-w300 font-s20 title-panel">{{waiting}}</h4>
+                </div>
+            </div>
+            <div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+                <span>
+							آمار استارت آپ های در انتظار داوری
+						</span>
+            </div>
+        </div>
+    </div> -->
+    <div class="clearfix"></div>
+</div>

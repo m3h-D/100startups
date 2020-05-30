@@ -1,0 +1,338 @@
+{% extends 'base/base-panel.html' %}
+{% load jalali_tags %}
+{% load static %}
+{% block title %}صندق پیام ها{% endblock %}
+{% block body %}
+<style>
+    .bg-red {
+    background: #cc4646;
+}
+</style>
+    <div class="frm-row pad-t40 colm11 colm margin-auto">
+        {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.all %}
+        <div class="frm-row pad-t40 pad-15 pad-5-mob spacer-t25-mob colm12 colm">
+            <div class="body-form relative wow fadeInUpBig pad-20" data-wow-duration="1s">
+                <div class="pad-b10">
+                    <div class="body-form-top absolute flex-center">
+                        <i class="fa fa-search-plus vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="absolute title-panel">
+                        <h3 class="font-w300 font-s18">جستجوی افراد</h3>
+                    </div>
+                </div>
+                <form method="GET" action="" id="search-form">
+                    <div class="spacer-t10 pad-t40 relative colm2 colm pull-right pad-5">
+                        <label for="startup-search" class="gui-label">نام استارت آپ :</label>
+                        <label class="relative pad-b20">
+                            <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+                            <input type="search" value="{{ request.GET.startup_search }}" name="startup_search" id="startup-search" class="gui-input">
+                        </label>
+                    </div>
+                    <div class="spacer-t10 spacer-r10 pad-t40 relative colm2 colm pull-right pad-5 pad-b20">
+                        <label for="fname-search" class="gui-label">نام شخص :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                            <input type="search" value="{{ request.GET.fname_search }}" name="fname_search" id="fname-search" class="gui-input">
+                        </label>
+                    </div>
+                    <div class="spacer-t10 spacer-r10 pad-t40 relative colm2 colm pull-right pad-5 pad-b20">
+                        <label for="lname-search" class="gui-label">نام خانوادگی شخص :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                            <input type="search" value="{{ request.GET.lname_search }}" name="lname_search" id="lname-search" class="gui-input">
+                        </label>
+                    </div>
+                    <div class="spacer-t10 spacer-r10 pad-t40 relative colm2 colm pull-right pad-5 pad-b20">
+                        <label for="email-search" class="gui-label">ایمیل :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-at vertical"></i></span>
+                            <input type="search" value="{{ request.GET.email_search }}" name="email_search" id="email-search" class="gui-input">
+                        </label>
+                    </div>
+                    <div class="pull-left align-center spacer-t10 pad-t40  pad-b20">
+                        <button name="submit_search" type="submit" class="btn-panel pad-10 color-white iransans spacer-t10 pointer">جستجو</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+                    <div class="pad-table overflow-scroll">
+                        {% if user_list != None %}
+                        <table class="table color6">
+                            <thead>
+                            <tr>
+                                <th class="center">ردیف</th>
+                                <th class="center">نام</th>
+                                <th class="center">نام خانوادگی</th>
+                                <th class="center">نام استارت آپ</th>
+                                <th class="center">ارسال پیام</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for the_user in user_list %}
+                              <tr class="{{ the_user.pk }}">
+                                  <td class="center">{{ forloop.counter }}</td>
+                                  <td class="center">{{ the_user.first_name }}</td>
+                                  <td class="center">{{ the_user.last_name }}</td>
+                                  <td class="center">{% if the_user.startup %}{{ the_user.startup.title }}{% endif %}</td>
+                                  <td class="center">
+                                      <a class="color-silver" title="نمایش" href="{% url 'message:send_message_chat' the_user.pk %}">
+                                        <span>
+                                          <i class="align-center font-s20 fa fa-envelope"></i>
+                                        </span>
+                                      </a>
+                                  </td>
+                              </tr>
+                                 {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    </div>
+
+            </div>
+        </div>
+        {% endif %}
+{% if request.user.is_admin or request.user.user_type == 'manager' %}
+            <div class="colm12 colm12-tab colm12-tab colm pad-15 pad-t40 pad-5-mob wow slideInRight" data-wow-duration="1.5s">
+                <div class="body-form relative pad-b10">
+                    <div class="payam">
+                        <div class="bg-red body-form-top absolute flex-center">
+                            <i class="fa fa-comment vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="absolute title-panel">
+                            <h3 class="font-w300 font-s18">مشکلات و ایده های سامانه</h3>
+                        </div>
+                    </div>
+                    <div id="load-request" class="pad-table overflow-scroll">
+                        <div id="load-request-content">
+                            <table class="table color6">
+                                <thead>
+                                    <tr>
+                                        <th class="center">عنوان</th>
+                                        <th class="center">نام فرستنده</th>
+                                        <th class="center">نام گیرنده</th>
+                                        <th class="center">تاریخ</th>
+                                        <th class="center">وضعیت</th>
+                                        <th class="center">مشاهده</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for er in error_messages %}
+                                    {% for err in er.send_message.all %}
+                                    {% ifchanged er.message_title %}
+                                    <tr class="{{ m.pk }}">
+                                      <td class="center">{{ er.message_title }}</td>
+                                      <td class="center">{{ er.send_message.last.sender.first_name }} {{er.send_message.last.sender.last_name}}</td>
+                                      <!-- <td class="center">{{ err.sender.first_name }} {{ err.sender.last_name }}</td> -->
+                                      <td class="center ">مدیر سیستم</td>
+                                      <!-- <td class="center">{{ er.send_message.first.receiver.first_name }} {{er.send_message.first.sender.last_name}}</td> -->
+                                      <td class="center">{{ er.created_date|to_jalali:'%Y/%m/%d' }}</td>
+                                      <td class="center">{% if er.send_message.first.is_readed == True %}خوانده شده{% else %}خوانده نشده{% endif %}</td>
+                                      <td class="center">
+                                          <a class="color-silver" title="نمایش" href="{% url 'message:show_messages' er.pk %}">
+                                            <span>
+                                              <i class="align-center font-s20 fa fa-eye"></i>
+                                            </span>
+                                          </a>
+                                      </td>
+                                  </tr>
+                                  {% endifchanged %}
+                                  {% endfor %}
+                                  {% empty %}
+                                  <tr>
+                                     <th style="background: #f7f5ed;" colspan="7">
+                                      <img height="174" src="{% static 'images/whitespace/notification.png' %}" alt="whitespace">
+                                     </th> 
+                                  </tr>
+    
+                                  {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endif %}
+        <div class="colm12 colm12-tab colm12-tab colm pad-15 pad-t40 pad-5-mob wow slideInRight" data-wow-duration="1.5s">
+            <div class="body-form relative pad-b10">
+                <div class="payam">
+                    <div class="bg-chart5 body-form-top absolute flex-center">
+                        <i class="fa fa-comment vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="absolute title-panel">
+                        <h3 class="font-w300 font-s18">همه گفتگو ها</h3>
+                    </div>
+                </div>
+                <div class="pad-table overflow-scroll">
+                    <table class="table color6">
+                        <thead>
+                            <tr>
+                                <th class="center">عنوان</th>
+                                <th class="center">نام فرستنده</th>
+                                <th class="center">نام گیرنده</th>
+                                <th class="center">تاریخ</th>
+                                <th class="center">وضعیت</th>
+                                <th class="center">مشاهده</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in chat_messages %}
+                            
+                            {% for chat in m.send_message.all %}
+                            {% ifchanged m.message_title %}
+                            {% if chat.receiver == request.user or chat.sender == request.user %}
+                          <tr class="{{ m.pk }}">
+                              <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.message_title }}</td>
+                              <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.send_message.last.sender.first_name }} {{ m.send_message.last.sender.last_name }}</td>
+                              <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.send_message.last.receiver.first_name }} {{ m.send_message.last.receiver.last_name }}</td>
+                              <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.created_date|to_jalali:'%Y/%m/%d' }}</td>
+                              <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{% if m.send_message.first.is_readed == True %}خوانده شده{% else %}خوانده نشده{% endif %}</td>
+                              
+                              <!-- <td class="center">{% if chat.is_readed == True %}خوانده شده{% else %}خوانده نشده{% endif %}</td> -->
+                              <td class="center">
+                                  <a class="color-silver {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}" title="نمایش" href="{% url 'message:show_messages' m.pk %}">
+                                    <span>
+                                      <i class="align-center font-s20 fa fa-eye"></i>
+                                    </span>
+                                  </a>
+                              </td>
+                          </tr>
+                          {% endif %}  
+                          {% endifchanged %}
+                          {% endfor %}
+                          {% empty %}
+                          <tr>
+                             <th style="background: #f7f5ed;" colspan="7">
+                              <img height="174" src="{% static 'images/whitespace/notification.png' %}" alt="whitespace">
+                             </th> 
+                          </tr>
+
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- {% if request.user.user_type == 'startup' %}
+            <div class="frm-row pad-t40 pad-15 pad-5-mob spacer-t25-mob colm12 colm">
+                <div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+                    <div class="pad-b10">
+                        <div class="bg-chart4 body-form-top absolute flex-center">
+                            <i class="fa fa-address-book vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="absolute title-panel">
+                            <h3 class="font-w300 font-s18">داوران شما</h3>
+                        </div>
+                    </div>
+                    <div class="frm-row pad-t40">
+                        <div class="overflow-scroll pad-b40">
+                            <table class="table color6 retable">
+                                <thead>
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>نام و نام خانوادگی</th>
+                                    <th>ایمیل</th>
+                                    <th>موبایل</th>
+                                    <th class="center">ارسال پیام</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {{ the_referees.user.first_name }}
+                                    {{ the_referees.user.last_name }}
+                                    {{ the_referees.user.email }}
+                                    {{ the_referees.user.phone }}
+                                <tr>
+                                    <th colspan="7" style="background: #f7f5ed;">
+                                    
+                                    <img height="174" src="{% if the_referees.user.avatar %}{{ the_referees.user.avatar.url }}{% endif %}" alt="whitespace" />
+                                    </th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="frm-row pad-t40 pad-15 pad-5-mob spacer-t25-mob colm12 colm">
+                <div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+                    <div class="pad-b10">
+                        <div class="bg-chart1 body-form-top absolute flex-center">
+                            <i class="fa fa-address-book vertical font-s30 color-white"></i>
+                        </div>
+                        <div class="absolute title-panel">
+                            <h3 class="font-w300 font-s18">منتور شما</h3>
+                        </div>
+                    </div>
+                    <div class="frm-row pad-t40">
+                        <div class="overflow-scroll pad-b40">
+                            <table class="table color6 retable">
+                                <thead>
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>نام و نام خانوادگی</th>
+                                    <th>ایمیل</th>
+                                    <th>موبایل</th>
+                                    <th class="center">ارسال پیام</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    {{ the_mentors.user.first_name }}
+                                    {{ the_mentors.user.last_name }}
+                                    {{ the_mentors.user.email }}
+                                    {{ the_mentors.user.phone }}
+                                    <th colspan="7" style="background: #f7f5ed;">
+                                    
+                                    <img height="174" src="{% if the_mentors.user.avatar %}{{ the_mentors.user.avatar }}{% endif %}" alt="whitespace" />
+                                    </th>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="frm-row pad-t40 pad-15 pad-5-mob spacer-t25-mob colm12 colm">
+            <div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+                <div class="pad-b10">
+                    <div class="bg-chart3 body-form-top absolute flex-center">
+                        <i class="fa fa-address-book vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="absolute title-panel">
+                        <h3 class="font-w300 font-s18">مدیران عملیاتی</h3>
+                    </div>
+                </div>
+                <div class="frm-row pad-t40">
+                    <div class="overflow-scroll pad-b40">
+                        <table class="table color6 retable">
+                            <thead>
+                            <tr>
+                                <th>ردیف</th>
+                                <th>نام و نام خانوادگی</th>
+                                <th>ایمیل</th>
+                                <th>موبایل</th>
+                                <th class="center">ارسال پیام</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th colspan="7" style="background: #f7f5ed;">
+                                    <img height="174" src="" alt="whitespace" />
+                                </th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %} -->
+        <div class="clearfix"></div>
+    </div>
+    <style>
+        header ,footer{
+            display:none;
+        }
+
+    </style>
+{% endblock %}

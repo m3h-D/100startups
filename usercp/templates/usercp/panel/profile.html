@@ -1,0 +1,423 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block title %}حساب کاربری{% endblock %}
+{% block body %}
+<style>
+	.hide-tab{
+		display: none;
+	}
+</style>
+{% if 'smtw' in message.extra_tags %}
+<div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+data-wow-duration="1.5s">
+<h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>ثبت نام شما با مشکل روبه رو شده است</h2>
+</div>
+{% elif 'email_valid' in message.extra_tags %}
+<div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+data-wow-duration="1.5s">
+<h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>ایمیل در سیستم ثبت شده است</h2>
+</div>
+{% endif %}
+<div class="colm8 colm12-tab colm margin-auto spacer-t50">
+	<form action="" method="post" class="smart-validate" enctype="multipart/form-data">{% csrf_token %}
+		{% if request.user.is_admin or request.user.is_superadmin or request.user.user_type == 'manager' %}
+		<!-- {{ admin_form.as_p }} -->
+		<div class="body-form relative">
+			<div class="bg-chart4 body-form-top absolute flex-center">
+				<div class="fa fa-address-card vertical font-s30 color-white"></div>
+			</div>
+			<div class="absolute title-panel">
+				<h3 class="font-w300 font-s18 pad-r25">پروفایل</h3>
+			</div>
+			 <div class="pad-30">
+				<div class="frm-row  spacer-t30">
+						<div class="colm6 colm pull-right pad-5">
+							<label for="mobilel" class="gui-label pad-5"> شماره همراه:</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fa fa-mobile"></i></span>
+								<input dir="ltr" class="gui-input sans-digit" name="phone" data-rule-customphone="true" value="{{ request.user.phone }}" autocomplete="off" placeholder="09XXXXXXX"  disabled>
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label for="email-l" class="gui-label pad-5"><span class="color-red">*</span>ایمیل :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fa fa-at vertical"></i></span>
+								<input dir="ltr" type="email" class="gui-input sans-digit" name="email" value="{% if admin_form.instance.email %}{{ admin_form.instance.email }}{% endif %}"  placeholder="example@gmail.com" required>
+							</label>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="frm-row">
+						<div class="colm6 colm pull-right pad-5">
+							<label class="gui-label pad-5">لینکدین :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fab fa-linkedin-in vertical"></i></span>
+								<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="mylinkedin" value="{% if admin_form.instance.linkdin %}{{ admin_form.instance.linkdin }}{% endif %}"  name="linkdin" required>
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label for="birthday" class="gui-label pad-5"><span class="color-red">*</span> تاریخ تولد :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+								<input dir="ltr" class="gui-input sans-digit datepicker-gregorian" name="birth_date" value="{{ admin_form.instance.birth_date|to_jalali:'%Y/%m/%d' }}" id="birthday" autocomplete="off" readonly   placeholder="1398/10/02" required>
+							</label>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="frm-row">
+						<div class="colm6 colm pull-right pad-5">
+							<label for="expertisel" class="gui-label pad-5"><span class="color-red">*</span>تخصص:</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class="color-black fa fa-laptop-code vertical"></i></span>
+								<input type="text" class="gui-input sans-digit" name="skill" id="expertisel" value="{% if admin_form.instance.skill %}{{ admin_form.instance.skill }}{% endif %}"  placeholder="مثال : نرم افزار" required>
+							</label>
+						</div>
+
+						<div class="colm6 colm pull-right pad-5">
+							<label class="gui-label pad-5">تحصیلات:</label>
+							<label  class="relative">
+								<span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+								<select class="gui-input sans-digit" name="grade">
+									<option value="">میزان تحصیلات خود را انتخاب کنید</option>
+									<option {% if admin_form.instance.grade == 'diploma' %}selected{% endif %} value="diploma">دیپلم</option>
+									<option {% if admin_form.instance.grade == 'associate' %}selected{% endif %} value="associate">کاردانی</option>
+									<option {% if admin_form.instance.grade == 'bachelor' %}selected{% endif %} value="bachelor">کارشناسی</option>
+									<option {% if admin_form.instance.grade == 'master' %}selected{% endif %} value="master">کارشناسی ارشد</option>
+									<option {% if admin_form.instance.grade == 'phd' %}selected{% endif %} value="phd">دکتری</option>
+								</select>
+							</label>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+				<div class="margin-auto align-center pad-b25">
+					<button type="submit" name="submit" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+				</div>
+			</div>
+{% else %}
+		<!-- {{ role_form.as_p }} -->
+		<div class="body-form relative">
+			<div class="bg-chart4 body-form-top absolute flex-center">
+				<div class="fa fa-address-card vertical font-s30 color-white"></div>
+			</div>
+			<div class="absolute title-panel">
+				<h3 class="font-w300 font-s18 pad-r25">پروفایل</h3>
+			</div>
+			 <div class="pad-30">
+		<div id="avatarbox" class="avatar-box flex-center pad-10">
+			<img class="img-avatar not" src="{% if role_form.instance.avatar %}{{ role_form.instance.avatar.url }}{% else %}{% static 'images/uplod.png' %}{% endif %}">
+		</div>
+				<p class="color-darkgray font-s14 pad-t20 pad-b20 align-center">عکس خود را بارگذاری کنید</p>
+				<input type="file" class="uploadlogo" name="avatar" id="avatar">
+				<textarea  name="avatar_base64" class="avatar-base64 hide"></textarea>
+				<div class="frm-row  spacer-t30">
+						<div class="colm6 colm pull-right pad-5">
+							<label for="mobilel" class="gui-label pad-5"> شماره همراه:</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fa fa-mobile"></i></span>
+								<input dir="ltr" class="gui-input sans-digit" name="phone" data-rule-customphone="true" value="{{ request.user.phone }}" autocomplete="off" placeholder="09XXXXXXX"  disabled>
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label for="email-l" class="gui-label pad-5"><span class="color-red">*</span>ایمیل :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fa fa-at vertical"></i></span>
+								<input dir="ltr" type="email" class="gui-input sans-digit" name="email" value="{% if role_form.instance.email %}{{ role_form.instance.email }}{% endif %}"  placeholder="example@gmail.com" required>
+							</label>
+						</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="frm-row">
+						<div class="colm6 colm pull-right pad-5">
+							<label class="gui-label pad-5">لینکدین :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fab fa-linkedin-in vertical"></i></span>
+								<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="mylinkedin" value="{% if role_form.instance.linkdin %}{{ role_form.instance.linkdin }}{% endif %}"  name="linkdin">
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label class="gui-label pad-5">توئیتر :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fab fa-ltwitter vertical"></i></span>
+								<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="mytwitter" value="{% if role_form.instance.twitter %}{{ role_form.instance.twitter }}{% endif %}"  name="twitter">
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label class="gui-label pad-5">اینستاگرام :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" color-black fab fa-instagram vertical"></i></span>
+								<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="myinstagram" value="{% if role_form.instance.instagram %}{{ role_form.instance.instagram }}{% endif %}"  name="instagram">
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label for="website" class="gui-label pad-5">سایت شخصی </label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class="fab fa-internet-explorer vertical"></i></span>
+								<input type="text" dir="ltr" class="gui-input sans-digit" value="{% if role_form.instance.site %}{{ role_form.instance.site }}{% endif %}" name="site" id="website" placeholder="http://100startup.ir" data-rule-website="true">
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label for="birthday" class="gui-label pad-5"><span class="color-red">*</span> تاریخ تولد :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+								<input dir="ltr" class="gui-input sans-digit datepicker-gregorian" name="birth_date" value="{% if role_form.instance.birth_date %}{{ role_form.instance.birth_date|to_jalali:'%Y/%m/%d' }}{% endif %}" id="birthday" autocomplete="off" readonly   placeholder="1398/10/02" required>
+							</label>
+						</div>
+						<div class="colm6 colm pull-right pad-5">
+							<label for="province" class="gui-label pad-5"> <span class="color-red">*</span>استان محل استقرار</label>
+							<label class="relative">
+								<select id="province-startup" class="province gui-input sans-digit" name="city" data-value=""   required/>
+									<option value="{% if role_form.instance.city %}{{ role_form.instance.city }}{% endif %}">{% if role_form.instance.city %}{{ role_form.instance.city }}{% else %}لطفا یک استان را انتخاب کنید{% endif %}</option>
+								</select>
+							</label>
+						 </div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="frm-row">
+						<div class="colm6 colm pull-right pad-5">
+							<label for="expertisel" class="gui-label pad-5"><span class="color-red">*</span>تخصص:</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class="color-black fa fa-laptop-code vertical"></i></span>
+								<input type="text" class="gui-input sans-digit" name="skill" id="expertisel" value="{% if role_form.instance.skill %}{{ role_form.instance.skill }}{% endif %}"  placeholder="مثال : نرم افزار" required>
+							</label>
+						</div>
+
+						<div class="colm6 colm pull-right pad-5">
+				<label class="gui-label pad-5">تحصیلات:</label>
+				<label  class="relative">
+					<span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+					<select class="gui-input sans-digit" name="grade">
+						<option  value="">میزان تحصیلات خود را انتخاب کنید</option>
+						<option {% if role_form.instance.grade == 'diploma' %}selected{% endif %}  value="diploma">دیپلم</option>
+						<option {% if role_form.instance.grade == 'associate' %}selected{% endif %}  value="associate">کاردانی</option>
+						<option {% if role_form.instance.grade == 'bachelor' %}selected{% endif %}  value="bachelor">کارشناسی</option>
+						<option {% if role_form.instance.grade == 'master' %}selected{% endif %}  value="master">کارشناسی ارشد</option>
+						<option {% if role_form.instance.grade == 'phd' %}selected{% endif %}  value="phd">دکتری</option>
+					</select>
+				</label>
+						</div>
+						<div class="clearfix"></div>
+					  <div class="colm12 colm pad-5 char-count">
+			<label for="biographi" class="gui-label pad-5"><span class="color-red">*</span>بیوگرافی</label>
+			<label class="relative text-counter">
+			  <textarea name="bio" id="biographi" maxlength="255" class="gui-textarea" placeholder="بیوگرافی"
+						required>{% if role_form.instance.bio %}{{ role_form.instance.bio }}{% endif %}</textarea>
+			  <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+			</label>
+		  </div>
+		</div>
+				</div>
+				<div class="margin-auto align-center pad-b25">
+					<button type="submit" name="submit_managers" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+				</div>
+			</div>
+		{% endif %}
+			<!-- <div class="body-form relative">
+				<div class="bg-chart4 body-form-top absolute flex-center">
+					<div class="fa fa-address-card vertical font-s30 color-white"></div>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18 pad-r25">پروفایل</h3>
+				</div>
+				 <div class="pad-30">
+            <div id="avatarbox" class="avatar-box flex-center pad-10">
+                <img class="img-avatar not" src="{% static 'images/uplod.png' %}">
+            </div>
+				    <p class="color-darkgray font-s14 pad-t20 pad-b20 align-center">عکس خود را بارگذاری کنید</p>
+				    <input type="file" class="uploadlogo" name="avatar" id="avatar">
+				    <textarea  name="avatar_base64" class="avatar-base64 hide"></textarea>
+					<div class="frm-row  spacer-t30">
+							<div class="colm6 colm pull-right pad-5">
+								<label for="mobilel" class="gui-label pad-5"> شماره همراه:</label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class=" color-black fa fa-mobile"></i></span>
+									<input dir="ltr" class="gui-input sans-digit" name="mobilel[]" data-rule-customphone="true" value="{{ request.user.phone }}" autocomplete="off" placeholder="09XXXXXXX"  disabled>
+								</label>
+							</div>
+							<div class="colm6 colm pull-right pad-5">
+								<label for="email-l" class="gui-label pad-5"><span class="color-red">*</span>ایمیل :</label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class=" color-black fa fa-at vertical"></i></span>
+									<input dir="ltr" type="email" class="gui-input sans-digit" name="email" value=""  placeholder="example@gmail.com" required>
+								</label>
+							</div>
+							<div class="clearfix"></div>
+						</div>
+						<div class="frm-row">
+							<div class="colm6 colm pull-right pad-5">
+								<label class="gui-label pad-5">لینکدین :</label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class=" color-black fab fa-linkedin-in vertical"></i></span>
+									<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="mylinkedin" value=""  name="linkedin">
+								</label>
+							</div>
+							<div class="colm6 colm pull-right pad-5">
+								<label class="gui-label pad-5">توئیتر :</label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class=" color-black fab fa-ltwitter vertical"></i></span>
+									<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="mytwitter" value=""  name="twitter">
+								</label>
+							</div>
+							<div class="colm6 colm pull-right pad-5">
+								<label class="gui-label pad-5">اینستاگرام :</label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class=" color-black fab fa-instagram vertical"></i></span>
+									<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="myinstagram" value=""  name="instagram">
+								</label>
+							</div>
+							<div class="colm6 colm pull-right pad-5">
+								<label for="website" class="gui-label pad-5">سایت شخصی </label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class="fab fa-internet-explorer vertical"></i></span>
+									<input type="text" dir="ltr" class="gui-input sans-digit" value="" name="website" id="website" placeholder="http://100startup.ir" data-rule-website="true">
+								</label>
+							</div>
+							<div class="colm6 colm pull-right pad-5">
+								<label for="birthday" class="gui-label pad-5"><span class="color-red">*</span> تاریخ تولد :</label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+									<input dir="ltr" class="gui-input sans-digit datepicker-gregorian" name="birthday" value="" id="birthday" autocomplete="off" readonly   placeholder="1398/10/02" required>
+								</label>
+							</div>
+							<div class="colm6 colm pull-right pad-5">
+	                            <label for="province" class="gui-label pad-5"> <span class="color-red">*</span>استان محل استقرار</label>
+	                            <label class="relative">
+	                                <select id="province-startup" class="province gui-input sans-digit" name="province" data-value=""   required/>
+	                                    <option value="">لطفا یک استان را انتخاب کنید</option>
+	                                </select>
+	                            </label>
+	                         </div>
+							<div class="clearfix"></div>
+						</div>
+						<div class="frm-row">
+							<div class="colm6 colm pull-right pad-5">
+								<label for="expertisel" class="gui-label pad-5"><span class="color-red">*</span>تخصص:</label>
+								<label class="relative">
+									<span class="icon-gui flex-center"><i class="color-black fa fa-laptop-code vertical"></i></span>
+									<input type="text" class="gui-input sans-digit" name="expertisel" id="expertisel" value=""  placeholder="مثال : نرم افزار" required>
+								</label>
+							</div>
+
+							<div class="colm6 colm pull-right pad-5">
+                    <label class="gui-label pad-5">تحصیلات:</label>
+                    <label  class="relative">
+                        <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                        <select class="gui-input sans-digit" name="educationl">
+                            <option value="">میزان تحصیلات خود را انتخاب کنید</option>
+							<option value="diplom">دیپلم</option>
+							<option value="lisance">کاردانی</option>
+							<option value="karshenasi">کارشناسی</option>
+							<option value="arshad">کارشناسی ارشد</option>
+							<option value="phd">دکتری</option>
+                        </select>
+                    </label>
+							</div>
+							<div class="clearfix"></div>
+						  <div class="colm12 colm pad-5 char-count">
+                <label for="biographi" class="gui-label pad-5"><span class="color-red">*</span>بیوگرافی</label>
+                <label class="relative text-counter">
+                  <textarea name="biographi" id="biographi" maxlength="255" class="gui-textarea" placeholder="بیوگرافی"
+                            required></textarea>
+                  <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+                </label>
+              </div>
+            </div>
+					</div>
+	                <div class="margin-auto align-center pad-b25">
+	                    <button type="submit" name="submit_managers" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+	                </div>
+				</div> -->
+
+				<!-- <div class="body-form relative">
+					<div class="bg-chart4 body-form-top absolute flex-center">
+						<div class="fa fa-address-card vertical font-s30 color-white"></div>
+					</div>
+					<div class="absolute title-panel">
+						<h3 class="font-w300 font-s18 pad-r25">پروفایل</h3>
+					</div>
+					 <div class="pad-30">
+						<div class="frm-row  spacer-t30">
+								<div class="colm6 colm pull-right pad-5">
+									<label for="mobilel" class="gui-label pad-5"> شماره همراه:</label>
+									<label class="relative">
+										<span class="icon-gui flex-center"><i class=" color-black fa fa-mobile"></i></span>
+										<input dir="ltr" class="gui-input sans-digit" name="phone" data-rule-customphone="true" value="{{ request.user.phone }}" autocomplete="off" placeholder="09XXXXXXX"  disabled>
+									</label>
+								</div>
+								<div class="colm6 colm pull-right pad-5">
+									<label for="email-l" class="gui-label pad-5"><span class="color-red">*</span>ایمیل :</label>
+									<label class="relative">
+										<span class="icon-gui flex-center"><i class=" color-black fa fa-at vertical"></i></span>
+										<input dir="ltr" type="email" class="gui-input sans-digit" name="email" value="{{ admin_form.instance.email }}"  placeholder="example@gmail.com" required>
+									</label>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="frm-row">
+								<div class="colm6 colm pull-right pad-5">
+									<label class="gui-label pad-5">لینکدین :</label>
+									<label class="relative">
+										<span class="icon-gui flex-center"><i class=" color-black fab fa-linkedin-in vertical"></i></span>
+										<input dir="ltr" type="text" class="gui-input sans-digit" placeholder="mylinkedin" value="{{ admin_form.instance.linkdin }}"  name="linkdin" required>
+									</label>
+								</div>
+								<div class="colm6 colm pull-right pad-5">
+									<label for="birthday" class="gui-label pad-5"><span class="color-red">*</span> تاریخ تولد :</label>
+									<label class="relative">
+										<span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+										<input dir="ltr" class="gui-input sans-digit datepicker-gregorian" name="birth_date" value="{{ admin_form.instance.birth_date }}" id="birthday" autocomplete="off" readonly   placeholder="1398/10/02" required>
+									</label>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="frm-row">
+								<div class="colm6 colm pull-right pad-5">
+									<label for="expertisel" class="gui-label pad-5"><span class="color-red">*</span>تخصص:</label>
+									<label class="relative">
+										<span class="icon-gui flex-center"><i class="color-black fa fa-laptop-code vertical"></i></span>
+										<input type="text" class="gui-input sans-digit" name="skill" id="expertisel" value="{{ admin_form.instance.skill }}"  placeholder="مثال : نرم افزار" required>
+									</label>
+								</div>
+
+								<div class="colm6 colm pull-right pad-5">
+                                    <label class="gui-label pad-5">تحصیلات:</label>
+                                    <label  class="relative">
+                                        <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                                        <select class="gui-input sans-digit" name="educationl">
+                                            <option value="{% if admin_form.instance.grade %}{{ admin_form.instance.grade }}{% endif %}">{% if admin_form.instance.grade %}{{ admin_form.instance.get_grade_display }}{% else %}میزان تحصیلات خود را انتخاب کنید{% endif %}</option>
+											<option value="diplom">دیپلم</option>
+											<option value="lisance">کاردانی</option>
+											<option value="karshenasi">کارشناسی</option>
+											<option value="arshad">کارشناسی ارشد</option>
+											<option value="phd">دکتری</option>
+                                        </select>
+                                    </label>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+		                <div class="margin-auto align-center pad-b25">
+		                    <button type="submit" name="submit" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+		                </div>
+					</div> -->
+
+            </div>
+		</div>
+	</form>
+</div>
+	<style>
+		header , footer{
+			display: none;
+		}
+	</style>
+<div class="popup-frame hide">
+  <div class="resize-frame pad-20">
+    <div class="crop-image">
+      <img id="imgs" src="{% static 'images/avatar.png' %}">
+    </div>
+    <div id="crop" class="btn-ui align-center font-s14 font-w3">بـرش تصویر</div>
+    <img src="{% static 'images/button-close.png' %}" class="closeicon"/>
+  </div>
+</div>
+{% endblock %}

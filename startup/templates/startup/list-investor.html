@@ -1,0 +1,296 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}لیست سرمایه گذاران{% endblock %}
+{% block body %}
+<style>
+    .hide-tab {
+        display: none;
+    }
+
+    .w120 {
+        width: 120px;
+    }
+</style>
+<div class="pad-t20">
+    <div class="colm4 colm12-tab colm margin-auto pad-15 pad-0 spacer-b25-mob spacer-b30-tab">
+        <div class="body-form pad-15 relative">
+            <a href="#" class="pad-b10 color6">
+                <div class="bg-chart2 icon-cat-panel absolute  flex-center">
+                    <i class="fa fa-gem vertical font-s30 color-white"></i>
+                </div>
+                <div class="align-right">
+                    <h4 class="font-w200 font-s15">تمام سرمایه گذاران</h4>
+                    <h4 class="font-w300 font-s20 title-panel">{{invest_counter}}</h4>
+                </div>
+            </a>
+            <div class="border-t-chart font-w200 font-s12 pad-t10">
+                <span class="font-w300">
+                    <i class="fa fa-chart-bar pad-l5 verticall"></i>
+                </span>
+                <span>
+                    آمار تمام سرمایه گذاران
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="body-form relative">
+    <div class="bg-chart3 body-form-top absolute flex-center">
+        <div class="fa fa-gem vertical font-s30 color-white"></div>
+    </div>
+    <div class="absolute title-panel">
+        <h3 class="font-w300 font-s18">تمام سرمایه گذاران</h3>
+    </div>
+    <form action="" method="get" class="pad-20 spacer-t20">
+        <div class="spacer-t20">
+        <div class="spacer-t10 pad-t40 relative colm2 colm pull-right pad-5 pad-b20">
+            <label for="fname-search" class="gui-label">نام سرمایه گذار:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                <input type="search" value="{{ request.GET.fname_search}}" id="fname-search" name="fname_search" class="gui-input">
+            </label>
+        </div>
+        <div class="spacer-t10 pad-t40 relative colm2 colm pull-right pad-5 pad-b20">
+            <label for="lname-search" class="gui-label">نام خانوادگی سرمایه گذار:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                <input type="search" value="{{ request.GET.lname_search }}" name="lname_search" id="lname-search" class="gui-input">
+            </label>
+        </div>
+        <div class="spacer-t10 pad-t40 relative colm2 colm pull-right pad-5">
+            <label for="startup-search" class="gui-label">موبایل:</label>
+            <label class="relative pad-b20">
+                <span class="icon-gui flex-center"><i class=" fa fa-mobile vertical"></i></span>
+                <input type="search" value="{{ request.GET.mobile_search}}" name="mobile_search" id="mobile-search" class="gui-input">
+            </label>
+        </div>
+        <div class="pull-left align-center pad-20 ">
+            <button name="submit_search" type="submit"
+                class="w120 btn-search btn-panel font-s14 pad-6 spacer-t54 color-white iransans spacer-t10 pointer">جستجو</button>
+        </div>
+        </div>
+    </form>
+    <form method="post" action="" class="pad-20 spacer-t20">{% csrf_token %}
+        <div class="spacer-t20">
+            <div class="pull-left align-center pad-20 ">
+                <button name="submit_looks" value="submit_looks" type="submit"
+                    class="w120 btn-search btn-panel font-s14 pad-6 spacer-t54 color-white iransans spacer-t10 pointer">شروع
+                    برسی</button>
+            </div>
+            <div class="pull-left align-center pad-20 ">
+                <button name="submit_looks" value="submit_del_looks" type="submit"
+                    class="w120 btn-search btn-panel font-s14 pad-6 spacer-t54 color-white iransans spacer-t10 pointer">پایان
+                    برسی</button>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+    </form>
+
+
+    <div class="frm-row pad-t40">
+        <div class="overflow-scroll pad-b40">
+            <table class="table color6 retable">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>نام و نام خانوادگی</th>
+                        <th>ایمیل</th>
+                        <th>موبایل</th>
+                        <th class="center">وضعیت</th>
+                        <th class="center">ارسال پیام</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for investor in investors %}
+                    <tr>
+                        <td class="iransansdigit">{{ forloop.counter0|add:investors.start_index }}</td>
+                        <td>{{investor.first_name}} {{investor.last_name}}</td>
+                        <td>{{investor.email}}</td>
+                        <td>{{investor.phone}}</td>
+                        <td class="center">
+                            <span class="{% if investor.can_see == True %}del-look{% else %}add-look{% endif %} color-silver  pointer flex-center" title="اضافه شده"
+                                data-name="{{investor.first_name}} {{ investor.last_name }}"
+                                data-add="{{investor.pk}}">
+                                <i class="font-s25 fa {% if investor.can_see == True %}fa-check color-green{% else %}fa-plus color-blue{% endif %} "></i>
+                            </span>
+                        </td>
+
+                        <td class="center">
+                            <a class="color-silver" title="ارسال پیام" href="{% url 'message:send_message_chat' investor.pk %}">
+                                <span>
+                                    <i class="font-s20 fa fa-envelope"></i>
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    {% endfor %}
+
+                </tbody>
+            </table>
+            <div class="paging">
+             {% if investors.has_other_pages %}
+                <div class="pagination">
+                    <br>
+                    {% if investors.has_previous %}
+                    <a class="" href="?page=1{% if fname %}&fname_search={{ fname }}{% endif %}{% if lname %}&lname_search={{lname}}{% endif %}{% if mobile %}&mobile_search={{mobile}}{% endif %}">«</a>
+                    <a class="" href="?page={{ investors.previous_page_number }}{% if fname %}&fname_search={{ fname }}{% endif %}{% if lname %}&lname_search={{lname}}{% endif %}{% if mobile %}&mobile_search={{mobile}}{% endif %}">‹</a>
+                    {% endif %}
+            
+                    {% for num in investors.paginator.page_range %}
+                    {% if investors.number == num %}
+                    <span class="current">{{ num }}</span>
+                    {% elif num > investors.number|add:'-3' and num < investors.number|add:'3' %}
+                    <a class="" href="?page={{ num }}{% if fname %}&fname_search={{ fname }}{% endif %}{% if lname %}&lname_search={{lname}}{% endif %}{% if mobile %}&mobile_search={{mobile}}{% endif %}">{{ num }}</a>
+                    {% endif %}
+                    {% endfor %}
+            
+                    {% if investors.has_next %}
+                    <a class="btn btn-outline-warning mb-4" href="?page={{ investors.next_page_number }}{% if fname %}&fname_search={{ fname }}{% endif %}{% if lname %}&lname_search={{lname}}{% endif %}{% if mobile %}&mobile_search={{mobile}}{% endif %}">›</a>
+                    <a class="btn btn-outline-warning mb-4" href="?page={{ investors.paginator.num_pages }}{% if fname %}&fname_search={{ fname }}{% endif %}{% if lname %}&lname_search={{lname}}{% endif %}{% if mobile %}&mobile_search={{mobile}}{% endif %}">»</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- modal -->
+<div class="modal-overlay">
+    <div class="modal">
+
+        <a class="close-modal">
+            <svg viewBox="0 0 20 20">
+                <path fill="#000000"
+                    d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z">
+                </path>
+            </svg>
+        </a><!-- close modal -->
+
+        <div class="modal-content" id="modal-delete">
+            <div class="colm12">
+                <div class="margin-auto align-center">
+                    <h2>آیا از تغییر وضعیت <span class="name color-red"></span> به برسی استارتاپ اطمینان دارید؟</h2>
+                </div>
+            </div>
+            <div class="clom12 colm spacer-t40">
+                <div class="colm6 pull-right flex-center">
+                    <button class="btn-web add-ok bg-dis">بله</button>
+                </div>
+                <div class="colm6 pull-left flex-center">
+                    <button class="btn-no bg-dis">خیر</button>
+                </div>
+                <div class="clearfix"></div>
+                <span class="loader-request spacer-t40"></span>
+            </div>
+        </div><!-- content -->
+    </div><!-- modal -->
+</div><!-- overlay -->
+<div id="toast">
+    <div id="img">وضعیت</div>
+    <div id="desc">وضعیت سرمایه گذار تغییر کرد</div>
+</div>
+<div id="toat">
+    <div id="img">وضعیت</div>
+    <div id="desc">سرمایه گذار به پایان برسی تغییر کرد</div>
+</div>
+<style>
+    header,
+    footer {
+        display: none;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<script>
+    jQuery(document).ready(function ($) {
+        $('.add-look').on('click', function () {
+            console.log('bad');
+            var t = $(this);
+            var elements = $('.modal-overlay, .modal');
+            var userId = $(this).data('add');
+            var name = $(this).data('name');
+            elements.addClass('active');
+            $('.name').html(name);
+            $('.close-modal').click(function () {
+                elements.removeClass('active');
+            });
+            $('.btn-no').click(function () {
+                elements.removeClass('active');
+            });
+            $('.add-ok').click(function () {
+                t.children('i').removeClass('color-blue fa-plus');
+                t.children('i').addClass('color-green fa-check');
+                $(this).data('name');
+                $('.bg-dis').prop('disabled', true);
+                jQuery('.loader-request').css('display', 'block');
+                $.ajax({
+                    url: '{% url "startup:investor_can_see" %}',
+                    method: 'POST',
+                    data: {
+                        add_id: userId,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        //   console.log('ajax-bad');
+                        //   $('#' + userId).remove();
+                        //   $(response).filter(t).removeClass('add-look').addClass('del-look');
+                        jQuery('.loader-request').css('display', 'none');
+                        var x = document.getElementById('toast');
+                        x.className = "show";
+                        elements.removeClass('active');
+                        $('.bg-dis').prop('disabled', false);
+                        setTimeout(function () {
+                            x.className = x.className.replace("show", "");
+                        }, 2000);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                        t.removeClass('add-look');
+                        t.addClass('del-look');
+
+                    }
+                })
+            });
+
+        });
+
+        $('.del-look').on('click', function () {
+            console.log('good');
+            var t = $(this);
+            var userId = $(this).data('add');
+            var name = $(this).data('name');
+            t.children('i').removeClass('color-green fa-check');
+            t.children('i').addClass('color-blue fa-plus');
+            $.ajax({
+                url: '{% url "startup:investor_can_see" %}',
+                method: 'POST',
+                data: {
+                    add_id: userId,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    //  console.log('ajax-good');
+                    // $(response).filter(t).removeClass('del-look').addClass('add-look');
+                    var x = document.getElementById('toat');
+                    x.className = "show";
+                    setTimeout(function () {
+                        x.className = x.className.replace("show", "");
+                    }, 2000);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                    t.removeClass('add-look');
+                    t.addClass('del-look');
+                }
+            })
+
+        });
+
+    });
+</script>
+{% endblock %}

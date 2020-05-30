@@ -1,0 +1,150 @@
+{% extends 'base/base-panel.html' %} {% load static %} {% load sunny %} {% load jalali_tags %} {% block title %}لیست ملاقات ها{% endblock %} {% block body %}
+<style>
+	.hide-tab {
+		display: none;
+	}
+
+	header,
+	footer {
+		display: none;
+	}
+
+	.gui-select {
+		padding: 5px 20px;
+	}
+
+	.searchresult {
+		left: unset;
+		width: 265;
+	}
+
+	.accept-time {
+		background: #759872;
+		border: none;
+		color: #f0f8f8;
+		font-size: 11px;
+	}
+
+	.failed-time {
+		background: #9c3131;
+		color: aliceblue;
+		border: none;
+		font-size: 11px;
+	}
+
+	.none-time {
+		background: #0000000d;
+		border: none;
+		padding: 15px;
+	}
+</style>
+<div class="colm12 colm  margin-auto">
+	<div class="spacer-t25">
+		<div class="pad-t20">
+			{% for meet in meetings %}
+			<div class="body-form relative spacer-t30">
+				<div class="bg-chart2 body-form-top absolute flex-center">
+					<i class="fa fa-handshake vertical font-s30 color-white"></i>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18">
+						<span class="color-dashboard font-s13  hide-mob">ایجاد کننده: {{ meet.owner.first_name }} {{ meet.owner.last_name }}</span>
+					</h3>
+				</div>
+				<div class="pull-left pad-10">
+					<a href="{% url 'theevent:edit_meeting_coach' meet.pk %}" class="btn-excel color-white font-s11 iransans pad-5"><i class="fa fa-edit pad-l5 vertical"></i>ویراش جلسه</a>   
+				  </div>
+				<span class="color-dashboard font-s12 pull-left pad-10 hide-mob">تاریخ پایان جلسه : {{ meet.startuptime.first.to_date|to_jalali:'%y/%m/%d'}}</span>
+				<span class="color-dashboard font-s12 pull-left pad-10 hide-mob">تاریخ شروع جلسه : {{ meet.startuptime.first.the_date|to_jalali:'%y/%m/%d'}}</span>
+				<div class="clearfix"></div>
+				<div class="frm-row pad-t40 pad-b10">
+					<div class="overflow-scroll pad-b20">
+						<table class="table color6 retable">
+							<thead>
+
+								<tr>
+									<th>مربی</th>
+									{% ifchanged %}
+									{% for th_time in meet.startuptime.all %}
+									<th class="btn-intro">
+										<div class="flex-center">
+											<p class="font-s11 color-startup  ">
+												{{th_time.from_time|time:"H:i"}} تا 
+												{{th_time.to_time|time:"H:i"}}
+											</p>
+										</div>
+									</th>
+									{% endfor %}
+									{% if  meet.startuptime.count == 8 %}
+									{% else %}
+									{% list_counter  meet.startuptime.count as c %}
+									{% for item in 'x'|rjust:c %}
+									<th class="btn-intro">
+										<div class="flex-center">
+											<p class="font-s11 color-startup  ">تاریخ ثبت نشده
+											</p>
+										</div>
+									</th>
+								{% endfor %}
+								{% endif %}
+									{% endifchanged %}
+
+								</tr>
+
+							</thead>
+
+							<tbody>
+								{% for coach in meet.c_event.all %}
+								<tr>
+									<td class="colm4">
+										<div class="colm12 relative pull-right pad-5 pad-b20">
+											<div class="relative">
+												<span class="icon-gui flex-center pad-t15"><i
+														class=" fa fa-chalkboard-teacher vertical"></i></span>
+												<div class="w165-mob search_companion referee-name gui-input iransans">
+													{{ coach.content_object.first_name }} {{ coach.content_object.last_name }}
+													</div>
+											</div>
+										</div>
+									</td>
+									{% for th_type in coach.theevent_coachevent.all %}
+									<td class="colm1">
+										<div class="colm12 align-center relative pull-right pad-5 pad-b20">
+											<div class="relative pad-b20 pad-t5-mob">
+												<div
+													class="w100-mob  input-mentor {% if th_type.th_time == 1 %} accept-time {% else %} failed-time {% endif %} gui-select iransans ">
+													{% if th_type.startup %}{{ th_type.startup.title}}{% else %}{{th_type.get_th_time_display}}{% endif %}
+													</div>
+												</i>
+											</div>
+										</div>
+									</td>
+									{% endfor %}
+									{% if coach.theevent_coachevent.count == 8 %}
+									{% else %}
+									{% list_counter coach.theevent_coachevent.count as c %}
+									{% for item in 'x'|rjust:c %}
+									<td class="colm1">
+										<div class="colm12 align-center relative pull-right pad-5 pad-b20">
+											<div class="relative pad-b20 pad-t5-mob">
+												<div
+													class="w100-mob input-mentor gui-select iransans none-time ">
+													</div>
+												</i>
+											</div>
+										</div>
+									</td>
+								{% endfor %}
+								{% endif %}
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+{% endblock %}

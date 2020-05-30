@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'stylesheets/style.css' %}">
+  <!-- <script src="{% static 'javascript/script.js' %}"></script> -->
+  <title>500</title>
+
+
+</head>
+
+<body class="rtl">
+<style>
+    header,footer {
+        display: none;
+    }
+</style>
+<div class="colm12 colm align-center margin-auto">
+    <img width="700" src="{% static 'images/server_error.png' %}">
+    <div class="message-box">
+        <!--<h1 class="font-s60">500</h1>-->
+        <h2 class="color-red font-s40 spacer-t40">خطای سرور!!!</h2>
+        <p class="font-s20 spacer-t20">متاسفانه برای سرور مشکلی پیش آمده، لطفا چند دقیقه دیگر دوباره تلاش کنید</p>
+        <div class="buttons-con">
+            <div class="action-link-wrap">
+                <a class="link-button link-back-button back-button back-er">بـازگـشـت بـه عـقـب</a>
+                <a href="{% url 'usercp:dashboard_panel' %}" class="link-button back-er">بـازگـشـت بـه خـانـه</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        document.querySelectorAll('.back-button')
+        .forEach(element => 
+            element.addEventListener('click', () => {
+                window.history.back();
+            }
+    ));
+</script>
+</body>
+</html>

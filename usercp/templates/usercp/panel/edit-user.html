@@ -1,0 +1,238 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}ویرایش کاربر{% endblock %}
+{% block body %}
+    <style>
+        .hide-tab{
+            display: none;
+        }
+    </style>
+
+
+        <!-- <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"  data-wow-duration="1.5s">
+            <h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>کاربر با موفیقت ویرایش شد</h2>
+        </div>
+
+
+        <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"  data-wow-duration="1.5s">
+            <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>شماره تلفن در سیستم ثبت شده است</h2>
+        </div>
+
+
+        <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"  data-wow-duration="1.5s">
+            <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>نام کاربری در سیستم ثبت شده است</h2>
+        </div> -->
+        {% for message in messages %}
+        {% if 'edit_user_form_error' in message.extra_tags %}
+        <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+            data-wow-duration="1.5s">
+            <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>{{ message.tags }}</h2>
+        </div>
+        {% endif %}
+        {% endfor %}
+    <div class="colm8 colm12-tab colm margin-auto spacer-t30">
+        <form action="" method="post" class="smart-validate" enctype="multipart/form-data">{% csrf_token %}
+            <div class="body-form relative">
+                <div class="bg-chart4 body-form-top absolute flex-center">
+                    <div class="fa fa-user-plus vertical font-s30 color-white"></div>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 pad-r25">ویرایش کاربر</h3>
+                </div>
+                <div class="pull-left pad-15 font-s18">
+                    <a title="بازگشت" href="" >&#8592;</a>
+                </div>
+                <div class="pad-30">
+<!--                    {{ user_form }}-->
+                    <div id="avatarbox" class="avatar-box flex-center pad-10">
+                        <img class="img-avatar not" src="{% if user_form.instance.avatar %}{{ user_form.instance.avatar.url }}{% else %}{% static 'images/uplod.png' %}{% endif %}">
+                    </div>
+                    <p class="color-darkgray font-s14 pad-t20 pad-b20 align-center">عکس خود را بارگذاری کنید</p>
+                    <input type="file" class="uploadlogo" name="avatar" id="avatar">
+                    <textarea  name="avatar_base64" class="avatar-base64 hide"></textarea>
+                    <div class="frm-row spacer-t30">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="first-name" class="gui-label pad-5">نام :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" id="first-name" name="first_name" value="{{ user_form.instance.first_name }}" placeholder="مثال : محمد"  >
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="last-name" class="gui-label pad-5">نام خانوادگی :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" name="last_name" value="{{ user_form.instance.last_name }}" placeholder="مثال : محمدی"  id="last-name"  >
+                            </label>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="user-name" class="gui-label pad-5">نام کاربری :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-laptop-code vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit check-error" id="user-name" name="username" data-type="name_user" value="{{ user_form.instance.username }}" placeholder="مثال : U-8468655" data-rule-lettersonlyen="true"  >
+                            </label>
+                            <span class="color-red font-s12 pad-t15 hide error-hide" id="error_name">نام کاربری وارد شده تکراری است</span>
+                        </div>
+                        <div class="show-pass"></div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="mobile" class="gui-label pad-5"> شماره همراه:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-mobile"></i></span>
+                                <input dir="ltr" class="gui-input sans-digit check-error" id="mobile" value="{{ user_form.instance.phone }}" name="phone" data-type="user_mobile" data-rule-customphone="true" placeholder="09XXXXXXX"  >
+                            </label>
+                            <span class="color-red font-s12 pad-t15 hide error-hide" id="error_mobile">شماره موبایل وارد شده تکراری است</span>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="email" class="gui-label pad-5">ایمیل :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-at vertical"></i></span>
+                                <input type="email" class="gui-input sans-digit check-error" name="email" value="{{ user_form.instance.email }}" data-type="email_user" placeholder="مثال : email@email.com"  id="email"  >
+                            </label>
+                            <span class="color-red font-s12 pad-t15 hide error-hide" id="error_email">ایمیل وارد شده تکراری است</span>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="linkedin" class="gui-label pad-5"> لینکدین :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-mobile"></i></span>
+                                <input name="linkedin" dir="ltr" class="gui-input sans-digit" id="linkedin" value="{% if user_form.instance.linkdin %}{{ user_form.instance.linkdin }}{% endif %}"  >
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="coeff-user" class="gui-label pad-5">ضریب کاربر :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-prescription vertical"></i></span>
+                                <input type="number" class="gui-input sans-digit" id="coeff-user" value="{{ user_form.instance.multi }}" name="coeff_user"  >
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right spacer-t30 spacer-b5">
+                            <input type="checkbox" {% if user_form.instance.can_see_startups == True %}checked{% endif %} id="dastresi" name="can_see_startups" class="dastresi">
+                            <label for="dastresi">کاربر به لیست استارتاپ ها دسترسی داشته باشد</label>
+                        </div>
+                        <div class="colm6 colm pull-right spacer-t25 spacer-b5">
+                            <input type="checkbox" onclick="changing()" name="change" id="change-pass">
+                            <label for="change-pass" class="gui-label pad-5">تغییر رمز عبور کاربر</label>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <h2 class="font-w300 font-s16 spacer-t20 spacer-b10 pad-10 border-b-panel">انتخاب نقش ها</h2>
+                       {% for role in roles %}
+                            <div class="colm3 colm6-mob pull-right pad-5 spacer-b5">
+                                <input type="checkbox" id="role{{ role.pk }}"
+                                       {% if user_form.instance.role %}
+                                       {% if role in user_form.instance.role.all %}
+                                       checked
+                                       {% endif %}
+                                       {% endif %}  name="role" value="
+                                {{ role.pk }}
+">
+                                <label for="role{{ role.pk }}">{{ role.get_name_display }}</label>
+                            </div>
+                        {% endfor %}
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <h2 class="font-w300 font-s16 spacer-t20 spacer-b10 pad-10 border-b-panel">انتخاب دسته ها</h2>
+
+
+                                {% for cat in categories %}
+                              <div class="colm3 colm6-mob pull-right pad-5 spacer-b5">
+                                  <input type="checkbox" id="cat{{ cat.pk }}"
+                                         {% if user_form.instance.category %}
+                                           {% if cat in user_form.instance.category.all %}
+                                           checked
+                                           {% endif %}
+                                           {% endif %} name="category" value="{{ cat.pk }}">
+                                  <label for="cat{{ cat.pk }}">{{ cat.title }}</label>
+                              </div>
+                        {% endfor %}
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="margin-auto align-center pad-t25">
+                        <button type="submit" name="submit" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+<div class="popup-frame hide">
+  <div class="resize-frame pad-20">
+    <div class="crop-image">
+      <img id="imgs" src="{% static 'images/avatar.png' %}">
+    </div>
+    <div id="crop" class="btn-ui align-center font-s14 font-w3">بـرش تصویر</div>
+    <img src="{% static 'images/button-close.png' %}" class="closeicon"/>
+  </div>
+</div>
+    <style>
+
+        header , footer{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script>
+
+        function changing() {
+            var checkBox = document.getElementById("change-pass");
+            if(checkBox.checked == true) {
+                jQuery('.show-pass').append('<div class="colm6 colm pull-right pad-5 change-pass">\n' +
+                    '                            <label for="password" class="gui-label pad-5">رمز عبور :</label>\n' +
+                    '                            <label class="relative">\n' +
+                    '                                <span class="icon-gui flex-center"><i class=" fa fa-key vertical"></i></span>\n' +
+                    '                                <input type="password" class="gui-input sans-digit" id="password" name="password"  >\n' +
+                    '                            </label>\n' +
+                    '                        </div>');
+            } else jQuery('.change-pass').remove();
+        }
+        jQuery(document).ready(function($){
+
+
+
+            window.setTimeout(function() {
+                $(".alert-sucsess").fadeTo(500, 0).slideUp(500, function(){
+                    $(this).remove();
+                });
+            }, 4000);
+            var uri = window.location.toString();
+            if (uri.indexOf("?") > 0) {
+                var clean_uri = uri.substring(0, uri.indexOf("?"));
+                window.history.replaceState({}, document.title, clean_uri);
+            }
+
+            $('.check-error').blur(function(){
+                var thisInput = $(this);
+                var dataValue = thisInput.val();
+                var dataType = thisInput.data('type');
+                $.ajax({
+                    url: '',
+                    method: 'POST',
+                    data: {type: dataType, value: dataValue},
+                    success: function(response){
+                        var error = $(response).filter('.notify').text();
+                        var errorArr = ['error_mobile','error_name','error_email'];
+                        if($.inArray(error,errorArr)!==-1) {
+                            $('#'+ error).show();
+                            thisInput.val('');
+                        }
+                        else $('.error-hide').hide();
+
+                    }
+                })
+            });
+        });
+
+
+    </script>
+{% endblock %}
+
+

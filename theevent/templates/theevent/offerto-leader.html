@@ -1,0 +1,197 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}ملاقات با راهبران{% endblock %}
+{% block body %}
+    <style>
+        header,footer{
+            display: none;
+        }
+        .hide-tab {
+            display: none;
+        }
+        .ldr {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .searchresult {
+            width: 200px;
+            left: -12px;    
+        }
+    </style>
+    <form method="post" action="">{% csrf_token %}
+    <div class="pad-t20">
+        <div class="body-form relative">
+            <div class="bg-chart2 body-form-top absolute flex-center">
+                <i class="fa fa-tasks vertical font-s30 color-white"></i>
+            </div>
+            <div class="absolute title-panel">
+                <h3 class="font-w300 font-s18">پیشنهاد استارتاپ به راهبران</h3>
+            </div>
+            <div class="frm-row pad-t50">
+                <div class="overflow-scroll pad-b40">
+                        <table class="table color6 retable">
+                            <tbody>
+                            <tr id="" class="">
+                                <td class="iransansdigit">1</td>
+                                <td>
+                                    <div class="relative pull-right pad-5 pad-b20">
+                                        <label for="" class="gui-label">راهبر:</label>
+                                        <label class="relative">
+                                            <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                            <!-- <span class="ldr start-load hide"><img width="25" src="assets/images/Ldr.gif" /></span> -->
+                                            <input type="text" oninput="searchApi('search_companion','companion-result' , 'leader', 1)" class="w165-mob  search_companion referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required>
+                                            <input type="hidden" class="choosen-id choosen-id-leader" name="leader[]" value="" data-row="1" />
+                                            <div id="companion-result"></div>
+                                        </label>
+                                    </div>
+                                </td>
+
+                                    {% for start in '0123'|make_list%}
+                                    <td>
+                                        <div class="relative pull-right pad-5 pad-b20 colm12">
+                                            <label for="roles-search" class="gui-label">استارتاپ:</label>
+                                            <label class="relative">
+                                            <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                            <!-- <span class="ldr start-load hide"><img width="25" src="assets/images/Ldr.gif" /></span> -->
+                                            <input type="text" {% if forloop.first %}required{% endif %} oninput="searchApi('search_companion{{forloop.counter}}','subscriber-result{{forloop.counter}}' , 'subscriber', 1,'companion')" class="w165-mob search_companion{{forloop.counter}} referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" >
+                                            <input type="hidden" class="choosen-id new-name" name="" value="" data-row="1" />
+                                            <div id="subscriber-result{{forloop.counter}}"></div>
+                                        </label>
+                                        </div>
+                                    </td>
+
+                                {% endfor %}
+                            </tr>
+                            <tr class="clone"></tr>
+                            </tbody>
+                        </table>
+                </div>
+                <div class=" pointer btn-add pull-left spacer-l10">
+                    <i class="add-event plus-rot fa fa-plus-circle vertical spacer-t10"></i>
+                </div>
+                <div class="clearfix"></div>
+                <div class="margin-auto colm2 colm colm6-mob spacer-t25-mob pad-b25 ">
+                    <button type="submit" name="submit_event" class="btn-webb bg-dis colm12 colm">ثبت پیشنهاد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    {% endblock %}
+    {% block script %}
+<script>
+    jQuery(document).ready(function($) {
+        var i = 1;
+        $(".add-event").on("click", function() {
+            i++;
+            var clone = '<tr id="" class="">\n' +
+               '<td class="pointer removetr"><i class="pad-r5 color-startup font-s15 fa fa-times vertical "></i></td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">راهبر:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companionn'+i+'\',\'companion-result'+i+'\' , \'leader\','+i+')" class="search_companionn'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required>\n' +
+                '                                        <input type="hidden" class="choosen-id choosen-id-leader" name="leader[]" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="companion-result'+i+'"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion1'+i+'\',\'subscriber-result1'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion1'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required>\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result1'+i+'"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion2'+i+'\',\'subscriber-result2'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion2'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" >\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result2'+i+'"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion3'+i+'\',\'subscriber-result3'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion3'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" >\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result3'+i+'"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion4'+i+'\',\'subscriber-result4'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion4'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" >\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result4'+i+'"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '                          </tr>';
+            $('.clone').before(clone);
+            // if ($('.group').length < 20) {
+            //     $('.clone').clone().addClass('group').removeClass('clone hide').insertBefore('.clone');
+            // }
+        });
+        $(document).on('change','.choosen-id',function() {
+            var valu = $(this).val();
+            var num = $(this).data('row');
+            sendId(valu,num);
+        });
+        $(document).on('change','.choosen-id-leader',function() {
+            var valu = $(this).val();
+            var className = $(this).parents().eq(3).find('.new-name');
+            console.log(valu);
+            $(className).attr('name', 'startup-' + valu);
+        });
+
+
+        $(document).on('click', '.removetr', function() {
+            var removes = $(this).parent('tr');
+            $(removes).remove();
+        });
+    });
+
+
+    function sendId(id, num){
+        console.log(num);
+        var investorAPI = "/api/?";
+        args = {
+            investorId: id,
+        };
+        jQuery.getJSON(investorAPI, args).done(function(data) {
+            var show = '<option value="">انتخاب کنید</option>';
+            var clas = '.s'+ num;
+            if (data.length) {
+                jQuery.each(data , function(i, startup){
+                    show += '<option value="'+startup.startup_id+'">'+startup.startup_name+'</option>';
+                }) ;
+            } else {
+                console.log('empty');
+            }
+            jQuery(clas).html(show);
+        }).fail(function() {
+            console.log("error");
+        }).always(function() {
+
+        });
+    }
+    //   sendId(1123, 1);
+  
+</script>
+    {% endblock %}

@@ -1,0 +1,12 @@
+env/
+secrets.py
+my.cnf
+logs/
+__pycache__/
+*.sqlite3
+migrations/
+media/
+*.py.*
+mysqlclient-*.whl
+/static/
+.vscode/

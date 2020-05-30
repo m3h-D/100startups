@@ -1,0 +1,341 @@
+{% extends 'base/base-panel.html' %} {% load static %} {% load sunny %} {% block title %}ایجاد ملاقات با مربیان{% endblock %} {% block body %}
+<style>
+    header,
+    footer {
+        display: none;
+    }
+    
+    .hide-tab {
+        display: none;
+    }
+    
+    .ldr {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    
+    .gui-select {
+        padding: 5px 20px;
+    }
+    
+    .searchresult {
+        left: unset;
+        width: 265;
+    }
+    
+    .activee {
+        background: none;
+        color: #f05555;
+    }
+</style>
+<form method="post" action="">{% csrf_token %}
+    <div class="pad-t20">
+        <div class="body-form relative">
+            <div class="bg-chart2 body-form-top absolute flex-center">
+                <i class="fa fa-handshake vertical font-s30 color-white"></i>
+            </div>
+            <div class="absolute title-panel">
+                <h3 class="font-w300 font-s18">ایجاد جلسه</h3>
+            </div>
+            <div class="colm2 colm pull-left pad-5 colm">
+                <label for="start-date" class="gui-label pad-5">تاریخ پایان جلسه </label>
+                <label class="relative">
+                        <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                        <input dir="ltr" class="gui-select sans-digit start-date2" name="date_meeting_end" value="" id="date_meeting_end" autocomplete="off" readonly required>
+                        <input  type="hidden"  class="start-date2 observer-start-date-alt2" name="date_meeting_e">
+                    </label>
+            </div>
+            <div class="colm2 colm pull-left pad-5 colm">
+                <label for="start-date" class="gui-label pad-5">تاریخ شروع جلسه </label>
+                <label class="relative">
+                        <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                        <input dir="ltr" class="gui-select sans-digit start-date1" name="date_meeting_start" value="" id="date_meeting-start" autocomplete="off" readonly required>
+                        <input  type="hidden"  class="start-date1 observer-start-date-alt1" name="date_meeting_s">
+                    </label>
+            </div>
+            <div class="clearfix"></div>
+            <div class="frm-row pad-t40">
+                <div class="overflow-scroll pad-b40">
+                    <table class="table color6 retable">
+                        <thead>
+                            <tr>
+                                <th>ردیف</th>
+                                <th>مربی</th>
+                                {% for x in '01234567'|make_list %}
+                                <th class="btn-intro" data-status="{{ forloop.counter }}">
+                                    <div class="flex-center">
+                                        <time class="digit display-block font-w300 font-s17 color-blue day{{ forloop.counter }} "></time>
+                                        <time class="digit font-s13 color-startup time{{ forloop.counter }} "></time>
+                                        <p class="font-s12 color-startup pointer sg-tab d{{ forloop.counter }} " data-id="{{ forloop.counter }} ">ثبت ساعت</p>
+                                    </div>
+                                </th>
+                                {% endfor %}
+                                <div class="modal-overlay">
+                                    <div class="modal">
+
+                                        <a class="close-modal">
+                                            <svg viewBox="0 0 20 20">
+                                                        <path fill="#000000" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                                                    </svg>
+                                        </a>
+                                        <!-- close modal -->
+
+                                        <div class="modal-content colm10 colm" id="modal-delete">
+                                            {% for x in '01234567'|make_list %}
+                                            <div class="colm12 cnt{{ forloop.counter }} sg-content" id="{{ forloop.counter }}">
+                                                <h2 class="pad-b20"> ایجاد جلسه با <span class="name color-red">مربیان</span> صد استارتاپ</h2>
+                                                <div class="colm6 pad-5 colm pull-right spacer-b20">
+                                                    <label for="start-date" class="gui-label pad-5">ساعت جلسه از: </label>
+                                                    <label class="relative">
+                                                                    <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                                                                    <input dir="ltr" class="gui-input sans-digit timepicker-s{{forloop.counter}}" name="meeting_time_s1" value="" id="meeting_time_s{{ forloop.counter }}" autocomplete="off" readonly required>
+                                                                    <input  type="hidden"  class="timepicker-s{{forloop.counter}} observer-timepicker-s-alt{{forloop.counter}}" name="meeting_time_s">
+                                                                </label>
+                                                </div>
+                                                <div class="colm6 pad-5 colm pull-right spacer-b20">
+                                                    <label for="start-date" class="gui-label pad-5">ساعت جلسه تا: </label>
+                                                    <label class="relative">
+                                                                    <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                                                                    <input dir="ltr" class="gui-input sans-digit timepicker-e{{forloop.counter}}" name="meeting_time_e1" value="" id="meeting_time_e{{ forloop.counter }}" autocomplete="off" readonly required>
+                                                                    <input  type="hidden" class="timepicker-e{{forloop.counter}} observer-timepicker-e-alt{{forloop.counter}}" name="meeting_time_e">
+                                                                </label>
+                                                </div>
+                                                <div class="clom12 colm spacer-t40">
+                                                    <div class="colm4 colm margin-auto">
+                                                        <span class=" btn-webb bg-dis spacer-t40 colm12 colm flex-center pointer date" data-save="{{ forloop.counter }}">ثبت تاریخ</span>
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr id="" class="">
+                                <td class="iransansdigit">1</td>
+                                <td class="colm4">
+                                    <div class="relative pull-right pad-5 pad-b20">
+                                        <label class="relative">
+                                                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                                <input type="text" oninput="searchApi('search_companion','companion-result' , 'coach', 1,)" class="search_companion referee-name gui-input sans-digit choosen-name" value="" placeholder="نام مربی را وار نمایید" required>
+                                                <input type="hidden" class="choosen-id" name="coach[]" value="" data-row="1" />
+                                                <div id="companion-result"></div>
+                                            </label>
+                                    </div>
+                                </td>
+                                {% for x in '01234567'|make_list%}
+                                <td class="colm1">
+                                    <div class="relative pull-right pad-5 pad-b20 colm12 pintor">
+                                        <label class="relative pad-b20">
+                                                <select class="input-mentor new-name gui-select save-s s" name="">
+                                                   <option>انتخاب</option>
+                                                    <option value="1">آزاد</option>
+                                                   <option value="2">پر</option>
+                                                </select>
+                                                </label>
+                                    </div>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            <tr class="clone"></tr>
+                        </tbody>
+                    </table>
+                    <div class=" pointer btn-add pull-left spacer-l10">
+                        <i class="add-event plus-rot fa fa-plus-circle vertical spacer-t10"></i>
+                    </div>
+
+                    <div class="margin-auto colm2 colm">
+                        <button type="submit" name="submit_event" class="btn-webb bg-dis spacer-t40 colm12 colm">ثبت جلسه</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %} {% block script %}
+<script>
+    jQuery('.btn-intro').on('click', function() {
+        var startupName = jQuery(this).data('name');
+        var introduce = jQuery(this).data('introduce');
+        var startupId = jQuery(this).data('startup-id');
+        var status = jQuery(this).data('status');
+        var elements = jQuery('.modal-overlay, .modal');
+        var btnInterest = jQuery('.btn-interest');
+
+        elements.addClass('active');
+        jQuery('.date').on('click', function() {
+            var i = jQuery(this).data('save');
+            var d = '.d' + i;
+            var meetingS = '#meeting_time_s' + i;
+            var meetingE = '#meeting_time_e' + i;
+            var showT = '.time' + i;
+            var showS = jQuery(meetingS).val();
+            var showE = jQuery(meetingE).val();
+            var mess = showS + ' تا ' + showE;
+            console.log(mess);
+
+            jQuery(showT).text(mess);
+            elements.removeClass('active');
+            jQuery(d).hide();
+        });
+        jQuery('.close-modal').click(function() {
+            elements.removeClass('active');
+        });
+    });
+
+    jQuery(document).ready(function($) {
+        var i = 1;
+        $(".add-event").on("click", function() {
+            i++;
+            var clone = '<tr id="" class="">\n' +
+                '<td class="pointer removetr"><i class="pad-r5 color-startup font-s15 fa fa-times vertical "></i></td>\n' +
+                '<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion' + i + '\',\'investor-result' + i + '\' , \'coach\',' + i + ')" class="search_companion' + i + ' referee-name gui-input sans-digit choosen-name" value="" placeholder="نام مربی را وارد نمایید" required>\n' +
+                '                                        <input type="hidden" class="choosen-id" name="coach[]" value="" data-row="' + i + '" />\n' +
+                '                                        <div id="investor-result' + i + '"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="meeting_status5[]">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '                            </td>\n' +
+                '<td>\n' +
+                '\n' +
+                '                            <div class="relative pull-right pad-5 pad-b20 colm12">\n' +
+
+                '<label class="relative pad-b20">\n' +
+
+                '<select class="input-mentor new-name gui-select save-s s' + i + '" name="">\n' +
+                '<option>انتخاب</option>\n' +
+                '<option value="1">آزاد</option>\n' +
+                '<option value="2">پر</option>\n' +
+                '</select>\n' +
+                '                            </label>\n' +
+                '</div>\n' +
+                '                            </td>\n' +
+
+                '                          </tr>';
+            $('.clone').before(clone);
+            // if ($('.group').length < 20) {
+            //     $('.clone').clone().addClass('group').removeClass('clone hide').insertBefore('.clone');
+            // }
+        });
+        $(document).on('change', '.choosen-id', function() {
+            var valu = $(this).val();
+            var className = $(this).parents().eq(3).find('.new-name');
+            console.log(className);
+            $(className).attr('name', 'meeting-' + valu);
+        });
+
+
+        $(document).on('click', '.removetr', function() {
+            var removes = $(this).parent('tr');
+            $(removes).remove();
+        });
+    });
+</script>
+{% endblock %}

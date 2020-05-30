@@ -1,0 +1,152 @@
+{% extends 'base/base-register.html' %}
+{% block title %}اعتبار سنجی{% endblock %}
+{% block body %}
+
+    <style>
+        header,footer,.mobile {
+            display: none;
+        }
+        .hide-tab{
+            display: none;
+        }
+    </style>
+
+                <div class="colm8 colm11-tab colm margin-auto pad-5-mob">
+                    <div class="pad-b20">
+                        <h2 class="font-s30 color6">اعتبارسنجی <span class="font-s11 bold">(شماره شما : {{the_phone}})</span></h2>
+                        <p class="color-darkgray font-s14 pad-t15">لطفا پیامک ارسال شده به شماره همراه خود را واردکنید </p>
+                    </div>
+
+                    <div class="spacer-t5">
+                        <form method="post" class="smart-validate">
+                            {% csrf_token %}
+                            <div class="align-center">
+                                <span id="timer" class="digit hide-timer color-darkgray"></span>
+                                <span class="font-s13 color-silver hide send-sms color-darkgray pointer">ارسال مجدد پیام</span>
+                            </div>
+                            <div>
+                                <label class="relative">
+                                    <span class="icon-gui flex-center"><i class="fa fa-phone vertical"></i></span>
+                                    <input dir="ltr" type="tel" class="gui-input sans-digit englishnum number-input"  name="verify" id="verify" autofocus autocomplete="off" required>
+                                </label>
+                            </div>
+                            {% for message in messages %}
+                            {% if 'sms_valid' in message.extra_tags %}
+                            <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+                            data-wow-duration="1.5s">
+                            <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>{{ message.tags }}</h2>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                                    <div id="get-errors">
+                                        
+                                    </div>
+                               <!-- <em id="verify-error" class="error">کد وارد شده توسط شما درست نمیباشد.</em>--->
+
+                            <div class="align-left spacer-t40">
+                                <div class="pull-right colm5-mob pad-5-mob">
+                                    <a href="{% url 'usercp:register' %}" class="btn-prv btn-dis font-s13 pad-10 colm">مرحله قبل </a>
+                                </div>
+                                <div class="pull-left colm7-mob  pad-5-mob">
+                                    <button type="submit" class="btn-web colm">مرحله بعد </button>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endblock %}
+                {% block js %}
+<script>
+    jQuery(document).ready(function($) {
+        let uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            let clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
+
+        // Timer
+        String.prototype.toHHMMSS = function() {
+            let sec_num = parseInt(this, 10); // don't forget the second parm
+            let hours = Math.floor(sec_num / 3600);
+            let minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            let seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+            if (hours < 10) {
+                hours = "0" + hours;
+            }
+            if (minutes < 10) {
+                minutes = "0" + minutes;
+            }
+            if (seconds < 10) {
+                seconds = "0" + seconds;
+            }
+            let time = +minutes + ':' + seconds;
+            return time;
+        }
+
+
+        var count = '{{register_time}}' - '{{the_time}}'
+        if(count > 0 ){
+            count ='{{register_time}}' - '{{the_time}}'
+        }else{
+            count=0
+        }
+
+
+        console.log(count);
+        
+        let counter = setInterval(timer, 1000);
+
+        function timer() {
+            if (count <= 0) {
+                clearInterval(counter);
+                $(".btn-dis").prop("disabled", true);
+                $(".hide-timer").hide();
+                $(".send-sms").fadeIn();
+                return;
+            }
+            let temp = count.toString().toHHMMSS();
+            count = (count - 1).toString();
+
+            $('#timer').html(temp);
+        }
+
+        /* -------------- Ajax ---------------*/
+        $(".send-sms").click(function(e) {
+            let el = $(this);
+            let requestid = $.ajax({
+                url: "{% url 'usercp:send_sms_again' %}",
+                type: "POST",
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                dataType: "html"
+            });
+            requestid.done(function() {
+                console.log("ok");
+                $(".button-re").prop("disabled", false);
+                $(".send-sms").hide();
+                $(".hide-timer").fadeIn();
+                let count = "120"; // it's 00:01:02
+                let counter = setInterval(timer, 1000);
+
+                function timer() {
+                    if (parseInt(count) <= 0) {
+                        clearInterval(counter);
+                        $(".button-re").prop("disabled", true);
+                        $(".hide-timer").hide();
+                        $(".send-sms").fadeIn();
+                        return;
+                    }
+                    let temp = count.toHHMMSS();
+                    count = (parseInt(count) - 1).toString();
+                    $("#timer").html(temp);
+                }
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}

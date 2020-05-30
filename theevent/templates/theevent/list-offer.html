@@ -1,0 +1,70 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load sunny %}
+{% load jalali_tags %}
+{% block title %}لیست ملاقات های راهبران{% endblock %}
+{% block body %}
+    <style>
+        header,
+        footer {
+            display: none;
+        }
+
+        .hide-tab {
+            display: none;
+        }
+    </style>
+
+    <div class="pad-t20">
+       
+        {% for offer in offers %}
+            <div class="body-form relative spacer-t30">
+                <div class="bg-chart2 body-form-top absolute flex-center">
+                    <i class="fa fa-handshake vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 hide-mob">               
+                        <span class="color-dashboard font-s13">ایجاد کننده: {{ offer.owner.first_name }} {{ offer.owner.last_name }}</span>
+                    </h3>
+                </div>
+                <div class="pull-left pad-10">
+					<a href="{% url 'theevent:edit_offer_to_leader' offer.pk %}" class="btn-excel color-white font-s11 iransans pad-5"><i class="fa fa-edit pad-l5 vertical"></i>ویراش اختصاص راهبر</a>   
+				  </div>
+                <span class="color-dashboard font-s12 pull-left pad-10 hide-mob">تاریخ ایجاد : {{ offer.created_date|to_jalali:'%Y/%m/%d' }}</span>
+                <div class="clearfix"></div>
+                <div class="frm-row pad-t40">
+                    <div class="overflow-scroll pad-b20 pad-t20">
+
+                        {% for leader in offer.c_event.all %}
+                                <div id="{{ leader.pk }}" class="colm12 colm border-b-panel spacer-b10">
+                                    <div class="colm2 colm pull-right">
+                                        <div class="relative pull-right pad-5 pad-b20">
+                                            <span for="" class="font-s13 pad-l15">راهبر: </span>
+                                            <span for="" class="font-s12 color-orange">{{ leader.content_object.first_name }} {{ leader.content_object.last_name }}</span>
+                                        </div>
+                                    </div>
+                                  
+                                        <div class="colm pull-right">
+                                            <span>
+                                                <div class="relative pull-right pad-5 pad-b20">
+                                                    <span for="" class="font-s13">استارتاپ های پیشنهادی:{% for start_up in leader.theevent_leadermodel.all %} {% if not forloop.first %} ، {% endif %}{{ start_up.startup.title }} {% endfor %}</span>
+                                                </div>
+                                            </span>    
+                                        </div>
+
+                                        <div class="colm2 colm align-center pad-5 pull-right">
+                                        <span>
+                                            <a href="" title="نمایش" class="color-orange font-s12"></a>
+                                        </span>
+                                        </div>   
+                                        <div class="clearfix"></div>
+                                    </div>                          
+{% endfor %}
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+    </div>
+    {% endblock %}

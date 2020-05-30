@@ -1,0 +1,79 @@
+{% load static %}
+<form method="post" id="choosementor" autocomplete="off">
+    <div class="align-right colm margin-auto pad-r30 pad-t20">
+        <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+        <label>
+            <input type="radio" id="referee-notification1" name="referee_notification" value="1" class="dastresi" checked>
+            <label for="referee-notification1" class="pad-5">بله</label>
+            <input type="radio" id="referee-notification0" name="referee_notification" value="0" class="dastresi">
+            <label for="referee-notification0" class="pad-5">خیر</label>
+        </label>
+    </div>
+
+    {% csrf_token %}
+    <div class="frm-row pad-20">
+        {% for ref in startup.referee.all %}
+        {% if ref.the_type == 'not_pres'%}
+        <div class="colm6 colm pull-right pad-5">
+            <label for="" class="gui-label">داور {{forloop.counter}}:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" oninput="searchApi('search_companionn22{{ref.pk}}','companion-resultt22{{ref.pk}}' , 'referee', 1)" class="search_companionn22{{ref.pk}} referee-name gui-input sans-digit choosen-name" value="{{ ref.user.first_name }} {{ ref.user.last_name }}" placeholder="مثال : علی عباسپور" required>
+                <input type="hidden" class="choosen-id" name="referee" value="{{ref.user.pk}}" data-row="1" />
+                <input type="hidden" name="not_referee_pk" value="{{ref.pk}}"/>
+                <div id="companion-resultt22{{ref.pk}}"></div>
+            </label>
+        </div>
+        {% endif %}
+        <!-- <div class="colm6 colm pull-right pad-5">
+            <label for="referee{{forloop.counter}}" class="gui-label pad-5">داور {{forloop.counter}} :</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class="fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" class="choosen-name gui-input sans-digit referee-search{{ forloop.counter }}" onblur="requiredReferees()" oninput="searchApi('referee-search{{ forloop.counter }}','result-referee{{forloop.counter}}' , 'referee' )" id="referee{{forloop.counter}}" value="{{ref.user.first.first_name}} {{ref.user.first.last_name}}" placeholder="مثال : علی عباسپور" >
+                <input type="hidden" class="choosen-id" name="referee{{forloop.counter}}" value="" />
+
+                <div id="result-referee{{forloop.counter}}"></div>
+            </label>
+        </div> -->
+        {% endfor %}
+        
+        <div class="colm6 colm pull-right pad-5">
+            <label for="" class="gui-label">داور 1:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" oninput="searchApi('csearch_companionn','ccompanion-resultt' , 'referee', 1)" class="csearch_companionn referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" {% for ref in startup.referee.all %}{% if ref %}{% else %}required{% endif %}{% endfor %}>
+                <input type="hidden" class="choosen-id" name="referee" value="" data-row="1" />
+                <div id="ccompanion-resultt"></div>
+            </label>
+        </div>
+
+        <div class="clone"></div>
+        <div class=" pointer btn-add pull-left spacer-l10">
+            <i class="add-referee plus-rot fa fa-plus-circle vertical spacer-t10"></i>
+        </div>
+        <div class="colm12 colm pull-right pad-5 hide" id="referees">
+            <p class="color-red font-s12 pad-t15">باید حداقل دو داور انتخاب شود</p>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="align-center">
+        <button type="submit" name="btn_select_referee" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+    </div>
+
+
+</form>
+<script>
+    function requiredReferees() {
+        var referee1 = document.getElementById('referee1').value;
+        var referee2 = document.getElementById('referee2').value;
+        var referees = document.getElementById('referees');
+        if (referee1.length == 0 || referee2.length == 0) {
+            referees.classList.remove('hide');
+            referees.classList.add('show');
+        } else {
+            referees.classList.remove('show');
+            referees.classList.add('hide');
+        }
+    }
+</script>

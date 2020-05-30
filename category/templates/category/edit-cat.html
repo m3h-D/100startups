@@ -1,0 +1,143 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}ویرایش حوزه فعالیت{% endblock %}
+{% block body %}
+    <div class="colm8 colm12-tab colm margin-auto spacer-t30">
+        {% for message in messages %}
+        {% if 'edit_cat_form_error' in message.extra_tags %}
+        <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+            data-wow-duration="1.5s">
+            <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>{{ message.tags }}</h2>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <form action="" method="post" class="smart-validate" enctype="multipart/form-data">{% csrf_token %}
+            <div class="body-form relative">
+                <div class="bg-chart4 body-form-top absolute flex-center">
+                    <div class="fa fa-file vertical font-s30 color-white"></div>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 pad-r25">ویرایش دسته بندی</h3>
+                </div>
+                <!-- {{ cat_form }} -->
+                <div class="pad-30">
+                    <div class="frm-row spacer-t30">
+                        <div class="colm5 colm pull-right pad-5">
+                            <label for="cat-title" class="gui-label pad-5">نام دسته بندی :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-folder-plus vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" id="cat-title" name="title" value="{{ cat_form.instance.title }}" required>
+                            </label>
+                        </div>
+                        <div class="colm4 colm pull-right pad-5">
+                            <label for="cat-slug" class="gui-label pad-5">نامک :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-font vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" id="cat-slug" name="slug" data-rule-lettersonlyen="true" value="{{ cat_form.instance.slug }}" required>
+                            </label>
+                        </div>
+                        <div class="colm3 colm pull-right pad-5">
+                            <div>
+                                <div class="fileUpload blue-btn btn width100">
+                                    <span class="pad-t5 font-s12">تغییر لوگو</span>
+                                    <input type="file" name="image" class="uploadlogo" id="imgInp" accept="image/*" onchange="loadFile(event)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5">
+                            <label for="cat_expressions" class="gui-label pad-5">توضیحات :</label>
+                            <label class="relative">
+                                <textarea cols="70" rows="3" class="gui-input sans-digit" id="cat_expressions" name="description" data-rule-lettersonly="true">{{ cat_form.instance.description }}</textarea>
+                            </label>
+                        </div>
+                        <div class="colm12 colm margin-auto align-center">
+                            <img src="{% if cat_form.instance.image %}{{ cat_form.instance.image.url }}{% endif %}" id="output" class="pre-logo">
+                        </div>
+
+                    </div>
+                    <div class="margin-auto align-center pad-t10">
+                        <button type="submit" name="submit" class="btn-panel pad-10 color-white iransans">ویرایش</button>
+                    </div>
+                </div>
+        </form>
+
+    </div>
+
+<style>
+    header , footer {
+        display: none;
+    }
+
+    .pre-logo {
+        width:  200px;
+        height: 200px;
+        margin-right: auto;
+        margin-left: auto;
+        border-radius: 50%;
+        border: 2px double #ebebeb;
+        padding: 6px;
+    }
+    .hide {
+        display: none;
+    }
+
+    .blue-btn:hover,
+    .blue-btn:active,
+    .blue-btn:focus,
+    .blue-btn {
+        background: transparent;
+        border: solid 1px #27a9e0;
+        border-radius: 20px;
+        color: #27a9e0;
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 20px;
+        outline: none !important;
+        padding: 6px 20px;
+    }
+
+    .fileUpload {
+        position: relative;
+        overflow: hidden;
+        height: 43px;
+        margin-top: 30px;
+    }
+
+    .fileUpload input.uploadlogo {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        text-align: center;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+        width: 100%;
+        height: 42px;
+    }
+
+    /*Chrome fix*/
+    input::-webkit-file-upload-button {
+        cursor: pointer !important;
+        height: 42px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+{% block script %}
+<script>
+    jQuery(document).ready(function($) {
+        $('.uploadlogo').change(function() {
+            $('.pre-logo').removeClass('hide').addClass('show');
+        })
+    })
+
+    var loadFile = function(event) {
+        var output = document.getElementById('output');
+        output.src = URL.createObjectURL(event.target.files[0]);
+    };
+
+</script>
+{% endblock %}

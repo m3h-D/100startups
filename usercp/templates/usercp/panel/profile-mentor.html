@@ -1,0 +1,144 @@
+{% extends 'base/base-public.html' %}
+{% load static %}
+{% block title %}منتور ها{% endblock %}
+{% block body %}
+<style>
+	footer {
+		display: none
+	}
+	.scroll-cat{
+		height: 46px;
+    	overflow: hidden;
+	}
+	.input-mentor {
+		width: 100%;
+		color: #747474;
+		font-size: 13px;
+		background: transparent;
+		border: 1px solid #666666;
+		padding: 8px 52px 8px 20px;
+		border-radius: 24px;
+		-webkit-appearance: none; 
+		transition: all .2s ease-out;
+	}
+
+	.border-none {
+		border: none;	new WOW().init();
+
+	}
+
+	.p-mentors {
+		border-radius: 100%;
+		overflow: hidden;
+		cursor: pointer;
+		margin: 0 auto;
+	}
+
+	.box-mentors {
+		border: 2px dashed #fff;
+		border-radius: 10px;
+		outline: none;
+	}
+
+	.box-mentors {
+		border: 2px dashed #fff;
+		border-radius: 10px;
+		outline: none;
+	}
+
+	.h200 {
+		height: 200px;
+	}
+
+	.back-border {
+		background: linear-gradient(45deg, #69c565db, #12c2d64f);
+		border-bottom: 2px solid #00a1bc;
+	}
+
+	.color-search {
+		color: #027386;
+	}
+</style>
+<header id="header" class="container-fluid hide-tab hidden-xs">
+	<div class="container">
+		<div class="header-logo pull-right pad-t10 pad-l40">
+			<a href="https://100startups.ir">
+				<span>صـــداستــارت آپ</span>
+			</a>
+		</div>
+		<div class="header-menu pull-right">
+			<nav class="main-menu">
+				<ul id="menu-main-menu" class="menu">
+					<li id="menu-item" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-249"><a href="{% url 'usercp:register' %}">ثبت نام</a></li>
+					<!-- <li id="menu-item" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-250"><a href="">ورود به پنل</a></li> -->
+				</ul>
+			</nav>
+		</div>
+		{% if request.user.is_authenticated %}
+		<div class="header-signup pull-left pad-10"> <a href="{% url 'usercp:logout' %}"> <span class="font-s14 color-white">خروج</span> </a> </div>
+		{% else %}
+		<div class="header-signup pull-left pad-10"> <a href="{% url 'usercp:login' %}"> <span class="font-s14 color-white">ورود</span> </a> </div>
+		{% endif %}
+		<div class="clearfix"></div>
+	</div>
+</header>
+<div id="section-step" class="container-fluide  min-100vh flex-center">
+	<div class="container pad-20 pad-step pad-50-tmob">
+		<div class="body-form spacer-t50">
+			<div class="back-border">
+				<h2 class="font-s22 color-blue pad-10  pull-right"><i class="fa fa-chalkboard-teacher vertical pad-l5"></i> راهبران/مربیان صد استارتاپ</h2>
+				<h2 class="font-s22 color-search pad-10 pull-left"><i class="fa fa-search vertical pad-l5 search-mentor"></i></h2>
+				<div class="colm6 colm pull-left filter-m hide">
+					<form method="get" action="">
+						<div class="relative colm4 colm pull-right pad-5 pad-b20">
+							<label for="lname-search" class="gui-label">نام نام خانوادگی:</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+								<input type="search" value="" name="full_search" id="fname-search" class="input-mentor gui-input">
+							</label>
+						</div>
+						<div class="relative colm4 colm pull-right pad-5 pad-b20">
+							<label for="roles-search" class="gui-label">حوزه فعالیت:</label>
+							<label class="relative pad-b20">
+								<span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+								<select class="input-mentor gui-input" name="cats">
+									<option value="">انتخاب کنید</option>
+									{% for cat in categories %}
+									<option value="{{cat.id}}">{{cat.title}}</option>
+									{% endfor %}
+								</select>
+							</label>
+						</div>
+						<div class="pull-right align-center pad-t30">
+							<button name="submit_search" type="submit" class="btn-prv pointer">جستجو</button>
+						</div>
+						<div class="clearfix"></div>
+					</form>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+{% for profile in the_mentors %}
+					<div class="colm3 colm pull-right pad-10">
+						<div class="">
+							<div class="border-none pad-20 h200 flex-center">
+								<img width="150" alt="logo" class="p-mentors" src="{% if profile.avatar %}{{profile.avatar.url}}{% else %}{% static "images/avatar1.png"%}{% endif%}" />
+							</div>
+							<p class="align-center color-blue font-s20 pad-b10">{% if profile.last_name and profile.first_name %}{{ profile.first_name }} {{ profile.last_name }}{%else%}{{ profile.username}}{% endif %}</p>
+							<p class="align-center color-dashboard font-s15 pad-b10 scroll-cat">{% for cat in profile.category.all %}{{cat.title}}{% if not forloop.last%} ، {% endif %}{% empty %}حوزه فعایت وارد نشده{% endfor %}</p>
+						</div>
+					</div>
+					{% endfor %}
+			<div class="clearfix"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+	jQuery(document).ready(function($) {
+		$('.search-mentor').click(function() {
+			$('.filter-m').toggle('3000');
+		});
+	});
+</script>
+{% endblock %}

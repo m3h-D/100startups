@@ -1,0 +1,2377 @@
+{% extends 'base/base-panel.html' %} {% load static %} {% load sunny %} {% load jalali_tags %} {% block title %}عملیات روی استارتاپ{% endblock %} {% block body %}
+
+<style>
+    footer,
+        header {
+            display: none
+        }
+
+        .hide-tab {
+            display: none;
+        }
+
+        .pad-card {
+            padding: 5px 20px;
+        }
+
+        .accept-card {
+            border-radius: 0px 3px 5px 0;
+        }
+
+        .times-card {
+            border-radius: 3px 0 0 5px;
+            background: #f30000;
+        }
+
+        .border-leader {
+            border-left: 1px solid #ff0017;
+        }
+
+
+    @keyframes click-wave {
+        0% {
+        height: 40px;
+        width: 40px;
+        opacity: 0.35;
+        position: relative;
+        }
+        100% {
+        height: 200px;
+        width: 200px;
+        margin-right: -80px;
+        margin-top: -80px;
+        opacity: 0;
+        }
+    }
+    .gui-range {
+            color: #747474;
+            font-size: 11px;
+            border: 1px solid #bbb;
+            padding: 3px 3px;
+            border-radius: 24px;
+            outline: none;
+        }
+
+</style>
+<div class="colm12 colm  margin-auto">
+    {% for message in messages %}
+    {% if 'pres_referee_form_error' in message.extra_tags %}
+    <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+    data-wow-duration="1.5s">
+    <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>نمرات داوری حضوری وارد نشده است</h2>
+    </div>
+    {% endif %}
+    {% if 'not_pres_referee_form_error' in message.extra_tags %}
+    <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+    data-wow-duration="1.5s">
+    <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>نمرات داوری غیر حضوری وارد نشده است</h2>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="spacer-t25">
+        <div class="colm9 colm12-tab colm pull-right pad-10 pad-0">
+            {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+            {% if startup.startupcomment.startup_stat_status == 'accepted' %}
+            <div class="body-form  wow fadeInUpBig spacer-b30" data-wow-duration="1s">
+                <div class="flex">
+                    <div class="colm3 font-s10 colm pull-right taga">
+                        <a href="#">
+                            <div class="{% if startup.is_leader == True and startup.is_not_presence_referee == False and startup.is_presence_referee == False %} tab1{%else%} tabfin {% endif %} flex-center sg-tab" data-id="4">اختصاص راهبر/ شتاب دهنده</div>
+                        </a>
+                    </div>
+                    <div class="colm3 font-s10 colm pull-right taga ">
+                        <a href="#">
+                            <div class="{% if startup.is_not_presence_referee == True and startup.is_presence_referee == False %} tab1{%else%} tabfin {% endif %} flex-center sg-tab " data-id="1">اختصاص داور غیر حضوری</div>
+                        </a>
+                    </div>
+                    <div class="colm3 font-s10 colm pull-right taga">
+                        <a href="#">
+
+                            <div class="{% if startup.is_not_presence_referee == True and startup.is_presence_referee == True %} tab1{%else%} tabfin {% endif %} flex-center sg-tab" data-id="2">اختصاص داور حضوری</div>
+                        </a>
+                    </div>
+                    <div class="colm3 font-s10 colm pull-right taga ">
+                        <a href="#">
+
+                            <div class="tabfin flex-center sg-tab" data-id="5">پیش قرارداد</div>
+                        </a>
+                    </div>
+                    <div class="colm3 font-s10 colm pull-right taga">
+                        <a href="#">
+                            <div class="tabfin flex-center  sg-tab" data-id="6">وضعیت نهایی</div>
+                        </a>
+                    </div>
+
+                    <div class="colm3 font-s10 colm pull-right taga">
+                        <a href="#">
+                            <div class="tabfin5 flex-center  sg-tab" data-id="7">ثبت اعتبار</div>
+                        </a>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="cnt4 sg-content pad-b25 align-center {% if startup.is_leader == True and startup.is_not_presence_referee == False and startup.is_presence_referee == False %} show{%else%} hide {% endif %}" id="4">
+                    {% include 'startup/level/step1.html' %}
+                </div>
+                <div class="cnt1 sg-content align-center pad-b25 {% if startup.is_not_presence_referee == True and startup.is_presence_referee == False %} show{%else%} hide {% endif %}" id="1">
+                    {% include 'startup/level/step2.html' %}
+                </div>
+                <div class="cnt2 sg-content align-center pad-b25 {% if startup.is_not_presence_referee == True and startup.is_presence_referee == True %} show{%else%} hide {% endif %}" id="2">
+                    {% include 'startup/level/step3.html' %}
+                </div>
+                <div class="cnt5 sg-content align-center pad-b25 hide" id="5">
+                    {% include 'startup/level/step4.html' %}
+                </div>
+                <div class="cnt6 sg-content align-center pad-b25 hide" id="6">
+                    {% include 'startup/level/step5.html' %}
+                </div>
+                {% if startup.rahbar_asli %}
+                <div class="cnt7 sg-content align-center pad-b25 hide" id="7">
+                    {% include 'startup/level/step6.html' %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endif %}
+
+
+            {% if is_op in request.user.role.all or request.user.is_admin or request.user.user_type == 'manager' or is_referee and is_referee.scored == False %}
+            {% with scores=is_referee.nomre|ref_nomre %}
+            <div class="body-form frm-row relative spacer-b30 pad-t40 pad-5-mob wow fadeInUpBig" data-wow-duration="1s">
+
+                <div class="bg-chart2 body-form-top absolute flex-center">
+                    <i class="fa fa-balance-scale vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 ">داوری غیر حضوری</h3>
+                </div>
+                <div class="pull-left frm-row pad-l30">
+                    <a class="btn-team iransans colm12 colm" href="#team">اطلاعات تیم</a>
+                </div>
+                <form method="post"> {% csrf_token %}
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t30">تیم</h4>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                <label for="breadth_store" class="gui-label pad-5">کامل بودن تیم</label>
+                                <div class="rate-part">
+                                    <input  id="scorefull" type="range" min="1" max="5" value="{% if scores.score_full %}{{ scores.score_full }}{% else %}1{% endif %}" class="renge votte" name="score_full" oninput="vote27.value=scorefull.value">
+                                    <input id="vote27" type="number" value="{% if scores.score_full %}{{ scores.score_full }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorefull.value=vote27.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_full %}{{ scores.score_full }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">هماهنگی و انسجام اعضا </label>
+                                <div class="rate-part">
+                                    <input id="scorecoordination" type="range" min="1" max="5" value="{% if scores.score_coordination %}{{ scores.score_coordination }}{% else %}1{% endif %}" class="renge votte" name="score_coordination" oninput="vote28.value=scorecoordination.value">
+                                    <input id="vote28" type="number" value="{% if scores.score_full %}{{ scores.score_coordination }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorecoordination.value=vote28.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_coordination %}{{ scores.score_coordination }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">توانمندی تیم برای اجرای این
+                                    کسب‌وکار</label>
+                                <div class="rate-part">
+                                    <input id="scoreability" type="range" min="1" max="5" value="{% if scores.score_ability %}{{ scores.score_ability }}{% else %}1{% endif %}" class="renge votte" name="score_ability" oninput="vote29.value=scoreability.value">
+                                    <input id="vote29" type="number" value="{% if scores.score_ability %}{{ scores.score_ability }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreability.value=vote29.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_ability %}{{ scores.score_ability }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t10">بازار</h4>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">اندازه بازار</label>
+                                <div class="rate-part">
+                                    <input id="scoremarket" type="range" min="1" max="5" value="{% if scores.score_market %}{{ scores.score_market }}{% else %}1{% endif %}" class="renge votte" name="score_market" oninput="vote30.value=scoremarket.value">
+                                    <input id="vote30" type="number" value="{% if scores.score_market %}{{ scores.score_market }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoremarket.value=vote30.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_market %}{{ scores.score_market }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">پتانسیل رشد بازار</label>
+                                <div class="rate-part">
+                                    <input id="scoregrowth" type="range" min="1" max="5" value="{% if scores.score_growth %}{{ scores.score_growth }}{% else %}1{% endif %}" class="renge votte" name="score_growth" oninput="vote40.value=scoregrowth.value">
+                                    <input id="vote40" type="number" value="{% if scores.score_growth %}{{ scores.score_growth }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoregrowth.value=vote40.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_growth %}{{ scores.score_growth }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">شدت فضای رقابتی بازار هدف</label>
+                                <div class="rate-part">
+                                    <input id="scorecompetition" type="range" min="1" max="5" value="{% if scores.score_competition %}{{ scores.score_competition }}{% else %}1{% endif %}" class="renge votte" name="score_competition" oninput="vote32.value=scorecompetition.value">
+                                    <input id="vote32" type="number" value="{% if scores.score_competition %}{{ scores.score_competition }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorecompetition.value=vote32.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_competition %}{{ scores.score_competition }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t10">مدل کسب و کار </h4>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">بخش‌بندی مشخص و شفاف مشتریان</label>
+                                <div class="rate-part">
+                                    <input id="scoretargetmarket" type="range" min="1" max="5" value="{% if scores.score_targetmarket %}{{ scores.score_targetmarket }}{% else %}1{% endif %}" class="renge votte" name="score_targetmarket" oninput="vote33.value=scoretargetmarket.value">
+                                    <input id="vote33" type="number" value="{% if scores.score_targetmarket %}{{ scores.score_targetmarket }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoretargetmarket.value=vote33.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_targetmarket %}{{ scores.score_targetmarket }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">ارزش پیشنهادی مشخص و ملموس </label>
+                                <div class="rate-part">
+                                    <input id="scoresuggestedvalue" type="range" min="1" max="5" value="{% if scores.score_suggestedvalue %}{{ scores.score_suggestedvalue }}{% else %}1{% endif %}" class="renge votte" name="score_suggestedvalue" oninput="vote34.value=scoresuggestedvalue.value">
+                                    <input id="vote34" type="number" value="{% if scores.score_suggestedvalue %}{{ scores.score_suggestedvalue }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoresuggestedvalue.value=vote34.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_suggestedvalue %}{{ scores.score_suggestedvalue }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">کیفیت MVP</label>
+                                <div class="rate-part">
+                                    <input id="scoremvp" type="range" min="1" max="5" value="{% if scores.score_mvp %}{{ scores.score_mvp }}{% else %}1{% endif %}" class="renge votte"  name="score_mvp" oninput="vote35.value=scoremvp.value">
+                                    <input id="vote35" type="number" value="{% if scores.score_mvp %}{{ scores.score_mvp }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoremvp.value=vote35.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_mvp %}{{ scores.score_mvp }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">شفاف بودن جریان‌های درآمدی </label>
+                                <div class="rate-part">
+                                    <input id="scoretransparency" type="range" min="1" max="5" value="{% if scores.score_transparency %}{{ scores.score_transparency }}{% else %}1{% endif %}" class="renge votte" name="score_transparency" oninput="vote36.value=scoretransparency.value">
+                                    <input id="vote36" type="number" value="{% if scores.score_transparency %}{{ scores.score_transparency }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoretransparency.value=vote36.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_transparency %}{{ scores.score_transparency }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">داشتن مزیت رقابتی</label>
+                                <div class="rate-part">
+                                    <input id="scoreadvantage" type="range" min="1" max="5" value="{% if scores.score_advantage %}{{ scores.score_advantage }}{% else %}1{% endif %}" class="renge votte" name="score_advantage" oninput="vote37.value=scoreadvantage.value">
+                                    <input id="vote37" type="number" value="{% if scores.score_advantage %}{{ scores.score_advantage }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreadvantage.value=vote37.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_advantage %}{{ scores.score_advantage }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">داشتن استراتژی ورود به بازار</label>
+                                <div class="rate-part">
+                                    <input id="scorestrategy" type="range" min="1" max="5" value="{% if scores.score_strategy %}{{ scores.score_strategy }}{% else %}1{% endif %}" class="renge votte" name="score_strategy" oninput="vote38.value=scorestrategy.value">
+                                    <input id="vote38" type="number" value="{% if scores.score_strategy %}{{ scores.score_strategy }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorestrategy.value=vote38.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_strategy %}{{ scores.score_strategy }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t10">کیفیت مستندات ارسالی </h4>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">کامل و دقیق بودن مستندات</label>
+                                <div class="rate-part">
+                                    <input id="scoreprecise" type="range" min="1" max="5" value="{% if scores.score_precise %}{{ scores.score_precise }}{% else %}1{% endif %}" class="renge votte" name="score_precise" oninput="vote39.value=scoreprecise.value">
+                                    <input id="vote39" type="number" value="{% if scores.score_precise %}{{ scores.score_precise }}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreprecise.value=vote39.value" />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_precise %}{{ scores.score_precise }}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t10">نظر داور</h4>
+                        <div class="pad-t30">
+                            <label class="relative">
+                                <textarea name="score_comment" class="gui-input sans-digit"
+                                    id="referee-comment">{% if is_referee.score_comment %}{{is_referee.score_comment}}{% endif %}</textarea>
+                            </label>
+                        </div>
+                    </div>
+
+                    {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t10">انتخاب داور<h4>
+                        <div class="pad-t30 colm3 colm ">
+                            <label class="relative">
+                                <select class="gui-input" name="score_for_not_referee">
+                                    <option value="">انتخاب کنید</option>
+                                    {% for ref in score_not_refers %}
+                                    <option value="{{ ref.pk }}" >{{ ref.user.first_name }} {{ ref.user.last_name }}</option>
+                                    {% endfor %}
+                                  </select>
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+                    {% if is_leader in request.user.role.all %}
+                    <hr>
+                    <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                        <div class="colm12 colm6-tab pull-right-tab colm pad-10">
+                            <label for="breadth_store" class="gui-label pad-5">آیا تمایل به راهبری این تیم را دارید؟</label>
+                            <div class="rate-part">
+                                <div class="colm6 colm pull-right pad-5 spacer-b5 spacer-t25">
+
+                                <label>
+                                    <input type="radio" id="agree0" {% if is_not_referee.lead == True %}checked{% endif %} class="dastresi" name="example"  value="0" >
+                                    <label for="agree0" class="pad-5">بله</label>
+                                    <input type="radio" id="agree1" {% if is_not_referee.lead == False %}checked{% endif %} class="dastresi" name="example" value="1" >
+                                    <label for="agree1" class="pad-5">خیر</label>
+                                </label>
+                                </div> 
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+
+{% endif %}
+                    {% if is_investor in request.user.role.all %}
+                    <hr>
+                    <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                        <div class="colm12 colm6-tab pull-right-tab colm pad-10">
+                            <label for="breadth_store" class="gui-label pad-5">آیا تمایل به سرمایه گذاری در این تیم را دارید؟</label>
+                            <div class="rate-part">
+                                <div class="colm6 colm pull-right pad-5 spacer-b5 spacer-t25">
+
+                                <label>
+                                    <input type="radio" id="agree0" {% if is_not_referee.invest == True %}checked{% endif %} class="dastresi" name="example"  value="0" >
+                                    <label for="agree0" class="pad-5">بله</label>
+                                    <input type="radio" id="agree1" {% if is_not_referee.invest == False %}checked{% endif %} class="dastresi" name="example" value="1" >
+                                    <label for="agree1" class="pad-5">خیر</label>
+                                </label>
+                                </div> 
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+{% endif %}
+                
+                <div class="colm12 colm pad-t40">
+                    <button type="submit" name="score_accept_status" value="accepted_referee"
+                    class="iransans colm6 colm accept-card btn-ui pull-right">
+                    <span><i class="aaa fa fa-check"></i></span>
+                    قبول کردن تیم
+                </button>
+                <button type="submit" name="score_feiled_status" value="failed_referee"
+                    class="iransans colm6 colm times-card btn-ui pull-right">
+                    <span><i class="aaa fa fa-times"></i></span>
+                    رد کردن تیم
+                </button>
+            <div class="clearfix"></div>
+        </div>
+        
+    </form>
+    
+            </div>
+            {% endwith %}
+            {% endif %}
+
+
+            {% if is_op in request.user.role.all or request.user.is_admin or request.user.user_type == 'manager' or is_not_referee and is_not_referee.scored == False %}
+            {% with scores=is_not_referee.nomre|ref_nomre %}
+            <div class="body-form frm-row relative spacer-b30 pad-t40 pad-b20 pad-5-mob wow fadeInUpBig" data-wow-duration="1s">
+                <div class="bg-chart2 body-form-top absolute flex-center">
+                    <i class="fa fa-balance-scale vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 ">داوری حضوری</h3>
+                </div>
+                <form method="POST">{% csrf_token %}
+
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t30">محصول</h4>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                <label for="breadth_store" class="gui-label pad-5">نقشه توسعه محصول و امکان‌پذیری آن با توجه به
+                                    توانمندی تیم</label>
+                                <div class="rate-part">
+                                    <input id="scoreproduct1" type="range" min="1" max="5" value="{% if scores.score_product1 %}{{scores.score_product1}}{% else %}1{% endif %}" class="renge votte" name="score_product1"  oninput="vote1.value=scoreproduct1.value" >
+                                    <input id="vote1" type="number" value="{% if scores.score_product1 %}{{scores.score_product1}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreproduct1.value=vote1.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_product1 %}{{scores.score_product1}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">کیفیت محصول فعلی</label>
+                                <div class="rate-part  spacer-t20">
+                                    <input id="scoreproduct2" type="range" min="1" max="5" value="{% if scores.score_product2 %}{{scores.score_product2}}{% else %}1{% endif %}" class="renge votte" name="score_product2"  oninput="vote2.value=scoreproduct2.value" >
+                                    <input id="vote2" type="number" value="{% if scores.score_product2 %}{{scores.score_product2}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreproduct2.value=vote2.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_product2 %}{{scores.score_product2}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5"> بهینگی تکنولوژی‌های مورد نیاز برای توسعه محصولات فعلی و جدید</label>
+                                <div class="rate-part">
+                                    <input id="scoreproduct3" type="range" min="1" max="5" value="{% if scores.score_product3 %}{{scores.score_product3}}{% else %}1{% endif %}" class="renge votte" name="score_product3"  oninput="vote3.value=scoreproduct3.value" >
+                                    <input id="vote3" type="number" value="{% if scores.score_product3 %}{{scores.score_product3}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreproduct3.value=vote3.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_product3 %}{{scores.score_product3}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t30">تیم</h4>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                <label for="breadth_store" class="gui-label pad-5">کامل بودن تیم</label>
+                                <div class="rate-part">
+                                    <input id="scoreteam1" type="range" min="1" max="5" value="{% if scores.score_team1 %}{{scores.score_team1}}{% else %}1{% endif %}" class="renge votte" name="score_team1"  oninput="vote4.value=scoreteam1.value" >
+                                    <input id="vote4" type="number" value="{% if scores.score_team1 %}{{scores.score_team1}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam1.value=vote4.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team1 %}{{scores.score_team1}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">هماهنگی و انسجام اعضا </label>
+                                <div class="rate-part">
+                                    <input id="scoreteam2" type="range" min="1" max="5" value="{% if scores.score_team2 %}{{scores.score_team2}}{% else %}1{% endif %}" class="renge votte" name="score_team2"  oninput="vote5.value=scoreteam2.value" >
+                                    <input id="vote5" type="number" value="{% if scores.score_team2 %}{{scores.score_team2}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam2.value=vote5.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team2 %}{{scores.score_team2}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">قابل هدایت بودن اعضا</label>
+                                <div class="rate-part">
+                                    <input id="scoreteam3" type="range" min="1" max="5" value="{% if scores.score_team3 %}{{scores.score_team3}}{% else %}1{% endif %}" class="renge votte" name="score_team3"  oninput="vote6.value=scoreteam3.value" >
+                                      <input id="vote6" type="number" value="{% if scores.score_team3 %}{{scores.score_team3}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam3.value=vote6.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team3 %}{{scores.score_team3}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">انگیزه و اشتیاق اعضا</label>
+                                <div class="rate-part">
+                                    <input id="scoreteam4" type="range" min="1" max="5" value="{% if scores.score_team4 %}{{scores.score_team4}}{% else %}1{% endif %}" class="renge votte" name="score_team4"  oninput="vote7.value=scoreteam4.value" >
+                                      <input id="vote7" type="number" value="{% if scores.score_team4 %}{{scores.score_team4}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam4.value=vote7.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team4 %}{{scores.score_team4}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">مهارت‌های ارتباطی اعضا</label>
+                                <div class="rate-part">
+                                    <input id="scoreteam5" type="range" min="1" max="5" value="{% if scores.score_team5 %}{{scores.score_team5}}{% else %}1{% endif %}" class="renge votte" name="score_team5"  oninput="vote8.value=scoreteam5.value" >
+                                      <input id="vote8" type="number" value="{% if scores.score_team5 %}{{scores.score_team5}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam5.value=vote8.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team5 %}{{scores.score_team5}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">داشتن چشم ‏انداز برای کسب‌وکار</label>
+                                <div class="rate-part">
+                                    <input id="scoreteam6" type="range" min="1" max="5" value="{% if scores.score_team6 %}{{scores.score_team6}}{% else %}1{% endif %}" class="renge votte" name="score_team6"  oninput="vote9.value=scoreteam6.value" >
+                                    <input id="vote9" type="number" value="{% if scores.score_team6 %}{{scores.score_team6}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam6.value=vote9.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team6 %}{{scores.score_team6}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">توانمندی تیم برای اجرای این کسب‌وکار</label>
+                                <div class="rate-part spacer-t20">
+                                    <input id="scoreteam7" type="range" min="1" max="5" value="{% if scores.score_team7 %}{{scores.score_team7}}{% else %}1{% endif %}" class="renge votte" name="score_team7" oninput="vote10.value=scoreteam7.value" >
+                                      <input  id="vote10" type="number" value="{% if scores.score_team7 %}{{scores.score_team7}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam7.value=vote10.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team7 %}{{scores.score_team7}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">ساختار سهامی مناسب</label>
+                                <div class="rate-part spacer-t20">
+                                    <input id="scoreteam8" type="range" min="1" max="5" value="{% if scores.score_team8 %}{{scores.score_team8}}{% else %}1{% endif %}" class="renge votte" name="score_team8" oninput="vote11.value=scoreteam8.value" >
+                                      <input id="vote11" type="number" value="{% if scores.score_team8 %}{{scores.score_team8}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreteam8.value=vote11.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_team8 %}{{scores.score_team8}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t30">کسب و کار</h4>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                <label for="breadth_store" class="gui-label pad-5">شناسایی و اعتبارسنجی فرضیات کلیدی مدل کسب ‏و کار</label>
+                                <div class="rate-part">
+                                    <input id="scorebusiness1" type="range" min="1" max="5" value="{% if scores.score_business1 %}{{scores.score_business1}}{% else %}1{% endif %}" class="renge votte" name="score_business1" oninput="vote12.value=scorebusiness1.value" >
+                                      <input id="vote12" type="number" value="{% if scores.score_business1 %}{{scores.score_business1}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorebusiness1.value=vote12.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business1 %}{{scores.score_business1}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">بخش‌بندی مشخص و شفاف مشتریان</label>
+                                <div class="rate-part spacer-t20">
+                                    <input id="scorebusiness2" type="range" min="1" max="5" value="{% if scores.score_business2 %}{{scores.score_business2}}{% else %}1{% endif %}" class="renge votte" name="score_business2" oninput="vote13.value=scorebusiness2.value" >
+                                      <input id="vote13" type="number" value="{% if scores.score_business2 %}{{scores.score_business2}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorebusiness2.value=vote13.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business2 %}{{scores.score_business2}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">مقیاس‌پذیری مدل کسب و کار</label>
+                                <div class="rate-part spacer-t20">
+                                    <input id="scorebusiness3" type="range" min="1" max="5" value="{% if scores.score_business3 %}{{scores.score_business3}}{% else %}1{% endif %}" class="renge votte" name="score_business3" oninput="vote14.value=scorebusiness3.value" >
+                                      <input id="vote14" type="number" value="{% if scores.score_business3 %}{{scores.score_business3}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorebusiness3.value=vote14.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business3 %}{{scores.score_business3}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">ارزش پیشنهادی مشخص و شفاف</label>
+                                <div class="rate-part">
+                                    <input id="scorebusiness4" type="range" min="1" max="5" value="{% if scores.score_business4 %}{{scores.score_business4}}{% else %}1{% endif %}" class="renge votte" name="score_business4" oninput="vote15.value=scorebusiness4.value" >
+                                      <input id="vote15" type="number" value="{% if scores.score_business4 %}{{scores.score_business4}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreproduct4.value=vote15.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business4 %}{{scores.score_business4}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">وجود تناسب محصول و بازار</label>
+                                <div class="rate-part">
+                                    <input id="scorebusiness5" type="range" min="1" max="5" value="{% if scores.score_business5 %}{{scores.score_business5}}{% else %}1{% endif %}" class="renge votte" name="score_business5" oninput="vote16.value=scorebusiness5.value"  >
+                                      <input id="vote16" type="number" value="{% if scores.score_business5 %}{{scores.score_business5}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreproduct5.value=vote16.value"   />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business5 %}{{scores.score_business5}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">شدت فضای رقابتی بازار هدف</label>
+                                <div class="rate-part">
+                                    <input id="scorebusiness6" type="range" min="1" max="5" value="{% if scores.score_business6 %}{{scores.score_business6}}{% else %}1{% endif %}" class="renge votte" name="score_business6" oninput="vote17.value=scorebusiness6.value"  >
+                                      <input id="vote17" type="number" value="{% if scores.score_business6 %}{{scores.score_business6}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorebusiness6.value=vote17.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business6 %}{{scores.score_business6}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">داشتن مزیت رقابتی</label>
+                                <div class="rate-part">
+                                    <input id="scorebusiness7" type="range" min="1" max="5" value="{% if scores.score_business7 %}{{scores.score_business7}}{% else %}1{% endif %}" class="renge votte" name="score_business7" oninput="vote18.value=scorebusiness7.value" >
+                                      <input id="vote18" type="number" value="{% if scores.score_business7 %}{{scores.score_business7}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorebusiness7.value=vote18.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business7 %}{{scores.score_business7}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">داشتن استراتژی ورود به بازار</label>
+                                <div class="rate-part">
+                                    <input id="scorebusiness8" type="range" min="1" max="5" value="{% if scores.score_business8 %}{{scores.score_business8}}{% else %}1{% endif %}" class="renge votte" name="score_business8" oninput="vote19.value=scorebusiness8.value" >
+                                      <input id="vote19" type="number" value="{% if scores.score_business8 %}{{scores.score_business8}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scorebusiness8.value=vote19.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_business8 %}{{scores.score_business8}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t10">سرمایه گذاری و مالی</h4>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">اندازه بازار</label>
+                                <div class="rate-part spacer-t20">
+                                    <input id="scoreinvestment1" type="range" min="1" max="5" value="{% if scores.score_investment1 %}{{scores.score_investment1}}{% else %}1{% endif %}" class="renge votte" name="score_investment1" oninput="vote20.value=scoreinvestment1.value" >
+                                      <input id="vote20" type="number" value="{% if scores.score_investment1 %}{{scores.score_investment1}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreinvestment1.value=vote20.value"   />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_investment1 %}{{scores.score_investment1}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">پتانسیل رشد بازار</label>
+                                <div class="rate-part spacer-t20">
+                                    <input id="scoreinvestment2" type="range" min="1" max="5" value="{% if scores.score_investment2 %}{{scores.score_investment2}}{% else %}1{% endif %}" class="renge votte" name="score_investment2" oninput="vote21.value=scoreinvestment2.value" >
+                                      <input id="vote21" type="number" value="{% if scores.score_investment2 %}{{scores.score_investment2}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreinvestment2.value=vote21.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_investment2 %}{{scores.score_investment2}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">شفاف و منطقی بودن جریان‌های درآمدی</label>
+                                <div class="rate-part">
+                                    <input id="scoreinvestment3" type="range" min="1" max="5" value="{% if scores.score_investment3 %}{{scores.score_investment3}}{% else %}1{% endif %}" class="renge votte" name="score_investment3" oninput="vote22.value=scoreinvestment3.value" >
+                                      <input id="vote22" type="number" value="{% if scores.score_investment3 %}{{scores.score_investment3}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreinvestment3.value=vote22.value"   />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_investment3 %}{{scores.score_investment3}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">معقول بودن پیش‌فرض‌های اصلی مدل مالی</label>
+                                <div class="rate-part">
+                                    <input id="scoreinvestment4" type="range" min="1" max="5" value="{% if scores.score_investment4 %}{{scores.score_investment4}}{% else %}1{% endif %}" class="renge votte" name="score_investment4" oninput="vote23.value=scoreinvestment4.value"  >
+                                      <input id="vote23" type="number" value="{% if scores.score_investment4 %}{{scores.score_investment4}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreinvestment4.value=vote23.value"   />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_investment4 %}{{scores.score_investment4}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">جریان وجوه نقد مناسب سه ساله</label>
+                                <div class="rate-part spacer-t20">
+                                    <input id="scoreinvestment5" type="range" min="1" max="5" value="{% if scores.score_investment5 %}{{scores.score_investment5}}{% else %}1{% endif %}" class="renge votte" name="score_investment5" oninput="vote24.value=scoreinvestment5.value"  >
+                                      <input id="vote24" type="number" value="{% if scores.score_investment5 %}{{scores.score_investment5}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreinvestment5.value=vote24.value"   />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_investment5 %}{{scores.score_investment5}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">تناسب سرمایه مورد نیاز با شرایط فعلی کسب‌وکار</label>
+                                <div class="rate-part">
+                                    <input id="scoreinvestment6" type="range" min="1" max="5" value="{% if scores.score_investment6 %}{{scores.score_investment6}}{% else %}1{% endif %}" class="renge votte" name="score_investment6" oninput="vote25.value=scoreinvestment6.value" >
+                                      <input id="vote25" type="number" value="{% if scores.score_investment6 %}{{scores.score_investment6}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreinvestment6.value=vote25.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_investment6 %}{{scores.score_investment6}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">شفاف و منطقی بودن شرح هزینه‌کرد دوره
+                                    سرمایه‌گذاری پیش‌رو</label>
+                                <div class="rate-part">
+                                    <input id="scoreinvestment7" type="range" min="1" max="5" value="{% if scores.score_investment7 %}{{scores.score_investment7}}{% else %}1{% endif %}" class="renge votte" name="score_investment7" oninput="vote26.value=scoreinvestment7.value" >
+                                      <input id="vote26" type="number" value="{% if scores.score_investment7 %}{{scores.score_investment7}}{% else %}1{% endif %}" min="1" max="5" class="votte align-center colm3 gui-range pull-left" oninput="scoreinvestment7.value=vote26.value"  />
+                                    <span class="font-s11">امتیاز:</span>
+                                    <p class="font-s11 inlin-block demmo">{% if scores.score_investment7 %}{{scores.score_investment7}}{% else %}1{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if is_leader in request.user.role.all %}
+                        <hr>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm12 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">آیا تمایل به راهبری این تیم را دارید؟</label>
+                                <div class="rate-part">
+                                    <div class="colm6 colm pull-right pad-5 spacer-b5 spacer-t25">
+
+                                    <label>
+                                        <input type="radio" id="agree0" {% if is_not_referee.lead == True %}checked{% endif %} class="dastresi" name="example"  value="0" >
+                                        <label for="agree0" class="pad-5">بله</label>
+                                        <input type="radio" id="agree1" {% if is_not_referee.lead == False %}checked{% endif %} class="dastresi" name="example" value="1" >
+                                        <label for="agree1" class="pad-5">خیر</label>
+                                    </label>
+                                    </div> 
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+
+{% endif %}
+                        {% if is_investor in request.user.role.all %}
+                        <hr>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm12 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">آیا تمایل به سرمایه گذاری در این تیم را دارید؟</label>
+                                <div class="rate-part">
+                                    <div class="colm6 colm pull-right pad-5 spacer-b5 spacer-t25">
+
+                                    <label>
+                                        <input type="radio" id="agree0" {% if is_not_referee.invest == True %}checked{% endif %} class="dastresi" name="example"  value="0" >
+                                        <label for="agree0" class="pad-5">بله</label>
+                                        <input type="radio" id="agree1" {% if is_not_referee.invest == False %}checked{% endif %} class="dastresi" name="example" value="1" >
+                                        <label for="agree1" class="pad-5">خیر</label>
+                                    </label>
+                                    </div> 
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+{% endif %}
+
+
+
+                        <hr>
+                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                            <div class="colm12 colm6-tab pull-right-tab colm pad-10">
+                                <label for="breadth_store" class="gui-label pad-5">آیا موافق سرمایه‌گذاری بر روی این طرح هستید؟</label>
+                                <div class="rate-part">
+                                    <div class="colm6 colm pull-right pad-5 spacer-b5 spacer-t25">
+
+                                    <label>
+                                        <input type="radio" id="agree0" {% if is_not_referee.is_accepted == True %}checked{% endif %} class="dastresi" name="example"  value="0" >
+                                        <label for="agree0" class="pad-5">موافق هستم</label>
+                                        <input type="radio" id="agree1" {% if is_not_referee.is_accepted == False %}checked{% endif %} class="dastresi" name="example" value="1" >
+                                        <label for="agree1" class="pad-5">موافق نیستم</label>
+                                    </label>
+                                    </div> 
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="pad-card">
+                        <h4 class="font-w300 font-s16 spacer-t10">توضیحات داور</h4>
+                        <div class="pad-t30">
+                            <label class="relative">
+                                <textarea name="score_comment" class="gui-input sans-digit" id="referee-comment" >{% if is_not_referee.score_comment %}{{is_not_referee.score_comment}}{% endif %}</textarea>
+                            </label>
+                        </div>
+                    </div>
+                    {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+                        <div class="pad-card">
+                            <h4 class="font-w300 font-s16 spacer-t10">انتخاب داور<h4>
+                            <div class="pad-t30 colm3 colm ">
+                                <label class="relative">
+                                    <select class="gui-input" name="score_for_referee">
+                                        <option value="">انتخاب کنید</option>
+                                        {% for ref in score_refers %}
+                                        <option value="{{ ref.pk }}" >{{ ref.user.first_name }} {{ ref.user.last_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                    {% endif %}
+                      
+                    <div class="spacer-b10 spacer-t20 flex-center-row">
+                        <button type="submit" name="btn_store" class="icon-dabir transparent-btn accept pad-5 iransans">
+                            <span><i class="aaa fa fa-check"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">ثبت</p>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% endwith %}
+            {% endif %}
+
+            <div class="body-form relative pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig" data-wow-duration="1s">
+                <div class="bg-chart2 body-form-top absolute flex-center">
+                    <a name="team"></a><i class="fa fa-portrait vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 ">اطلاعات pitch deck </h3>
+                </div>
+                <div class="frm-row pad-t30">
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">چه مشکلی را حل می کنید؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.problem }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">راه حل شما چیست ؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.mysolution }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">راه حل های موجود چیست ؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.solution }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">اندازه بازار برای اینکار چقدر است ؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.market_size }}
+                        </p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">رقبای داخلی و خارجی شما چه کسانی هستند ؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.defect }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">میزان سرمایه ی درخواست شده:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10 sarmaye">
+                            {% if startup.require_money %}{{ startup.require_money }}{% else %}مقداری ثبت نشده
+                            است{% endif %}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    {% if startup.attachfile_p %}
+                    <div class="colm12 pad-5 pad-t20">
+                        <a href="{{ startup.attachfile_p.url }}">دانلود پیچ
+                            دک</a>
+                    </div>
+                    {% endif %}
+                    {% if startup.attachfile_e %}
+                    <div class="colm12 pad-5 pad-t20">
+                        <a href="{{ startup.attachfile_e.url }}">دانلود پیش بینی
+                            مالی</a>
+                    </div>
+                    {% endif %}
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            {% if startup.video %}
+            <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+                data-wow-duration="1s">
+                <div class="bg-chart6 body-form-top absolute flex-center">
+                    <i class="fa fa-play vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 ">ویدیوی معرفی </h3>
+                </div>
+                <div class="frm-row pad-t30">
+                    <div class="colm12 pad-5 pad-t20">
+                        <video width="100%" height="350" controls>
+                            <source src="{{ startup.video.url }}">
+                            </source>
+                        </video>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+                data-wow-duration="1s">
+                <div class="bg-chart3 body-form-top absolute flex-center">
+                    <i class="fa fa-user-edit vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 ">اطلاعات تکمیلی</h3>
+                </div>
+                <div class="frm-row pad-t30">
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">نحوه آشنایی با اعضای تیم؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">
+                            {{ startup.how_mem_meet }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">چه چیز باعث شده شما بهتر از بقیه باشید ؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">
+                            {{ startup.what_m_better }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm12 pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">تیمتون چه چیزی کم داره ؟</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">
+                            {{ startup.what_m_better }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+                data-wow-duration="1s">
+                <div class="bg-chart6 body-form-top absolute flex-center">
+                    <i class="fa fa-user-tie  vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 ">اطلاعات رهبر تیم</h3>
+                </div>
+                <div class="frm-row pad-t30">
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">نام:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black"> {{ startup.owner.first_name }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">نام خانوادگی:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.last_name }}</p>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">شماره همراه:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.phone }}</p>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">ایمیل:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s13 color-black">{{ startup.owner.email }}</p>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">لینکدین:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.linkdin }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">تاریخ تولد:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.birth_date|to_jalali:'%Y/%m/%d' }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">تخصص:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.skill }}</p>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">تحصیلات:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.get_grade_display }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">میزان سهام:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.userprofile.saham }}</p>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="colm8 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">میانگین زمان اختصاص داده شده به استارتاپ در طول ماه:
+                        </p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.userprofile.duration_per_month }}</p>
+                        <div class="clearfix"> </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            {% for team in startup.owner.userprofile.team_member.all %}
+            <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+                data-wow-duration="1s">
+                <div class="body-form-top absolute flex-center">
+                    <i class="fa fa-users vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18">اطلاعات اعضای تیم</h3>
+                </div>
+                <div class="frm-row pad-t30">
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">نام:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_first_name }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">نام خانوادگی:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_last_name }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">شماره همراه:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_phone }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">ایمیل:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s13 color-black">{{ team.t_email }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">لینکدین:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_linkdin }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">تاریخ تولد:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">
+                            {{ team.t_birth_date|to_jalali:'%Y/%m/%d' }}
+                        </p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">تخصص:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_skill }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">تحصیلات:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.get_tgrade_display }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">سمت در استارت آپ :</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_the_role }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm8 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">میانگین زمان اختصاص داده شده به استارتاپ در طول ماه:
+                        </p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_duration_per_month }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s14">میزان سهام:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_saham }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            {% empty %} {% endfor %}
+
+
+        </div>
+        <div class="colm3 colm12-tab colm pull-right spacer-t30-mob spacer-t30-tab">
+
+            <div>
+                <div class="body-form pad-15 spacer-b10 spacer-t10 pad-5-mob wow zoomIn relative"
+                    data-wow-duration="1s">
+                    <div class="bg-chart3 body-form-top absolute flex-center">
+                        <i class="fa fa-rocket vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="absolute title-panel">
+                        <h3 class="font-w300 font-s18">اطلاعات استارتاپ ها</h3>
+                    </div>
+                    <div class="frm-row pad-t20 line-h">
+
+                        <div class="colm12 colm pull-right pad-5 pad-t20">
+                            <p class="pull-right font-w300 font-s13">نام استــارت آپ:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">{{ startup.title }}</p>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 pad-t20">
+                            <p class="pull-right font-w300 font-s13">سایت استــارت آپ:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">
+
+                                <a href="{{ startup.site }}" target="_blank">{{ startup.site }}</a>
+                            </p>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 pad-t20">
+                            <p class="pull-right font-w300 font-s13">حوزه فعالیت:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-red">                            {% for cat in startup.category.all %} {% if not forloop.first %}/{% endif %} {{ cat.title }}
+                                {% empty %} {% endfor %}</p>
+
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 pad-t20">
+                            {% for rahbar in startup.owner.userprofile.team_member.all %} {% ifchanged %}
+                            {% if rahbar.t_new_mentor == True %}
+                            <p class="pull-right font-w300 font-s13">نام راهبر پیشنهادی:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">{{ rahbar.t_first_name }}
+                                {{ rahbar.t_last_name }}</p>
+                            {% else %}
+                            <p class="pull-right font-w300 font-s13">راهبر پیشنهادی:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">وارد نشده</p>
+                            {% endif %} {% endifchanged %} {% endfor %}
+
+                            <p class="pull-right font-w300 font-s13">نام شتاب دهنده پیشنهادی:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">
+                                {% if startup.shetab_dahande%}{{ startup.shetab_dahande.first.name_shtabdahande }}{% else%}وارد
+                                نشده{% endif %}</p>
+
+                            <!--                                    <p class="pull-right font-w300 font-s13">راهبر پیشنهادی:</p>-->
+                            <!--                                    <p class="pull-right pad-r10 font-w400 font-s12 color-black">وارد نشده</p>-->
+
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 pad-t20">
+                            <p class="pull-right font-w300 font-s13">تا کنون سرمایه جذب کرده اید:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">
+                                {{ startup.get_investment_display }}</p>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 pad-t20">
+                            <p class="pull-right font-w300 font-s13">نمونه اولیه ساخته اید:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">
+                                {{ startup.get_prototype_display }}</p>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 pad-t20">
+                            <p class="pull-right font-w300 font-s13">تاریخ شروع به کار:</p>
+                            <p class="pull-right pad-r10 font-w400 font-s12 color-black">
+                                {{ startup.start_date|to_jalali:'%Y/%m/%d' }}</p>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob wow zoomIn relative" data-wow-duration="1s">
+                <div class="bg-chart4 body-form-top absolute flex-center">
+                    <i class="fa fa-file-alt vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s17">وضعیت مدارک</h3>
+                </div>
+
+                <form action="{% url 'startup:verify_startup_documents' startup.pk %}" method="post">{% csrf_token %}
+                    <div class="pad-t40 pad-5">
+                        <div class="align-right colm pad-r5 pad-b10">
+                            <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+                            <label>
+                                <input type="radio" id="document-notification1" name="document_notification" value="1" class="dastresi" checked>
+                                <label for="document-notification1" class="pad-5">بله</label>
+                                <input type="radio" id="document-notification0" name="document_notification" value="0" class="dastresi">
+                                <label for="document-notification0" class="pad-5">خیر</label>
+                            </label>
+                        </div>
+                        <label for="document_comment" class="pad-5 color-blue font-s13 bold font-w300">نظر مدیر
+                            عملیاتی</label>
+                        <label class="relative">
+                            <textarea name="document_comment" class="gui-input sans-digit"
+                                id="document_comment" {% if startup.startupcomment.doc_stat %}readonly{% endif %}>{% if startup.startupcomment.doc_stat %}{{ startup.startupcomment.doc_stat }}{% endif %}</textarea>
+                        </label>
+                    </div>
+                    
+                    {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+
+                    {% if startup.startupcomment.doc_stat_status == 'failed' %}
+                    <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                        <button type="submit" name="status_document" value="failed_document"
+                        class="btn-panel pad-10 color-white iransans">
+                        <p class="font-s11 align-center">بروز رسانی</p>
+                    </button>
+                </div>
+                {% elif startup.startupcomment.doc_stat_status == 'accepted' %}
+                <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                    <button type="submit" name="status_document" value="accepted_document"
+                    class="btn-panel pad-10 color-white iransans">
+                    <p class="font-s11 align-center">بروز رسانی</p>
+                </button>
+            </div>
+
+                    {% else %}
+                    <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                        <button type="submit" name="status_document" value="failed_document"
+                            class="icon-dabir times transparent-btn pad-5 iransans">
+                            <span><i class="fa fa-times"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">رد</p>
+                        </button>
+                        <button type="submit" name="status_document" value="accepted_document"
+                            class="icon-dabir transparent-btn accept pad-5 iransans">
+                            <span><i class="fa fa-check"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">تایید</p>
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </form>
+
+                <div class="pad-t15 pad-5">
+                    <div class="pad-5 color-blue font-s13 bold font-w300">نظر مدیر</div>
+                    <p class="font-s13">
+                        {% if startup.startupcomment.doc_stat %}{{ startup.startupcomment.doc_stat }}{% else %}مدیر نظری
+                        نداده است{% endif %}</p>
+                </div>
+
+                {% if startup.startupcomment.doc_stat_status == 'failed' %}
+                <div class="alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row font-s13"><i class="fa fa-times pad-l5"></i>توسط مدیر عملیاتی رد شد.
+                    </div>
+                </div>
+                {% elif startup.startupcomment.doc_stat_status == 'accepted' %}
+                <div class="alert alert-success alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row font-s13"><i class="fa fa-check pad-l5"></i>توسط مدیرعملیاتی تایید شد.
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="clearfix"></div>
+            </div>
+            {% if startup.status == 'accepted_document' or startup.status == 'accepted' or startup.status == 'failed' or startup.status == 'accepted_presence' or startup.status == 'failed_presence' or startup.status == 'accepted_not_presence' or startup.status == 'failed_not_presence' or startup.status == 'add_investor' or startup.status == 'select_not_presence_referees' or startup.status == 'select_presence_referee' or startup.status == 'suspended' and startup.old_status == 'accepted_document' or startup.old_status == 'accepted' or startup.old_status == 'failed' or startup.old_status == 'accepted_presence' or startup.old_status == 'failed_presence' or startup.old_status == 'accepted_not_presence' or startup.old_status == 'failed_not_presence' or startup.old_status == 'add_investor' or startup.old_status == 'select_not_presence_referees' or startup.old_status == 'select_presence_referee' or startup.status == 'editing' %}
+            <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob wow zoomIn relative" data-wow-duration="1s">
+                <div class="bg-chart6 body-form-top absolute flex-center">
+                    <i class="fa fa-user-shield vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 ">وضعیت استارت آپ</h3>
+                </div>
+
+                <form action="{% url 'startup:startup_assessment' startup.pk %}" method="post"> {% csrf_token %}
+                    <div class="pad-t40 pad-5">
+                        <div class="align-right colm pad-r5 pad-b10">
+                            <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+                            <label>
+                                <input type="radio" id="status-notification1" name="status_notification" value="1" class="dastresi" checked>
+                                <label for="status-notification1" class="pad-5">بله</label>
+                                <input type="radio" id="status-notification0" name="status_notification" value="0" class="dastresi">
+                                <label for="status-notification0" class="pad-5">خیر</label>
+                            </label>
+                        </div>
+                        <label for="" class="pad-5 color-blue font-s13 bold font-w300">نظر مدیرعملیاتی</label>
+                        <label class="relative">
+                            <textarea name="admin_comment" class="gui-input sans-digit" id="admin-comment" {% if startup.startupcomment.startup_stat %}readonly{% endif %}>{% if startup.startupcomment.startup_stat %}{{ startup.startupcomment.startup_stat }}{% endif %}</textarea>
+                        </label>
+                    </div>
+                    {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+
+                    {% if startup.startupcomment.startup_stat_status == 'failed' %}
+                    <div class="align-center pad-t10 flex-spacearound  pad-b15">
+
+                        <button type="submit" name="status" value="failed"
+                            class="btn-panel pad-10 color-white iransans">
+                            <p class="font-s11 align-center">بروز رسانی</p>
+                        </button>
+                    </div>
+
+                    {% elif startup.startupcomment.startup_stat_status == 'accepted' %}
+                    <div class="align-center pad-t10 flex-spacearound  pad-b15">
+
+                        <button type="submit" name="status" value="accepted"
+                            class="btn-panel pad-10 color-white iransans">
+                            <p class="font-s11 align-center">بروز رسانی</p>
+                        </button>
+                    </div>
+
+                    {% else %}
+                    <div class="align-center pad-t10 flex-spacebetween pad-b15">
+                        <button type="submit" name="status" value="failed"
+                            class="icon-dabir times transparent-btn pad-5 iransans">
+                            <span><i class="fa fa-times"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">رد</p>
+                        </button>
+                        <a href="{% url 'startup:edit_startup' startup.pk %}" class="icon-dabir edit pad-5 iransans">
+                            <span><i class="fa fa-pencil-alt"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">ویرایش </p>
+                        </a>
+                        <button type="submit" name="status" value="accepted"
+                            class="icon-dabir transparent-btn accept pad-5 iransans">
+                            <span><i class="fa fa-check"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">تایید</p>
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </form>
+
+                <div class="pad-t15 pad-5">
+                    <div class="pad-5 color-blue font-s13 bold font-w300 spacer-t30">نظر مدیرعملیاتی</div>
+                    <p class="font-s13">
+                        {% if startup.startupcomment.startup_stat %}{{ startup.startupcomment.startup_stat }}{% else %}مدیر
+                        نظری نداده است{% endif %}</p>
+                </div>
+                {% if startup.startupcomment.startup_stat_status == 'failed' %}
+
+                <div class="alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row"><i class="fa fa-times pad-l5"></i> رد شده است.</div>
+                </div>
+                {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+
+                <div class="apply" data-name="{{startup.title}}" data-startup-id="{{startup.pk}}">
+                    <div class="align-center alert alert-success color-white margin-auto pad-5 pintor">تجدید نظر</div>
+                </div>
+            {% endif %}
+                {% elif startup.startupcomment.startup_stat_status == 'accepted' %}
+                <div class="alert alert-success alert-with-icon colm12 colm flex-center pad-t30 spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row"><i class="fa fa-check pad-l5"></i> تایید شده است.</div>
+                </div>
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
+            {% endif %}
+            {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+            {% if startup.is_not_presence_referee == True %}
+            <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob  wow zoomIn relative" data-wow-duration="1s">
+                <div class="bg-chart2 body-form-top absolute flex-center">
+                    <i class="fa fa-balance-scale vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18">داوری غیر حضوری</h3>
+                </div>
+                <div class="frm-row pad-t20">
+                    {% for ref in not_refers %}
+                    <div class="colm12 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s13">نمره داور {{ ref.user.first_name}}
+                            {{ ref.user.last_name}} </p>
+                        <p class="pull-right pad-r10 font-w400 font-s12 color-black"></p>
+                        <a href="#open-modal{{ref.pk }}"
+                            class="font-s12 pull-left color-mentor show-popup">نمایش</a>
+                        <div class="open-popup">
+                            <div id="open-modal{{ref.pk }}" class="modal-window">
+                                <div class="content colm">
+                                    <a href="#modal-close" title="بستن" class="modal-close"><i
+                                            class="fa fa-times"></i></a> {% with scores=ref.nomre|ref_nomre %}
+                                    <div class="pad-card">
+                                        <h4 class="font-w300 font-s16 spacer-t30">تیم</h4>
+                                        <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                                <label for="breadth_store" class="gui-label pad-5">کامل بودن تیم</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5" value="{{ scores.score_full }}"
+                                                        class="renge votte" name="score_full" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_full }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">هماهنگی و انسجام اعضا
+                                                </label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_coordination }}" class="renge votte"
+                                                        name="score_coordination" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_coordination }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">توانمندی تیم برای
+                                                    اجرای این کسب‌وکار</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_ability }}" class="renge votte"
+                                                        name="score_ability" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_ability }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    <div class="pad-card">
+                                        <h4 class="font-w300 font-s16 spacer-t10">بازار</h4>
+                                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">اندازه بازار</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_market }}" class="renge votte"
+                                                        name="score_market" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_market }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">پتانسیل رشد
+                                                    بازار</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_growth }}" class="renge votte"
+                                                        name="score_growth" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_growth }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">شدت فضای رقابتی بازار
+                                                    هدف</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_competition }}" class="renge votte"
+                                                        name="score_competition" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_competition }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    <div class="pad-card">
+                                        <h4 class="font-w300 font-s16 spacer-t10">مدل کسب و کار </h4>
+                                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">بخش‌بندی مشخص و شفاف
+                                                    مشتریان</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_targetmarket }}" class="renge votte"
+                                                        name="score_targetmarket" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_targetmarket }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">ارزش پیشنهادی مشخص و
+                                                    ملموس </label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_suggestedvalue }}" class="renge votte"
+                                                        name="score_suggestedvalue" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_suggestedvalue }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">کیفیت MVP</label>
+                                                <div class="rate-part">
+                                                    <input onchange="" type="range" min="1" max="5"
+                                                        value="{{ scores.score_mvp }}" class="renge votte" name="score_mvp"
+                                                        disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_mvp }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">شفاف بودن جریان‌های
+                                                    درآمدی </label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_transparency }}" class="renge votte"
+                                                        name="score_transparency" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_transparency }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">داشتن مزیت
+                                                    رقابتی</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_advantage }}" class="renge votte"
+                                                        name="score_advantage" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_advantage }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">داشتن استراتژی ورود
+                                                    به بازار</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_strategy }}" class="renge votte"
+                                                        name="score_strategy" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_strategy }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    <div class="pad-card">
+                                        <h4 class="font-w300 font-s16 spacer-t10">کیفیت مستندات ارسالی </h4>
+                                        <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                            <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                <label for="breadth_store" class="gui-label pad-5">کامل و دقیق بودن
+                                                    مستندات</label>
+                                                <div class="rate-part">
+                                                    <input type="range" min="1" max="5"
+                                                        value="{{ scores.score_precise }}" class="renge votte"
+                                                        name="score_precise" disabled>
+                                                    <span class="font-s11">امتیاز:</span>
+                                                    <p class="font-s11 inlin-block demmo">{{ scores.score_precise }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    {% endwith %}
+                                    <div class="pad-card">
+                                        <h4 class="font-w300 font-s16 spacer-t10">نظر داور</h4>
+                                        <div class="pad-t30">
+                                            <label class="relative">
+                                                <textarea name="score_comment" class="gui-input sans-digit"
+                                                    id="referee-comment">{{ ref.score_comment }}</textarea>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!--                            <div class="spacer-b10 spacer-t20 flex-center-row">-->
+                                    <!--                                <button type="submit" name="btn_problem_store" class="icon-dabir transparent-btn accept pad-5 iransans">-->
+                                    <!--                                    <span><i class="aaa fa fa-check"></i></span>-->
+                                    <!--                                    <p class="font-s11 align-center">ثبت</p>-->
+                                    <!--                                </button>-->
+                                    <!--                            </div>-->
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    {% endfor %}
+                    <!--                                        <div class="colm12 colm pull-right pad-5 pad-t20">-->
+                    <!--                                            <p class="pull-right font-w300 font-s13">نمره داور دوم</p>-->
+                    <!--                                            <p class="pull-right pad-r10 font-w400 font-s12 color-black"></p>-->
+                    <!--                                            <a href="#open-modal2" class="font-s12 pull-left color-mentor show-popup">نمایش</a>-->
+                    <!--                                            <div class="open-popup">-->
+                    <!--                                                <div id="open-modal2" class="modal-window">-->
+                    <!--                                                    <div class="content colm">-->
+                    <!--                                                        <a href="#modal-close" title="بستن" class="modal-close"><i class="fa fa-times"></i></a>-->
+
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                            <div class="clearfix"></div>-->
+                    <!--                                        </div>-->
+
+                    <!--                                        <div class="colm12 colm pull-right pad-5 pad-t20">-->
+                    <!--                                            <p class="pull-right font-w300 font-s13">نمره داور سوم</p>-->
+                    <!--                                            <p class="pull-right pad-r10 font-w400 font-s12 color-black"></p>-->
+                    <!--                                            <a href="#open-modal3" class="font-s12 pull-left color-mentor show-popup">نمایش</a>-->
+                    <!--                                            <div class="open-popup">-->
+                    <!--                                                <div id="open-modal3" class="modal-window">-->
+                    <!--                                                    <div class="content colm">-->
+                    <!--                                                        <a href="#modal-close" title="بستن" class="modal-close"><i class="fa fa-times"></i></a>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                            <div class="clearfix"></div>-->
+                    <!--                                        </div>-->
+
+                    <!--                                        <div class="colm12 colm pull-right pad-5 pad-t20">-->
+                    <!--                                            <p class="pull-right font-w300 font-s13">نمره داور چهارم</p>-->
+                    <!--                                            <p class="pull-right pad-r10 font-w400 font-s12 color-black"></p>-->
+                    <!--                                            <a href="#open-modal4" class="font-s12 pull-left color-mentor show-popup">نمایش</a>-->
+                    <!--                                            <div class="open-popup">-->
+                    <!--                                                <div id="open-modal4" class="modal-window">-->
+                    <!--                                                    <div class="content colm">-->
+                    <!--                                                        <a href="#modal-close" title="بستن" class="modal-close"><i class="fa fa-times"></i></a>-->
+
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                            <div class="clearfix"></div>-->
+                    <!--                                        </div>-->
+                    {% if not_refers %}
+                    <div class="align-center colm colm12 pad-5 pad-t20 pull-right color-mentor font-s14">
+                        <span><i class="fa fa-clone"></i></span>
+                        <span>نمره نهایی</span>
+                        <span>{{ the_total_score2 }}</span>
+                        <span>از 5</span>
+                    </div>
+                    {% else %}
+
+                    <div class="align-center colm colm12 pad-5 pad-t20 pull-right color-mentor font-s14">
+                        <span><i class="fa fa-clone"></i></span>
+                        <span>این تیم هنوز داوری نشده</span>
+                    </div>
+                    {% endif %}
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        {% endif %}
+        {% endif %}
+        {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+        {% if startup.is_presence_referee == True %}
+        <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob  wow zoomIn relative" data-wow-duration="1s">
+            <div class="bg-chart2 body-form-top absolute flex-center">
+                <i class="fa fa-balance-scale vertical font-s30 color-white"></i>
+            </div>
+            <div class="absolute title-panel">
+                <h3 class="font-w300 font-s18">داوری حضوری</h3>
+            </div>
+            <div class="frm-row pad-t20">
+                {% for ref in refers %}
+                {% with scores=ref.nomre|ref_nomre %}
+                    <div class="colm12 colm pull-right pad-5 pad-t20">
+                        <p class="pull-right font-w300 font-s13">نمره داور {{ ref.user.first_name}}
+                            {{ ref.user.last_name}} </p>
+                        <p class="pull-right pad-r10 font-w400 font-s12 color-black"></p>
+                        <a href="#open-modal{{ref.pk }}"
+                            class="font-s12 pull-left color-mentor show-popup">نمایش</a>
+                        <div class="open-popup">
+                            <div id="open-modal{{ref.pk }}" class="modal-window">
+                                <div class="content colm">
+                                    <a href="#modal-close" title="بستن" class="modal-close"><i
+                                            class="fa fa-times"></i></a>
+
+                                            <div class="pad-card">
+                                                <h4 class="font-w300 font-s16 spacer-t30">محصول</h4>
+                                                <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                                        <label for="breadth_store" class="gui-label pad-5">نقشه توسعه محصول و امکان‌پذیری آن با توجه به
+                                                            توانمندی تیم</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreproduct1" type="range" min="1" max="5" value="{% if scores.score_product1 %}{{scores.score_product1}}{% endif %}" class="renge votte" name="score_product1"  oninput="vote1.value=scoreproduct1.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_product1 %}{{scores.score_product1}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">کیفیت محصول فعلی</label>
+                                                        <div class="rate-part  spacer-t20">
+                                                            <input id="scoreproduct2" type="range" min="1" max="5" value="{% if scores.score_product2 %}{{scores.score_product2}}{% endif %}" class="renge votte" name="score_product2"  oninput="vote2.value=scoreproduct2.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_product2 %}{{scores.score_product2}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5"> بهینگی تکنولوژی‌های مورد نیاز برای توسعه محصولات فعلی و جدید</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreproduct3" type="range" min="1" max="5" value="{% if scores.score_product3 %}{{scores.score_product3}}{% endif %}" class="renge votte" name="score_product3"  oninput="vote3.value=scoreproduct3.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_product3 %}{{scores.score_product3}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                            </div>
+                                            <div class="pad-card">
+                                                <h4 class="font-w300 font-s16 spacer-t30">تیم</h4>
+                                                <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                                        <label for="breadth_store" class="gui-label pad-5">کامل بودن تیم</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreteam1" type="range" min="1" max="5" value="{% if scores.score_team1 %}{{scores.score_team1}}{% endif %}" class="renge votte" name="score_team1"  oninput="vote4.value=scoreteam1.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team1 %}{{scores.score_team1}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">هماهنگی و انسجام اعضا </label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreteam2" type="range" min="1" max="5" value="{% if scores.score_team2 %}{{scores.score_team2}}{% endif %}" class="renge votte" name="score_team2"  oninput="vote5.value=scoreteam2.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team2 %}{{scores.score_team2}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">قابل هدایت بودن اعضا</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreteam3" type="range" min="1" max="5" value="{% if scores.score_team3 %}{{scores.score_team3}}{% endif %}" class="renge votte" name="score_team3"  oninput="vote6.value=scoreteam3.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team3 %}{{scores.score_team3}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">انگیزه و اشتیاق اعضا</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreteam4" type="range" min="1" max="5" value="{% if scores.score_team4 %}{{scores.score_team4}}{% endif %}" class="renge votte" name="score_team4"  oninput="vote7.value=scoreteam4.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team4 %}{{scores.score_team4}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">مهارت‌های ارتباطی اعضا</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreteam5" type="range" min="1" max="5" value="{% if scores.score_team5 %}{{scores.score_team5}}{% endif %}" class="renge votte" name="score_team5"  oninput="vote8.value=scoreteam5.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team5 %}{{scores.score_team5}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">داشتن چشم ‏انداز برای کسب‌وکار</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreteam6" type="range" min="1" max="5" value="{% if scores.score_team6 %}{{scores.score_team6}}{% endif %}" class="renge votte" name="score_team6"  oninput="vote9.value=scoreteam6.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team6 %}{{scores.score_team6}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">توانمندی تیم برای اجرای این کسب‌وکار</label>
+                                                        <div class="rate-part spacer-t20">
+                                                            <input id="scoreteam7" type="range" min="1" max="5" value="{% if scores.score_team7 %}{{scores.score_team7}}{% endif %}" class="renge votte" name="score_team7" oninput="vote10.value=scoreteam7.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team7 %}{{scores.score_team7}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">ساختار سهامی مناسب</label>
+                                                        <div class="rate-part spacer-t20">
+                                                            <input id="scoreteam8" type="range" min="1" max="5" value="{% if scores.score_team8 %}{{scores.score_team8}}{% endif %}" class="renge votte" name="score_team8" oninput="vote11.value=scoreteam8.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_team8 %}{{scores.score_team8}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                            </div>
+                                            <div class="pad-card">
+                                                <h4 class="font-w300 font-s16 spacer-t30">کسب و کار</h4>
+                                                <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10 ">
+                                                        <label for="breadth_store" class="gui-label pad-5">شناسایی و اعتبارسنجی فرضیات کلیدی مدل کسب ‏و کار</label>
+                                                        <div class="rate-part">
+                                                            <input id="scorebusiness1" type="range" min="1" max="5" value="{% if scores.score_business1 %}{{scores.score_business1}}{% endif %}" class="renge votte" name="score_business1" oninput="vote12.value=scorebusiness1.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business1 %}{{scores.score_business1}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">بخش‌بندی مشخص و شفاف مشتریان</label>
+                                                        <div class="rate-part spacer-t20">
+                                                            <input id="scorebusiness2" type="range" min="1" max="5" value="{% if scores.score_business2 %}{{scores.score_business2}}{% endif %}" class="renge votte" name="score_business2" oninput="vote13.value=scorebusiness2.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business2 %}{{scores.score_business2}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">مقیاس‌پذیری مدل کسب و کار</label>
+                                                        <div class="rate-part spacer-t20">
+                                                            <input id="scorebusiness3" type="range" min="1" max="5" value="{% if scores.score_business3 %}{{scores.score_business3}}{% endif %}" class="renge votte" name="score_business3" oninput="vote14.value=scorebusiness3.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business3 %}{{scores.score_business3}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">ارزش پیشنهادی مشخص و شفاف</label>
+                                                        <div class="rate-part">
+                                                            <input id="scorebusiness4" type="range" min="1" max="5" value="{% if scores.score_business4 %}{{scores.score_business4}}{% endif %}" class="renge votte" name="score_business4" oninput="vote15.value=scorebusiness4.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business4 %}{{scores.score_business4}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">وجود تناسب محصول و بازار</label>
+                                                        <div class="rate-part">
+                                                            <input id="scorebusiness5" type="range" min="1" max="5" value="{% if scores.score_business5 %}{{scores.score_business5}}{% endif %}" class="renge votte" name="score_business5" oninput="vote16.value=scorebusiness5.value" disabled >
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business5 %}{{scores.score_business5}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">شدت فضای رقابتی بازار هدف</label>
+                                                        <div class="rate-part">
+                                                            <input id="scorebusiness6" type="range" min="1" max="5" value="{% if scores.score_business6 %}{{scores.score_business6}}{% endif %}" class="renge votte" name="score_business6" oninput="vote17.value=scorebusiness6.value" disabled >
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business6 %}{{scores.score_business6}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="colm12 colm frm-row slidecontainer  pad-5 pad-t20">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">داشتن مزیت رقابتی</label>
+                                                        <div class="rate-part">
+                                                            <input id="scorebusiness7" type="range" min="1" max="5" value="{% if scores.score_business7 %}{{scores.score_business7}}{% endif %}" class="renge votte" name="score_business7" oninput="vote18.value=scorebusiness7.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business7 %}{{scores.score_business7}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">داشتن استراتژی ورود به بازار</label>
+                                                        <div class="rate-part">
+                                                            <input id="scorebusiness8" type="range" min="1" max="5" value="{% if scores.score_business8 %}{{scores.score_business8}}{% endif %}" class="renge votte" name="score_business8" oninput="vote19.value=scorebusiness8.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_business8 %}{{scores.score_business8}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                            </div>
+                                            <div class="pad-card">
+                                                <h4 class="font-w300 font-s16 spacer-t10">سرمایه گذاری و مالی</h4>
+                                                <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">اندازه بازار</label>
+                                                        <div class="rate-part spacer-t20">
+                                                            <input id="scoreinvestment1" type="range" min="1" max="5" value="{% if scores.score_investment1 %}{{scores.score_investment1}}{% endif %}" class="renge votte" name="score_investment1" oninput="vote20.value=scoreinvestment1.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_investment1 %}{{scores.score_investment1}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">پتانسیل رشد بازار</label>
+                                                        <div class="rate-part spacer-t20">
+                                                            <input id="scoreinvestment2" type="range" min="1" max="5" value="{% if scores.score_investment2 %}{{scores.score_investment2}}{% endif %}" class="renge votte" name="score_investment2" oninput="vote21.value=scoreinvestment2.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_investment2 %}{{scores.score_investment2}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">شفاف و منطقی بودن جریان‌های درآمدی</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreinvestment3" type="range" min="1" max="5" value="{% if scores.score_investment3 %}{{scores.score_investment3}}{% endif %}" class="renge votte" name="score_investment3" oninput="vote22.value=scoreinvestment3.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_investment3 %}{{scores.score_investment3}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">معقول بودن پیش‌فرض‌های اصلی مدل مالی</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreinvestment4" type="range" min="1" max="5" value="{% if scores.score_investment4 %}{{scores.score_investment4}}{% endif %}" class="renge votte" name="score_investment4" oninput="vote23.value=scoreinvestment4.value" disabled >
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_investment4 %}{{scores.score_investment4}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">جریان وجوه نقد مناسب سه ساله</label>
+                                                        <div class="rate-part spacer-t20">
+                                                            <input id="scoreinvestment5" type="range" min="1" max="5" value="{% if scores.score_investment5 %}{{scores.score_investment5}}{% endif %}" class="renge votte" name="score_investment5" oninput="vote24.value=scoreinvestment5.value" disabled >
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_investment5 %}{{scores.score_investment5}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">تناسب سرمایه مورد نیاز با شرایط فعلی کسب‌وکار</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreinvestment6" type="range" min="1" max="5" value="{% if scores.score_investment6 %}{{scores.score_investment6}}{% endif %}" class="renge votte" name="score_investment6" oninput="vote25.value=scoreinvestment6.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_investment6 %}{{scores.score_investment6}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                                    <div class="colm4 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">شفاف و منطقی بودن شرح هزینه‌کرد دوره
+                                                            سرمایه‌گذاری پیش‌رو</label>
+                                                        <div class="rate-part">
+                                                            <input id="scoreinvestment7" type="range" min="1" max="5" value="{% if scores.score_investment7 %}{{scores.score_investment7}}{% endif %}" class="renge votte" name="score_investment7" oninput="vote26.value=scoreinvestment7.value" disabled>
+                                                            <span class="font-s11">امتیاز:</span>
+                                                            <p class="font-s11 inlin-block demmo">{% if scores.score_investment7 %}{{scores.score_investment7}}{% endif %}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="colm12 colm frm-row pad-5 pad-t20 slidecontainer">
+                                                    <div class="colm12 colm6-tab pull-right-tab colm pad-10">
+                                                        <label for="breadth_store" class="gui-label pad-5">آیا موافق سرمایه‌گذاری بر روی این طرح هستید؟</label>
+                                                        <div class="rate-part">
+                                                            <div class="colm3 colm pull-right pad-5 spacer-b5 spacer-t25">
+                                                            <label class="gui-label">
+                                                                <input type="radio" {% if ref.is_accepted == True %}checked{% endif %} class="option-input radio" name="example"  disabled/>
+                                                               موافق هستم
+                                                            </label>
+                                                            </div>
+                                                            <div class="colm3 colm pull-right pad-5 spacer-b5 spacer-t25">
+                                                            <label class="gui-label">
+                                                                <input type="radio" {% if ref.is_accepted == False %}checked{% endif %} class="option-input radio" name="example" disabled/>
+                                                               موافق نیستم
+                                                            </label>
+                                                            </div> 
+                                                            <div class="clearfix"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                            </div>
+                                            <div class="pad-card">
+                                                <h4 class="font-w300 font-s16 spacer-t10">توضیحات داور</h4>
+                                                <div class="pad-t30">
+                                                    <label class="relative">
+                                                        <textarea name="score_comment" class="gui-input sans-digit" id="referee-comment" disabled>{% if ref.score_comment %}{{ref.score_comment}}{% endif %}</textarea>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            {% endwith %}
+                    {% endfor %}
+                    
+
+                    {% if refers %}
+                    <div class="align-center colm colm12 pad-5 pad-t20 pull-right color-mentor font-s14">
+                        <span><i class="fa fa-clone"></i></span>
+                        <span>نمره نهایی</span>
+                        <span>{{ the_total_score }}</span>
+                        <span>از 5</span>
+                    </div>
+                    {% else %}
+
+                    <div class="align-center colm colm12 pad-5 pad-t20 pull-right color-mentor font-s14">
+                        <span><i class="fa fa-clone"></i></span>
+                        <span>این تیم هنوز داوری نشده</span>
+                    </div>
+                    {% endif %}
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        {% endif %}
+        {% endif %}
+
+
+            {% if startup.is_not_presence_referee == True %}
+            <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob wow zoomIn relative" data-wow-duration="1s">
+                <div class="bg-chart1 body-form-top absolute flex-center">
+                    <i class="fa fa-chalkboard-teacher vertical font-s30 color-white"></i>
+                </div>
+
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s16">وضعیت داوری غیرحضوری</h3>
+                </div>
+
+
+                <form action="{% url 'startup:verify_not_presence_referee' startup.pk %}" method="post">{% csrf_token %}
+                    <div class="pad-t40 pad-5">
+                        <div class="align-right colm pad-r5 pad-b10">
+                            <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+                            <label>
+                                <input type="radio" id="not-presence-referee-notificaion1" name="not_presence_referee_notificaion" value="1" class="dastresi" checked>
+                                <label for="not-presence-referee-notificaion1" class="pad-5">بله</label>
+                                <input type="radio" id="not-presence-referee-notificaion0" name="not_presence_referee_notificaion" value="0" class="dastresi">
+                                <label for="not-presence-referee-notificaion0" class="pad-5">خیر</label>
+                            </label>
+                        </div>
+                        <label for="" class="pad-5 color-blue font-s13 bold font-w300">نظر مدیر عملیاتی</label>
+                        <label class="relative">
+                            <textarea name="modir_comment" class="gui-input sans-digit" id="modir_comment" {% if startup.startupcomment.no_referee_stat %}readonly{% endif %}>{% if startup.startupcomment.no_referee_stat %}{{ startup.startupcomment.no_referee_stat }}{% endif %}</textarea>
+                        </label>
+                    </div>
+
+                    {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+                    {% if startup.startupcomment.no_referee_stat_status == 'failed' %}
+                        <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                            <button type="submit" name="status_modir" value="failed_not_presence"
+                                class="btn-panel pad-10 color-white iransans">
+                                
+                                <p class="font-s11 align-center">بروز رسانی</p>
+                            </button>
+                        </div>
+                    {% elif  startup.startupcomment.no_referee_stat_status == 'accepted'%}
+                        <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                            <button type="submit" name="status_modir" value="accepted_not_presence"
+                                class="btn-panel pad-10 color-white iransans">
+                                
+                                <p class="font-s11 align-center">بروز رسانی</p>
+                            </button>
+                        </div>
+                    {% else %}
+
+                    <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                        <button type="submit" name="status_modir" value="failed_not_presence"
+                            class="icon-dabir times transparent-btn pad-5 iransans">
+                            <span><i class="fa fa-times"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">رد</p>
+                        </button>
+                        <button type="submit" name="status_modir" value="accepted_not_presence"
+                            class="icon-dabir transparent-btn accept pad-5 iransans">
+                            <span><i class="fa fa-check"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">تایید</p>
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+
+                </form>
+
+                <div class="pad-t15 pad-5">
+                    <div class="pad-5 color-blue font-s13 bold font-w300">نظر مدیر</div>
+                    <p class="font-s13">
+                        {% if startup.startupcomment.no_referee_stat %}{{ startup.startupcomment.no_referee_stat }}{% else %}مدیر
+                        نظری نداده{% endif %}</p>
+                </div>
+                {% if startup.startupcomment.no_referee_stat_status == 'failed' %}
+                <div class="alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row font-s13"><i class="fa fa-times pad-l5"></i>توسط مدیر عملیاتی رد شد.
+                    </div>
+                </div>
+                {% elif startup.startupcomment.no_referee_stat_status == 'accepted' %}
+                <div class="alert alert-success alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row font-s13"><i class="fa fa-check pad-l5"></i>توسط مدیرعملیاتی تایید شد.
+                    </div>
+                </div>
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
+            {% endif %}
+
+            {% if startup.is_presence_referee == True %}
+
+
+            <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob wow zoomIn relative" data-wow-duration="1s">
+                <div class="bg-chart6 body-form-top absolute flex-center">
+                    <i class="fa fa-users vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s17">وضعیت داوری حضوری</h3>
+                </div>
+
+                <form action="{% url 'startup:verify_presence_referee' startup.pk %}" method="post">{% csrf_token %}
+                    <div class="pad-t40 pad-5">
+                        <div class="align-right colm pad-r5 pad-b10">
+                            <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+                            <label>
+                                <input type="radio" id="presence-referee-notification1" name="presence_referee_notification" value="1" class="dastresi" checked>
+                                <label for="presence-referee-notification1" class="pad-5">بله</label>
+                                <input type="radio" id="presence-referee-notification0" name="presence_referee_notification" value="0" class="dastresi">
+                                <label for="presence-referee-notification0" class="pad-5">خیر</label>
+                            </label>
+                        </div>
+                        <label for="" class="pad-5 color-blue font-s13 bold font-w300">نظر مدیر عملیاتی</label>
+                        <label class="relative">
+                            <textarea name="presence_comment" class="gui-input sans-digit" id="presence_comment" {% if startup.startupcomment.referee_stat %}readonly{% endif %}>{% if startup.startupcomment.referee_stat %}{{ startup.startupcomment.referee_stat }}{% endif %}</textarea>
+                        </label>
+                    </div>
+
+                    {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+                    {% if startup.startupcomment.referee_stat_status == 'failed' %}
+                    <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                        <button type="submit" name="status_presence" value="failed_presence"
+                            class="btn-panel pad-10 color-white iransans">
+                            <p class="font-s11 align-center">بروزرسانی</p>
+                        </button>
+                    </div>
+                    {% elif startup.startupcomment.referee_stat_status == 'accepted'%}
+                        <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                            <button type="submit" name="status_presence" value="accepted_presence"
+                            class="btn-panel pad-10 color-white iransans">
+                            <p class="font-s11 align-center">بروزرسانی</p>
+                        </button>
+                        </div>
+                    {% else %}
+
+                    <div class="align-center pad-t10 flex-spacearound  pad-b15">
+                        <button type="submit" name="status_presence" value="failed_presence"
+                            class="icon-dabir times transparent-btn pad-5 iransans">
+                            <span><i class="fa fa-times"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">رد</p>
+                        </button>
+                        <button type="submit" name="status_presence" value="accepted_presence"
+                            class="icon-dabir transparent-btn accept pad-5 iransans">
+                            <span><i class="fa fa-check"></i></span>
+                            <p class="font-s11 align-center  spacer-t20">تایید</p>
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                </form>
+
+                <div class="pad-t15 pad-5">
+                    <div class="pad-5 color-blue font-s13 bold font-w300">نظر مدیر</div>
+                    <p class="font-s13">
+                        {% if startup.startupcomment.referee_stat %}{{ startup.startupcomment.referee_stat }}{% else %}مدیر
+                        نظری نداده است{% endif %}</p>
+                </div>
+
+                {% if startup.startupcomment.referee_stat_status == 'failed' %}
+                <div class="alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row font-s13"><i class="fa fa-times pad-l5"></i>توسط مدیر عملیاتی رد شد.
+                    </div>
+                </div>
+                {% elif startup.startupcomment.referee_stat_status == 'accepted' %}
+                <div class="alert alert-success alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"
+                    data-wow-duration="1s" data-notify="container">
+                    <div class="flex-center-row font-s13"><i class="fa fa-check pad-l5"></i>توسط مدیرعملیاتی تایید شد.
+                    </div>
+                </div>
+                {% endif %}
+                <div class="clearfix"></div>
+            </div>
+
+            {% endif %}
+
+            {% if startup.status == 'accepted_presence' or startup.status == 'add_investor' %}
+
+            {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+            <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob wow zoomIn relative" data-wow-duration="1s">
+                <div class="bg-chart3 body-form-top absolute flex-center">
+                    <i class="fa fa-briefcase vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s17">پنل سرمایه گذاران</h3>
+                </div>
+                <form action="{% url 'startup:add_to_investor' startup.pk %}" method="post">{% csrf_token %}
+                    <div class="pad-20 spacer-t10">
+
+                        {% if startup.status == 'add_investor' %}
+                        <button type="submit" name="investor_panel" value="accepted_presence"
+                            class="iransans alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30">
+                            حذف از پنل سرمایه گذاران
+                        </button>
+                        {% else %}
+                        <button type="submit" name="investor_panel" value="add_investor"
+                            class="iransans alert alert-success alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30">
+                            افزودن به پنل سرمایه گذاران
+                        </button>
+                        {% endif %}
+                        <div class="align-right colm pad-r5 pad-b10">
+                            <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+                            <label>
+                                <input type="radio" id="invest-notification1" name="invest_notification" value="1" class="dastresi" checked>
+                                <label for="invest-notification1" class="pad-5">بله</label>
+                                <input type="radio" id="invest-notification0" name="invest_notification" value="0" class="dastresi">
+                                <label for="invest-notification0" class="pad-5">خیر</label>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="clearfix"></div>
+            </div>
+            {% endif %}
+            {% endif %}
+            {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+            <div class="body-form pad-15 spacer-b10 spacer-t30 pad-5-mob wow zoomIn relative" data-wow-duration="1s">
+                <div class="absolute bg-chart1 body-form-top flex-center">
+                    <i class="fa fa-pause vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s17">معلق کردن تیم</h3>
+                </div>
+                <form method="post" action="{% url 'startup:suspend_startup' startup.pk %}">{% csrf_token %}
+
+                    <div class="pad-5 spacer-t25">
+                        {% if startup.status == 'suspended' %}
+                        <button type="submit" name="startup_suspend" value="not_suspended"
+                            class="iransans alert alert-success alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30">
+                            فعال کردن تیم
+                        </button>
+                        {% else %}
+                        <button type="submit" name="startup_suspend" value="suspended"
+                            class="iransans alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30">
+                            معلق کردن تیم
+                        </button>
+                        {% endif %}
+                        <div class="align-right colm pad-r5 pad-b10">
+                            <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+                            <label>
+                                <input type="radio" id="suspend-notification1" name="suspend_notification" value="1" class="dastresi" checked>
+                                <label for="suspend-notification1" class="pad-5">بله</label>
+                                <input type="radio" id="suspend-notification0" name="suspend_notification" value="0" class="dastresi">
+                                <label for="suspend-notification0" class="pad-5">خیر</label>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+</div>
+</div>
+<!-- modal -->
+<div class="modal-overlay">
+    <div class="modal">
+
+        <a class="close-modal">
+            <svg viewBox="0 0 20 20">
+                <path fill="#000000"
+                    d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z">
+                </path>
+            </svg>
+        </a><!-- close modal -->
+
+        <div class="modal-content" id="modal-delete">
+            <div class="colm12">
+                <div class="margin-auto align-center">
+                    <h2>آیا می خواهید استارتاپ <span class="name color-red"></span> تایید کنید</h2>
+                </div>
+            </div>
+            <div class="clom12 colm ">
+
+                <div class="flex-center">
+                    <div class="pad-b20 pad-t20">
+                        <label for="" class="pad-5 color-blue font-s13 bold font-w300">نظر مدیرعملیاتی</label>
+                        <label class="relative">
+                            <textarea class="gui-input sans-digit admin-comment-apply"></textarea>
+                        </label>
+                    </div>
+                    <button type="submit" name="interest" value="" class="btn-interest btn-web bg-dis colm6 colm">تایید
+                        استارتاپ</button>
+                </div>
+
+                <div class="clearfix"></div>
+                <span class="loader-request spacer-t40"></span>
+            </div>
+        </div><!-- content -->
+    </div><!-- modal -->
+</div><!-- overlay -->
+<!-- <div id="toast-r">
+    <div id="img">وضعیت</div>
+    <div id="desc">راهبر با موفقیت ثبت شد</div>
+</div>
+<div id="toast-not-r">
+    <div id="img-not">وضعیت</div>
+    <div id="desc-not">شما نمیتوانید راهبر تکراری انتخاب کنید</div>
+</div> -->
+<div id="toast">
+    <div id="img">وضعیت</div>
+    <div id="desc">شما استارتاپ <span class="name color-red"></span> تایید کردید</div>
+</div>
+{% endblock %} {% block script %}
+<script>
+    // jQuery(document).ready(function ($) {
+    //     const sliders = document.querySelectorAll(".rate-part");
+
+    //     sliders.forEach(function (slider) {
+    //         const input = slider.querySelector('input');
+    //         const output = slider.querySelector('p');
+
+    //         output.innerHTML = input.value;
+
+    //         input.oninput = function () {
+    //             output.innerHTML = this.value;
+    //         }
+    //     })
+    // });
+
+
+    // // auto compelete
+    // jQuery(document).ready(function ($) {
+
+    //     $(".rate-part input").on('change', function () {
+    //         var t = $(this);
+    //         var x = t.val();
+    //         t.attr('value', x);
+    //         t.closest('span').text(x);
+    //         console.log(x);
+    //     })
+
+
+
+
+    // })
+
+    // abrz
+</script>
+<script>
+    jQuery(document).ready(function ($) {
+        var sarmaye=$(".sarmaye").html();
+        var sarmaye1= sarmaye.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+        $(".sarmaye").html(sarmaye1);
+        $(document).on('change', '.votte', function() {
+            var val = $(this).val();
+            var className = $(this).parents().eq(0).find('.demmo');
+            $(className).html(val);
+        });
+        var i = 1;
+        $(".add-referee").on("click", function () {
+            i++;
+            var clone = '<div id="" class="new-id" data-radif="' + i + '">\n' +
+                '\t\t\t\t\t\t\t<div>\n' +
+                '                                        <div class="colm6 colm pull-right pad-5">\n' +
+                '                                    <label for="" class="gui-label">داور ' + i + ':</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companionni' + i + '\',\'investor-resultti' + i + '\' , \'referee\',' + i + ')" class="search_companionni' + i + ' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required>\n' +
+                '                                        <input type="hidden" class="choosen-id" name="referee" value="" data-row="' + i + '" />\n' +
+                '                                        <div id="investor-resultti' + i + '"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+
+                '                          </div>';
+            $('.clone').before(clone);
+            // if ($('.group').length < 20) {
+            //     $('.clone').clone().addClass('group').removeClass('clone hide').insertBefore('.clone');
+            // }
+        });
+        var x = 1;
+        $(".presence_referee").on("click", function () {
+            x++;
+            var clone = '<div id="" class="new-id" data-radif="' + x + '">\n' +
+                '\t\t\t\t\t\t\t<div>\n' +
+                '                                        <div class="colm6 colm pull-right pad-5">\n' +
+                '                                    <label for="" class="gui-label">داور ' + x + ':</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companionnn2' + x + '\',\'investor-resulttt2' + x + '\' , \'referee\',' + x + ')" class="search_companionnn2' + x + ' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required>\n' +
+                '                                        <input type="hidden" class="choosen-id" name="presence_referee" value="" data-row="' + x + '" />\n' +
+                '                                        <div id="investor-resulttt2' + x + '"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' +
+
+                '                          </div>';
+            $('.clones').before(clone);
+            // if ($('.group').length < 20) {
+            //     $('.clone').clone().addClass('group').removeClass('clone hide').insertBefore('.clone');
+            // }
+        });
+        $(document).on('click', '.searchresult3', function () {
+            $(this).parent().parent().find('.choosen-id').change();
+        })
+        // $(document).on('click', '.choosen-id', function() {
+        //     var valu = $(this).val();
+        //     var num = $(this).data('row');
+        //     var className = $(this).parents().eq(3).find('.new-name');
+        //     sendId(valu, num);
+        //     $(className).attr('name', 'startup-' + valu);
+
+        // });
+
+        /*  $(".open-popup").click(function(){
+              $(".modal-window").hide();
+          });*/
+        $(".show-popup").click(function () {
+            $(".modal-window").show();
+        });
+
+
+
+// --------------------[ajax to delete refree]-------------------------
+    $('.btn-delete').on('click', function () {
+        var elements = $('.modal-overlay, .modal');
+        var refreeId = $(this).data('delete');
+        var startupId = $(this).data('name');
+        elements.addClass('active');
+        $('.startup-name').html(startupName);
+        $('.close-modal').click(function () {
+            elements.removeClass('active');
+        });
+        $('.btn-no').click(function () {
+            elements.removeClass('active');
+        });
+        $('.delete-ok').click(function () {
+            $('.bg-dis').prop('disabled', true);
+            jQuery('.loader-request').css('display', 'block');
+            $.ajax({
+            url: '{% url "startup:remove_referee_form_startup" %}',
+            method: 'POST',
+            data: {
+                ref_id: refreeId, start_id: startupId, csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function () {
+                $('#' + userId).remove();
+                jQuery('.loader-request').css('display', 'none');
+                var x = document.getElementById('toast');
+                x.className = "show";
+                elements.removeClass('active');
+                $('.bg-dis').prop('disabled', false);
+                setTimeout(function () {
+                x.className = x.className.replace("show", "");
+                }, 5000);
+            }
+            })
+        });
+    });
+
+// ------------------------------------------
+
+
+
+        $('.apply').on('click', function () {
+            var startupName = $(this).data('name');
+            var startupId = $(this).data('startup-id');
+            var elements = $('.modal-overlay, .modal');
+            var btnInterest = $('.btn-interest');
+
+            $('.name').html(startupName);
+            elements.addClass('active');
+            $('.close-modal').click(function () {
+                elements.removeClass('active');
+            });
+            $('.btn-interest').click(function () {
+                var admin_comment_apply = $('.admin-comment-apply').val();
+                $('.btn-interest').prop('disabled', true);
+                $('.loader-request').css('display', 'block');
+                $.ajax(
+                    {
+                        url: '{% url "startup:reconsider" %}',
+                        method: 'POST',
+                        data: { acceptid: startupId, admin_comment_apply: admin_comment_apply, csrfmiddlewaretoken: '{{ csrf_token }}' },
+                        success: function () {
+                            console.log(admin_comment_apply + startupId);
+                            elements.removeClass('active');
+                            $('.btn-interest').prop('disabled', false);
+                            $('.loader-request').css('display', 'none');
+                            var x = document.getElementById('toast');
+                            x.className = "show";
+                            setTimeout(function () {
+                                x.className = x.className.replace("show", "");
+                            }, 2000);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        }
+                    }
+                )
+            })
+        })
+    });
+
+
+    function scrollTo(element) {
+        var scrollToId = element.getAttribute('data-scroll');
+
+    }
+
+</script>
+{% endblock %}

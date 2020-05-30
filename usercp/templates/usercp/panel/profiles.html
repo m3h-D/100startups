@@ -1,0 +1,183 @@
+{% extends 'base/base-public.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block title %}مشخصات فرد{% endblock %}
+{% block body %}
+<style>
+    .max-wprofile{
+        height: 140px;
+        overflow: hidden;
+    }
+    .height520{
+     height: 520px;
+    }
+</style>
+<div id="content-view" class="container-fluid relative">
+    <div class="blur"></div>
+    <div class="view-text baner baner colm5  colm absolute">
+		<span class="bold color-white pad-b15">
+			{{the_profile.first_name}}
+		</span>
+        <p class="color-white font-s14 align-justify">
+			
+			{% if the_profile.skill %}{{the_profile.skill}}{%else%}تخصصی انتخاب نشده{% endif %}/{% if the_profile.grade %}{{the_profile.get_grade_display}}{% else %}تحصیلاتی انتخاب نشده{% endif %}
+            
+		<!-- دکتری/کامپیوتر -->
+        </p>
+    </div>
+    <div class="logo-start">
+    	<img class="img-avatar not" src="{% if the_profile.avatar %}{{the_profile.avatar.url }}{% else %}{% static 'images/cat-innovation.png' %}{% endif %}">
+    </div>
+</div>
+<div class="container-fluid bg-gray">
+    <div class="container" style="min-height: 500px">
+        <div class="colm3 colm pull-right wow fadeIn" data-wow-duration="2s">
+            <div class="body-view-right bg-white margin-auto">
+                <div class="pad-b18  pad-t18 border-view">
+                    <div class="btn-view colm11 colm margin-auto align-center">
+                        <a class="color-white" href="#">سوالی بپرسید</a>
+                    </div>
+                </div>
+                <div class="border-view">
+                    <div class="body-view-bottom">
+                        <div class="pad-20">
+                            <div class="colm6 colm pull-right box-view right pad-15 align-center">
+                                <span class="font-s12 color-startup spacer-b5 display-block font-w400">-------</span>
+                                <span class="font-s18 bold">0</span>
+                            </div>
+                            <div class="colm6 colm pull-right box-view left pad-15 align-center">
+                                <span class="font-s12 color-investor spacer-b5 display-block font-w400">-------</span>
+                                <span class="font-s18 bold">0</span>
+                            </div>
+                            <div class="colm6 colm pull-right box-view right pad-15 align-center font-w400">
+                                <span class="font-s12 color-investor spacer-b5 display-block">-------</span>
+                                <span class="font-s18 bold">0</span>
+                            </div>
+                            <div class="colm6 colm pull-right box-view left pad-15 align-center font-w400">
+                                <span class="font-s12 color-mentor spacer-b5 display-block">-------</span>
+                                <span class="font-s18 bold">0</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-view">
+                    <div class="body-view-bottom">
+                        <div class="">
+                            <div class="bg-white">
+                                <div class="border-information pad-15">
+                                    <span class="color-blue font-s14 font-w400">تخصص:</span>
+                                    <span class="color6 font-s13 pad-r10">{% if the_profile.skill %}{{the_profile.skill}}{% else %}تخصص وارد نشده{%endif%}</span>
+                                </div>
+                            </div>
+                            <div class="bg-white">
+                                <div class="border-information pad-15">
+                                    <span class="color-blue font-s14 font-w400">استان:</span>
+                                    <span class="color6 font-s13 pad-r10">{% if the_profile.skill %}{{the_profile.city}}{% else %}استان وارد نشده{%endif%}</span>
+                                </div>
+                            </div>
+                            <div class="bg-white">
+                                <div class="border-information pad-15">
+                                    <span class="color-blue font-s14 font-w400">تاریخ تولد:</span>
+                                    <span class="color6 font-s13 pad-r10">{% if the_profile.skill %}{{the_profile.birth_date|to_jalali:'%Y/%m/%d'}}{% else %}تاریخ تولد وارد نشده{%endif%}</span>
+                                </div>
+                            </div>
+                            <div class="bg-white">
+                                <div class="border-information pad-15">
+                                    <span class="color-blue font-s14 font-w400">تحصیلات:</span>
+                                    <span class="color6 font-s13 pad-r10">{% if the_profile.skill %}{{the_profile.get_grade_display}}{% else %}تحصیلات وارد نشده{%endif%}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="colm7 colm pull-right wow fadeIn" data-wow-duration="2s">
+            <div class="bg-white body-view-center height520">
+                <div class="pad-9 border-view relative">
+                    <!--<div class="pull-right">
+                        <div class="logo-view"></div>
+                    </div>-->
+                    <div class="pull-right border-h">
+                        <h2 class="font-s20 color-blue">بیوگرافی {{the_profile.first_name}} {{the_profile.last_name}}</h2>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="border-view">
+                    <div class="font-s14 align-justify pad-25 color-purple">
+                        <p class="font-w300 max-wprofile">
+                            {% if the_profile.skill %}{{the_profile.get_grade_display}}{% else %}متنی ثبت نشده است{%endif%} 
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="colm2 colm pull-right wow fadeIn" data-wow-duration="2s">
+            <div class="margin-auto pad-t50 pad-20-mob">
+                <a href="/dashboard/" class="color-investor">
+					<span class="font-s20 pad-l5">
+						<i class="fa fa-home vertical"></i>
+					</span>
+                    <span class="font-s14">صفحه اصلی</span>
+                </a>
+
+                <a href="" target="_blank" class="display-block spacer-b20 spacer-t20 color-icon hover-icon">
+					<span class="font-s20 pad-l5">
+						<i class="fab fa-internet-explorer vertical"></i>
+					</span>
+                    <span class="font-s11">{% if the_profile.site %}{{the_profile.site}}{% else %}سایت وارد نشده{% endif %}</span>
+                </a>
+
+                <a href="#" class="display-block spacer-b20 color-icon hover-icon">
+					<span class="font-s20 pad-l5">
+						<i class="fa fa-at vertical"></i>
+					</span>
+                    <span class="font-s11">{% if the_profile.email %}{{the_profile.email}}{% else %}ایمیل وارد نشده{% endif %}</span>
+                </a>
+
+                <div class="spacer-b20 color-icon">
+
+                    <a href="{{the_profile.twitter}}" target="_blank" class="display-block color-icon hover-social pad-r25">
+						<span class="font-s18 pad-l5">
+							<i class="fab fa-twitter  vertical"></i>
+						</span>
+                        <span class="font-s13">twitter</span>
+                    </a>
+                    <a href="{{the_profile.linkdin}}" target="_blank" class="display-block  color-icon hover-social pad-r25">
+						<span class="font-s18 pad-l5">
+							<i class="fab fa-linkedin-in vertical"></i>
+						</span>
+                        <span class="font-s13">linkedin</span>
+                    </a>
+                    <a href="{{the_profile.instagram}}" target="_blank" class="display-block color-icon hover-social pad-r25">
+						<span class="font-s18 pad-l5">
+							<i class="fab fa-instagram vertical"></i>
+						</span>
+                        <span class="font-s13"> instagram</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<style>
+    .panel {
+        display: none;
+    }
+
+</style>
+{% endblock %}
+{% block script %}
+<script>
+    jQuery(document).ready(function(){
+        jQuery('.flip').click(function(){
+            jQuery('.panel').slideToggle('slow');
+        });
+    });
+</script>
+{% endblock %}

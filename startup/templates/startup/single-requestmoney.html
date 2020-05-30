@@ -1,0 +1,38 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block title %}مشاهده درخواست{% endblock %}
+
+{% block body %}
+<div class="colm8 colm12-tab colm margin-auto spacer-t50">
+	<div class="body-form relative">
+		<div class="bg-chart4 body-form-top absolute flex-center">
+			<div class="fa fa-money-check vertical font-s30 color-white"></div>
+		</div>
+		<div class="absolute title-panel">
+			<h3 class="font-w300 font-s18">درخواست اعتبار</h3>
+		</div>
+		 <div class="pad-30">
+		 	<div class="spacer-t30">
+		 		<div class="font-s14 pad-10">
+			 		<span>تاریخ : {{ the_request.created_date|to_jalali:'%Y/%m/%d' }}</span>
+			 		<span class="pad-r30 pad-l30">مبلغ : {% if the_request.request_money %}{{ the_request.request_money }}{% endif %}</span>
+			 		<span>موضوع : {% if  the_request.request_title %}{{ the_request.request_title }}{% endif %}</span>
+			 	</div>
+		 		<div class="pad-10">
+		 		عنوان : {% if the_request.get_request_cat_display %}{{ the_request.get_request_cat_display }}{% endif %}
+			 	</div>
+				<div class="pad-10">
+					<h4>شرح در خواست : {% if the_request.request_expression %}{{ the_request.request_expression }}{% endif %}</h4>
+
+				</div>
+		 	</div>
+		</div>
+	</div>
+</div>
+<style>
+    header , footer{
+        display: none;
+    }
+</style>
+{% endblock %}

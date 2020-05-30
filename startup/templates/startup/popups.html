@@ -1,0 +1,183 @@
+{% extends 'base/base-public.html' %}
+{% load static %}
+{% block body %}
+    <div class="colm12 colm">
+        <div>
+            <div class="">
+                {% if reque.status == 'failed_leader' %}
+                    <div class="alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"  data-wow-duration="1s" data-notify="container">
+                        <div class="flex-center-row font-s13"><i class="fa fa-times pad-l5"></i> توسط راهبر رد شد.</div>
+                    </div>
+                {% elif reque.status == 'accepted_leader'%}
+                    <div class="alert alert-success alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn" data-wow-duration="1s" data-notify="container">
+                        <div class="flex-center-row font-s13"><i class="fa fa-check pad-l5"></i>توسط راهبر تایید شد.</div>
+                    </div>
+
+                {% elif reque.status == 'failed_investor'%}
+                    <div class="alert alert-rose alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn"  data-wow-duration="1s" data-notify="container">
+                        <div class="flex-center-row font-s13"><i class="fa fa-times pad-l5"></i> توسط مالی رد شد.</div>
+                    </div>
+                {% elif reque.status == 'accepted_investor'%}
+
+                    <div class="alert alert-success alert-with-icon colm12 colm flex-center spacer-b10 spacer-t30 wow zoomIn" data-wow-duration="1s" data-notify="container">
+                        <div class="flex-center-row font-s13"><i class="fa fa-check pad-l5"></i>توسط مالی تایید شد.</div>
+                    </div>
+                {% endif %}
+                <div class="tab">
+                    <div class="active tabst colm3 font-s10 colm pull-right tablinks pointer" onclick="tabSteps(event, 'st1')">
+                            <div class="">تایید راهبر</div>
+                    </div>
+                    <div class="tabst colm3 font-s10 colm pull-right tablinks pointer" onclick="tabSteps(event, 'st2')">
+                            <div class="">تایید مالی</div>
+                    </div>
+                    <div class="tabst colm3 font-s10 colm pull-right tablinks pointer" onclick="tabSteps(event, 'st3')">
+                            <div class="">ارسال مدارک</div>
+                    </div>
+                    <div class="tabst colm3 font-s10 colm pull-right tablinks pointer" onclick="tabSteps(event, 'st4')">
+                            <div class="">تایید مدارک</div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="show tabcontent" id="st1">
+                    <form method="post" action="">{% csrf_token %}
+                       <input type="hidden" name="id" value="{{id}}" />
+                        <div class="colm12 colm pull-right pad-5 pad-t20 pad-5">
+                            <label for="leader_comment" class="pad-5 color-blue font-s13 bold font-w300 pull-right">نظر راهبر ارشد</label>
+                            <label class="relative">
+                                <textarea name="leader_comment" class="gui-input sans-digit" id="leader_comment">{% if reque.leader_comment %}{{ reque.leader_comment }}{% endif %}</textarea>
+                            </label>
+                        </div>
+                        <input type="hidden" name="data_post" value="">
+                        <div class="clearfix"></div>
+                        <div class="pad-t10 pad-b15 align-center">
+                            <button type="submit" name="status_leader" value="failed" class="icon-dabir times transparent-btn pad-5 iransans align-center">
+                                <span><i class="fa fa-times"></i></span>
+                                <p class="font-s11">رد</p>
+                            </button>
+
+                            <button type="submit" name="status_leader" value="accept" class="icon-dabir transparent-btn accept pad-5 iransans align-center statusconfirm">
+                                <span><i class="fa fa-check"></i></span>
+                                <p class="font-s11">تایید</p>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="hide tabcontent" id="st2">
+                    <form method="post" action="">{% csrf_token %}
+                      <input type="hidden" name="id" value="{{id}}" />
+                        <div class="colm12 colm pull-right pad-5 pad-t20 pad-5">
+                            <label for="financial-comment" class="pad-5 color-blue font-s13 bold font-w300">نظر مدیر مالی</label>
+                            <label class="relative">
+                                <textarea name="financial_comment" class="gui-input sans-digit" id="financial-comment">{% if reque.investor_comment %}{{ reque.investor_comment }}{% endif %}</textarea>
+                            </label>
+                        </div>
+                        <input type="hidden" name="data_post" value="">
+                        <div class="clearfix"></div>
+                        <div class="pad-t10 pad-b15 align-center">
+                            <button type="submit" name="status_manage" value="failed" class="icon-dabir times transparent-btn pad-5 iransans align-center">
+                                <span><i class="fa fa-times"></i></span>
+                                <p class="font-s11">رد</p>
+                            </button>
+
+                            <button type="submit" name="status_manage" value="accept" class="icon-dabir transparent-btn accept pad-5 iransans align-center statusconfirm">
+                                <span><i class="fa fa-check"></i></span>
+                                <p class="font-s11">تایید</p>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="hide tabcontent" id="st3">
+                    ارسال مدارک
+                </div>
+                <div class="hide tabcontent" id="st4">
+                    تایید مدارک
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        .active-step {
+            background: #25aae1!important;
+            color: #fff!important;
+        }
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the buttons inside the tab */
+        .tabst {
+            background: #eeeeee;
+            color: #222;
+            position: relative;
+            height: 40px;
+            padding-right: 32px;
+            padding-top: 10px;
+            font-size: 12px;
+        }
+        .tabst:focus {
+            background: #222;
+        }
+        .tabst::after {
+            content: '';
+            width: 32px;
+            background: red;
+            height: 32px;
+            position: absolute;
+            -webkit-border-radius: 5px 2px 5px 0;
+            -moz-border-radius: 5px 2px 5px 0;
+            -o-border-radius: 5px 2px 5px 0;
+            border-radius: 5px 2px 5px 0;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+            background-color: inherit;
+            border-color: inherit;
+            top: 4px;
+            z-index: 1;
+            left: -17px;
+            border-bottom: 1px solid #fff;
+            border-left: 1px solid #fff;
+        }
+        .active-st {
+            background: #3b8eb4;
+            color: #fff;
+        }
+        /* Change background color of buttons on hover */
+
+
+        /* Create an active/current tablink class */
+
+        /* Style the tab content */
+        .tabcontent {
+
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script>
+        function tabSteps(evt, step) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active-st", "");
+            }
+            document.getElementById(step).style.display = "block";
+            evt.currentTarget.className += " active-st";
+        }
+    </script>
+{% endblock %}

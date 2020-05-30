@@ -1,0 +1,76 @@
+
+<style>
+	.hide-tab{
+		display: none;
+	}
+</style>
+
+<div class="pad-t40">
+    <div class="colm7 colm pull-right pad-t40 pad-15 pad-5-mob spacer-t25-mob">
+        <div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+            <div class="pad-b10">
+                <div class="body-form-top absolute flex-center">
+                    <i class="fa fa-chart-bar vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18">ثبت نام ماهانه استارتاپ ها</h3>
+                </div>
+                <div class="pull-left pad-10">
+                    <span class="pad-10 pointer lastyear" title="سال قبل"><i class="fa fa-arrow-left"></i></span>
+                </div>
+                <div class="pull-left pad-10">
+                    <span class="pad-10 pointer thisyear" title="سال جاری">{{th_year}}</span>
+                </div>
+                <div class="pull-left pad-10">
+                    <span class="pad-10 pointer nextyear" title="سال بعد"><i class="fa fa-arrow-right"></i></span>
+                </div>
+            </div>
+            <div id="load-request">
+                <div id="load-request-content" class="frm-row pad-t40">
+                    <div id="chartdivregister" data-year="{{th_year}}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="colm5 colm pull-right pad-t40 pad-15 pad-5-mob spacer-t25-mob">
+        <div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+            <div class="pad-b10">
+                <div class="body-form-top absolute flex-center">
+                    <i class="fa fa-chart-pie vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18">تفکیک کاربران سامانه</h3>
+                </div>
+            </div>
+            <div class="frm-row pad-t40">
+                <div id="chartdivtafkik"></div>
+            </div>
+        </div>
+    </div>
+	<div class="frm-row">
+		    <div class="colm12 colm">
+            <div class="clearfix"></div>
+        </div>
+	</div>
+	
+
+	<div class="clearfix"></div>
+</div>
+<style>
+	rect.highcharts-background{
+		fill:transparent
+	}
+	g.highcharts-exporting-group {
+    display: none;
+}
+text.highcharts-credits {
+    display: none;
+}
+.activee {
+     background: #eeeeee;
+     color: #222;
+}
+.cursor-step{
+	cursor: context-menu;
+}
+</style>

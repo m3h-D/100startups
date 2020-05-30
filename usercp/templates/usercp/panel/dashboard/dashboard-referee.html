@@ -1,0 +1,193 @@
+{% load jalali_tags %}
+<div class="pad-t40">
+	<div class="frm-row pad-t40 spacer-b25-mob pad-5-mob pad-15">
+		<div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+			<div class="pad-b10">
+     			<div class="bg-chart1 body-form-top absolute flex-center">
+					<i class="fa fa-pause vertical font-s30 color-white"></i>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18 font-s12-mob">استارتاپ های در انتظار داوری غیر حضوری</h3>
+				</div>
+				<form method="get" action="" class="pad-20 spacer-t20">
+					<div class="spacer-t20">
+					  <div class="spacer-t10 pad-t40 relative colm3 colm pull-right pad-5 pad-b20">
+						<label for="name-startup-referee2" class="gui-label">نام استارتاپ:</label>
+						<label class="relative">
+						  <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+						  <input type="search" value="{{ request.GET.name_startup_referee2}}" name="name_startup_referee2" id="name-startup-referee2" class="gui-input">
+						</label>
+					  </div>
+					  <div class="pull-left align-center pad-t20 pad-b20">
+						<button name="submit_search" type="submit"
+								class="btn-search btn-panel pad-6 spacer-t54 color-white iransans spacer-t10 pointer">جستجو
+						</button>
+					  </div>
+					  <div class="clearfix"></div>
+					</div>
+				  </form>
+			</div>
+			<div class="frm-row pad-t40">
+				<div class="overflow-scroll pad-b40">
+					<table class="table color6 retable">
+						<thead>
+						<tr>
+							<th>ردیف</th>
+							<th>نام استارتاپ</th>
+							<th>نام نماینده</th>
+							<th>ایمیل</th>
+							<th>موبایل</th>
+							<th class="date-icon relative">زمان ثبت نام</th>				
+							<th class="center">عملیات</th>
+							<th class="center">ارسال پیام</th>
+
+						</tr>
+						</thead>
+						<tbody>	
+							{% for start in not_referee_start %}
+							{% if start.status != 'suspended' %}
+							{% for x in not_th_referee %}
+							{% ifchanged %}				
+							{% if x.the_type == "not_pres" %}
+							<tr class="" id="{{start.pk}}">
+								<td class="iransansdigit"></td>
+								<td>
+									{% if start.site %}					
+									<a class="color-blue" href="{{start.site}}" target="_blank">
+									<i class="fa fa-globe pad-l10"></i>
+									</a>
+									{% endif %}
+									{{start.title }}
+								</td>
+								<td>{{start.owner}}</td>
+								<td>{{start.owner.email}}</td>
+								<td>{{start.owner.phone}}</td>
+								<td>{{start.created_date|to_jalali:'%Y/%m/%d'}}</td>
+								<td class="center">
+									<a class="color-silver" title="نمایش اطلاعات" href="{% url 'startup:information' start.pk %}">
+									<i class="font-s20 fa fa-eye"></i>
+									</a>
+								</td>
+								<td class="center">
+									<a class="color-silver" title="پیام" href="{% url 'message:send_message_chat' start.owner.pk %}">
+										<span>
+										  <i class="font-s20 fa fa-envelope"></i>
+										</span>
+									  </a>
+								</td>			
+							</tr>
+							{% endif %}
+							{% endifchanged %}
+							{% endfor %}
+							{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="frm-row pad-t40 spacer-b25-mob pad-5-mob pad-15">
+		<div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+			<div class="pad-b10">
+     			<div class="bg-chart1 body-form-top absolute flex-center">
+					<i class="fa fa-pause vertical font-s30 color-white"></i>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18 font-s12-mob">استارتاپ های در انتظار داوری حضوری</h3>
+                </div>
+				<form method="get" action="" class="pad-20 spacer-t20">
+					<div class="spacer-t20">
+					  <div class="spacer-t10 pad-t40 relative colm3 colm pull-right pad-5 pad-b20">
+						<label for="name-startup-referee1" class="gui-label">نام استارتاپ:</label>
+						<label class="relative">
+						  <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+						  <input type="search" value="{{ request.GET.name_startup_referee1 }}" name="name_startup_referee1" id="name-startup-referee-1" class="gui-input">
+						</label>
+					  </div>
+					  <div class="pull-left align-center pad-t20 pad-b20">
+						<button name="submit_search" type="submit"
+								class="btn-search btn-panel pad-6 spacer-t54 color-white iransans spacer-t10 pointer">جستجو
+						</button>
+					  </div>
+					  <div class="clearfix"></div>
+					</div>
+				  </form>
+			</div>
+			<div class="frm-row pad-t40">
+				<div class="overflow-scroll pad-b40">
+					<table class="table color6 retable">
+						<thead>
+						<tr>
+							<th>ردیف</th>
+							<th>نام استارتاپ</th>
+							<th>نام نماینده</th>
+							<th>ایمیل</th>
+							<th>موبایل</th>
+							<th class="date-icon relative">زمان ثبت نام</th>				
+							<th class="center">عملیات</th>
+							<th class="center">ارسال پیام</th>
+
+						</tr>
+						</thead>
+						<tbody>		
+							{% for start in referee_start %}
+							{% if start.status != 'suspended' %}
+							{% for x in th_referee %}
+							{% ifchanged %}				
+							{% if x.the_type == "pres" %}
+							<tr class="" id="{{start.pk}}">
+								<td class="iransansdigit"></td>
+								<td>
+									{% if start.site %}					
+									<a class="color-blue" href="{{start.site}}" target="_blank">
+									<i class="fa fa-globe pad-l10"></i>
+									</a>
+									{% endif %}
+									{{start.title }}
+								</td>
+								<td>{{start.owner}}</td>
+								<td>{{start.owner.email}}</td>
+								<td>{{start.owner.phone}}</td>
+								<td>{{start.created_date|to_jalali:'%Y/%m/%d'}}</td>
+								<td class="center">
+									<a class="color-silver" title="نمایش اطلاعات" href="{% url 'startup:information' start.pk %}">
+									<i class="font-s20 fa fa-eye"></i>
+									</a>
+								</td>
+								<td class="center">
+									<a class="color-silver" title="پیام" href="{% url 'message:send_message_chat' start.owner.pk %}">
+										<span>
+										  <i class="font-s20 fa fa-envelope"></i>
+										</span>
+									  </a>
+								</td>			
+							</tr>
+							{% endif %}
+							{% endifchanged %}
+							{% endfor %}
+							{% endif %}
+							{% endfor %}		
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<style>
+
+	rect.highcharts-background{
+		fill:transparent
+	}
+	g.highcharts-exporting-group {
+    display: none;
+}
+text.highcharts-credits {
+    display: none;
+}
+</style>
+

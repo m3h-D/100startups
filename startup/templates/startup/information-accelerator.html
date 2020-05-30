@@ -1,0 +1,48 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}جزئیات شتاب دهنده{% endblock %}
+{% block body %}
+    <style>
+        .hide-tab {
+            display: none;
+        }
+    </style>
+    <div class="pad-t20">
+        <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig" data-wow-duration="1s">
+            <div class="bg-chart6 body-form-top absolute flex-center">
+                <i class="fa fa-user-tie  vertical font-s30 color-white"></i>
+            </div>
+            <div class="absolute title-panel">
+                <h3 class="font-w300 font-s18 ">اطلاعات شتاب دهنده ها</h3>
+            </div>
+            <div class="frm-row pad-t30">
+                    <div id="avatarbox" class="avatar-box flex-center pad-10 ">
+                        <img class="img-avatar not" src="{% if accelerator.image %}{{ accelerator.image.url }}{% else %}{% static 'images/uplod.png' %}{% endif %}">
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20 pad-b20">
+                        <p class="pull-right font-w300 font-s14">نام شتاب دهنده:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ accelerator.name_shtabdahande }} {{ accelerator.lname_shtabdahande }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20 pad-b20">
+                        <p class="pull-right font-w300 font-s14">نام و نام خانوادگی نماینده :</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ accelerator.name_namayande }}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="colm4 colm pull-right pad-5 pad-t20 pad-b20">
+                        <p class="pull-right font-w300 font-s14">حوزه فعالیت:</p>
+                        <p class="pull-right pad-r10 font-w400 font-s14 color-black">{% for cat in accelerator.category.all %}{% if not forloop.first %}،{%endif%}{{ cat.title }}{% endfor %}</p>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+
+            </div>
+        </div>
+    </div>
+    <style>
+        header,
+        footer {
+            display: none;
+        }
+    </style>
+{% endblock %}

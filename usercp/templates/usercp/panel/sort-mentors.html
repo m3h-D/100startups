@@ -1,0 +1,119 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}مرتب سازی منتورها{% endblock %}
+{% block body %}
+    <style>
+        .hide-tab {
+            display: none;
+        }
+
+    </style>
+    <div class="body-form relative">
+        <div class="bg-chart4 body-form-top absolute flex-center">
+            <i class="fa fa-chalkboard-teacher vertical font-s30 color-white"></i>
+        </div>
+        <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18">مرتب سازی راهبران/مربیان</h3>
+        </div>
+        <form action="" method="post">{% csrf_token %}
+            <div class="">
+                <div class="scrolltop" style="background: #eee;width: 100%;position: fixed;height: 40px;top: 0;display: none"></div>
+                <ul class="sortable pad-t50 flex-center-row scroll-sort">
+                    {% for profile in the_mentors %}
+                        <div class="colm pull-right flex-center pad-b25 pad-t25 draggable">
+                            <li data-id="{{ profile.pk }}" data-sort="{{profile.sort}}">
+                                <input type="hidden" name="sort_{{ profile.pk }}" value="" />
+                                <!-- <input type="hidden" name="user_id" value="{{profile.pk}}" /> -->
+                                <div class="border-none pad-5 pad-b15">
+                                  <img width="150" alt="logo" src="{% if profile.avatar %}{{profile.avatar.url}}{% else %}{% static "images/avatar1.png"%}{% endif%}" />
+                                </div>
+                                <div class="align-center font-s10 bold bg-blue body-form pad-5 color-white">
+                                    {% if profile.last_name and profile.first_name %}{{ profile.first_name }} {{ profile.last_name }}{%else%}{{ profile.username}}{% endif %}
+                                </div>
+                        </div>
+                    {% endfor %}    
+                        <div class="clearfix"></div>
+
+                    <div class="scrollbottom" style="background: #eee;width: 100%;position: fixed;height: 40px;bottom: 0;">
+                </ul>
+                <div class="margin-auto align-center pad-t20 pad-b20">
+                    <button name="sortable" type="submit" class="btn-panel bg-black pad-10 color-white iransans">ثبت</button>
+                </div>
+            </div>
+        </form>
+
+        </div>
+    </div>
+    </div>
+    <style>
+        header,
+        footer {
+            display: none;
+        }
+
+        .bg-blue{
+            background:#62d5c4;
+        }
+        .sortable {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .sortable li {
+            border: 1px solid #58b598;
+            background: #F6F6F6;
+            color: #1C94C4;
+            margin: 15px 5px;
+            width: 150px;
+            height: 150px;
+            text-align: center;
+            border-radius: 100%;
+        }
+
+        .sortable li img {
+            border-radius: 100%;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+<script src="{% static 'javascript/jquery.sortable.min.js' %}"></script>
+<script>
+    jQuery(document).ready(function($) {
+        var sortFieldValue;
+        $(".scrolltop").on('dragenter', function() {
+            $("html,body").animate({
+                scrollTop: 0
+            }, 2000);
+        });
+
+        $(".scrollbottom").on('dragenter', function() {
+            $("html,body").animate({
+                scrollTop: 3000
+            }, 2000);
+        });
+        
+		$(".scrollbottom,.scrolltop").on('dragleave', function() {
+             $("html,body").stop(true, false);
+        });
+ 
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 400) {
+                $('.scrolltop').fadeIn();
+            } else {
+                $('.scrolltop').fadeOut();
+            }
+        });
+
+
+
+        $('.sortable').sortable().bind('sortupdate', function() {
+            counter = 1;
+            $(".sortable li").each(function() {
+                $(this).attr("data-sort", counter);
+                $(this).find(':input').val(counter);
+                counter++;
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% load sunny %}
+<div class="pad-t40">
+    <div class="frm-row pad-t40 spacer-b25-mob pad-5-mob pad-15">
+        <div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+            <div class="pad-b10">
+                <div class="bg-chart1 body-form-top absolute flex-center">
+                    <i class="fa fa-pause vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 font-s12-mob">لیست استارت آپ های قابل راهبری</h3>
+                </div>
+                <!-- <form method="get" action="" class="pad-20 spacer-t20">
+					<div class="spacer-t20">
+					  <div class="spacer-t10 pad-t40 relative colm3 colm pull-right pad-5 pad-b20">
+						<label for="name-startup-leader" class="gui-label">نام استارتاپ:</label>
+						<label class="relative">
+						  <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+						  <input type="search" value="" name="name_startup_leader" id="name-startup-leader" class="gui-input">
+						</label>
+					  </div>
+					  <div class="pull-left align-center pad-t20 pad-b20">
+						<button name="submit_search" type="submit"
+								class="btn-search btn-panel pad-6 spacer-t54 color-white iransans spacer-t10 pointer">جستجو
+						</button>
+					  </div>
+					  <div class="clearfix"></div>
+					</div>
+				  </form> -->
+                <div class="frm-row  pad-t25-mob pad-t30-tab">
+                    <div class="colm4 colm12-tab colm pull-left pull-none relative pad-20">
+                        <span class="bar"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="frm-row pad-t40">
+                <div class="overflow-scroll pad-b40">
+                    <table class="table color6 retable">
+                        <thead>
+                        <tr>
+                            <th class="center">نام استارت آپ</th>
+                            <th class="center">حوزه فعالیت</th>
+                            <th class="center">میزان سرمایه درخواستی</th>
+                            <th class="center">پیچ دک</th>
+                            <th class="center">تمایل به راهبری</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for th_leader in leader_start %}
+                            {% for c_event in th_leader.c_event.all %}
+                            {% if c_event.content_object.pk == request.user.pk %}
+                            {% for th_startup in c_event.theevent_leadermodel.all %}
+                            {% ifchanged %}
+                        <tr>
+                            <td class="center">{{th_startup.startup.title}}</td>
+                            <td class="center">{% for cat in th_startup.startup.category.all%}{% if not forloop.last %} و {% endif %}{{cat.title}}{% endfor %}</td>
+                            <td class="center">{{th_startup.startup.require_money}}</td>
+                            <td class="center">
+                                {% if th_startup.startup.pk %}
+                                <a class="color-silver pointer" title="نمایش اطلاعات پیچ دک" href="{% url 'startup:information_startup' th_startup.startup.pk %}">
+                                    <i class="align-center font-s20 fa fa-rocket"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td class="center">
+
+                                <span class="color-silver add-leader pointer" title="نمایش" data-url="{% url 'theevent:add_to_leader' %}" data-stat-id="{{th_startup.startup.pk}}" data-name="{{ th_startup.startup.title }}" data-startup-id="{{th_startup.pk}}" data-status="{{ th_startup.status }}" data-title="{{th_startup.startup.about_start}}">
+                                    <i class="font-s25 fa {% if th_startup.status == 1 %}fa-check color-green {% elif th_startup.status == 0 %}  fa-plus color-blue{% endif %}"></i>
+                                </span>
+                            </td>
+                        </tr>
+                        {% endifchanged %}
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- modal -->
+<div class="modal-overlay1">
+    <div class="modal1">
+
+        <a class="close-modal">
+            <svg viewBox="0 0 20 20">
+                <path fill="#000000" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+            </svg>
+        </a><!-- close modal -->
+
+        <div class="modal-content" id="modal-delete">
+            <div class="colm12">
+                <div class="margin-auto align-center">
+                    <h2><span class="title"> </span><span class="name color-red"> </span></h2>
+                </div>
+            </div>
+            <div class="clom12 colm spacer-t40">
+                <div class="flex-center">
+                    <button type="submit" name="interest" value="" class="btn-interest bg-dis spacer-t40 colm12 colm"></button>
+                </div>
+                <div class="clearfix"></div>
+                <span class="loader-request spacer-t40"></span>
+            </div>
+        </div><!-- content -->
+    </div><!-- modal -->
+</div><!-- overlay -->
+<div id="toast-leader">
+    <div id="img">وضعیت</div>
+    <div id="desc">شما راهبر استارتاپ  <span class="name color-red"></span> شدید</div>
+</div>
+<div id="toast-not-leader">
+    <div id="img-not">وضعیت</div>
+    <div id="desc-not">شما از راهبری <span class="name color-red"></span> انصراف دادید</div>
+</div>
+<style>
+
+    rect.highcharts-background{
+        fill:transparent
+    }
+    g.highcharts-exporting-group {
+        display: none;
+    }
+    text.highcharts-credits {
+        display: none;
+    }
+</style>
+

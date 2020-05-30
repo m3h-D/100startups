@@ -1,0 +1,54 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block body %}
+<style>
+    header, footer {
+        display: none;
+    }
+</style>
+<div class="body-form relative pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig" data-wow-duration="1s">
+    <div class="bg-chart2 body-form-top absolute flex-center">
+        <a name="team"></a><i class="fa fa-portrait vertical font-s30 color-white"></i>
+    </div>
+    <div class="absolute title-panel">
+        <h3 class="font-w300 font-s18 ">اطلاعات pitch deck</h3>
+    </div>
+    <div class="frm-row pad-t30">
+        <div class="colm12 pad-5 pad-t20">
+            <p class="pull-right font-w300 font-s14">چه مشکلی را حل می کنید؟</p>
+            <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{startup.problem}}</p>
+            <div class="clearfix"></div>
+        </div>
+        <div class="colm12 pad-5 pad-t20">
+            <p class="pull-right font-w300 font-s14">راه حل شما چیست ؟</p>
+            <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{startup.mysolution}}</p>
+            <div class="clearfix"></div>
+        </div>
+        <div class="colm12 pad-5 pad-t20">
+            <p class="pull-right font-w300 font-s14">راه حل های موجود چیست ؟</p>
+            <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{startup.solution}}</p>
+            <div class="clearfix"></div>
+        </div>
+        <div class="colm12 pad-5 pad-t20">
+            <p class="pull-right font-w300 font-s14">اندازه بازار برای اینکار چقدر است ؟</p>
+            <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{startup.market_size}}</p>
+            <div class="clearfix"></div>
+        </div>
+        <div class="colm12 pad-5 pad-t20">
+            <p class="pull-right font-w300 font-s14">رقبای داخلی و خارجی شما چه کسانی هستند ؟</p>
+            <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{startup.defect}}</p>
+            <div class="clearfix"></div>
+        </div>
+
+            <div class="colm12 pad-5 pad-t20">
+                <a href="{{startup.attachfile_p}}" download>دانلود پیچ دک</a>
+            </div>
+
+            <div class="colm12 pad-5 pad-t20">
+                <a href="{{startup.attachfile_e}}" download>دانلود پیش بینی مالی</a>
+            </div>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+{% endblock %}

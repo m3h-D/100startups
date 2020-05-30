@@ -1,0 +1,107 @@
+{% extends 'base/base-register.html' %}
+{% block title %}معرفی تیم{% endblock %}
+{% load static %}
+{% block body %}
+<style>
+    header,
+    footer,
+    .mobile {
+        display: none;
+    }
+
+    .hide-tab {
+        display: none;
+    }
+
+    .dropzone.dz-clickable .dz-message * {
+        color: #666;
+        font-size: 14px;
+        font-weight: 300;
+    }
+
+    .dropzone .dz-preview.dz-error .dz-error-message {
+        top: 10px;
+        font-size: .8rem;
+    }
+</style>
+
+<div class="colm9 colm11-tab colm margin-auto pad-5-mob">
+    <div class="pad-b20">
+        <h2 class="font-s35 color6">بارگذاری ویدئو </h2>
+        <p class="color-darkgray">ویدئو همانند ویدئو نمونه بارگذاری نمایید (حداکثر 40 مگابایت).</p>
+        <a href="{% static 'files/LQ-1.mp4' %}" class="font-s14">دانلود فایل نمونه</a>
+    </div>
+    <div class="spacer-t10">
+        <div>
+            <div class="colm12 colm pad-15 pull-right toggle-element">
+                {% if request.user.startup.video %}
+                <div class="align-center  idstartups" data-type="toggle-1">
+                    <div class="color-red pointer">
+                        <i class="fa fa-times vertical"></i>
+                        <span class="font-s14 idstartup" data-type="toggle-btn" data-startup="{{request.user.startup.pk}}">حذف ویدئو</span>
+                    </div>
+                    <video controls class="colm12 colm">
+                        <source src="{% if request.user.startup.video %}{{ request.user.startup.video.url }}{% endif %}" type="video/mp4">
+                        </source>
+                    </video>
+                </div>
+{% endif %}
+{% if not request.user.startup.video %}
+                <div class="box-upload" data-type="toggle-2">
+                    <form action="/uploadv/" class="dropzone align-center pad-20 box-shaddow border-r5 smart-validate"
+                        id="upload-video" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <div>
+                            <input type="text" class="hide" name="user_id" value="" />
+                            <input type="text" class="hide" name="file_type" value="video" />
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+                <div class="box-uploads hide" data-type="toggle-2">
+                    <form action="/uploadv/" class="dropzone align-center pad-20 box-shaddow border-r5 smart-validate"
+                        id="upload-video" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <div>
+                            <input type="text" class="hide" name="user_id" value="" />
+                            <input type="text" class="hide" name="file_type" value="video" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div id="get-errors">
+                                        
+        </div>
+        <div class="align-left spacer-t40">
+            <div class="pull-right pad-5-mob colm5-mob">
+                <a href="/team/" class="colm btn-prv font-s13">مرحله قبل </a>
+            </div>
+            <div class="pull-left pad-5-mob colm7-mob">
+                <form method="post">{% csrf_token %}
+                    <button type="submit" name="submit" class="colm btn-web">مرحله بعد </button>
+                </form>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+
+    {% endblock %}
+    {% block js %}
+
+<script>
+    jQuery(document).ready(function ($) {
+        $(document).on("click", ".idstartup", function () {
+            var hidee = $(".idstartups");
+            var showw = $(".box-uploads");
+            hidee.hide();
+            showw.removeClass("hide");
+            showw.addClass("show");
+            
+        
+        });
+    })
+</script>
+{% endblock %}

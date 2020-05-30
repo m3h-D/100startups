@@ -1,0 +1,493 @@
+{% extends 'base/base-panel.html' %} {% load static %} {% load sunny %} {% load jalali_tags %} {% block title %}ویرایش ملاقات ها{% endblock %} {% block body %}
+<style>
+    .hide-tab {
+        display: none;
+    }
+    
+    header,
+    footer {
+        display: none;
+    }
+    
+    .gui-select {
+        padding: 5px 20px;
+    }
+    
+    .searchresult {
+        left: unset;
+        width: 265;
+    }
+    
+    .accept-time {
+        background: #759872;
+        border: none;
+        color: #f0f8f8;
+        font-size: 11px;
+    }
+    
+    .failed-time {
+        background: #9c3131;
+        color: aliceblue;
+        border: none;
+        font-size: 11px;
+    }
+    
+    .none-time {
+        background: #0000000d;
+        border: none;
+        padding: 15px;
+    }
+    
+    .gui-select {
+        padding: 5px 20px;
+    }
+    
+    .searchresult {
+        left: unset;
+        width: 265;
+    }
+    
+    .activee {
+        background: none;
+        color: #f05555;
+    }
+</style>
+
+<form method="post" action="">{% csrf_token %}
+    <div class="pad-t20">
+        <div class="body-form relative">
+            <div class="bg-chart2 body-form-top absolute flex-center">
+                <i class="fa fa-handshake vertical font-s30 color-white"></i>
+            </div>
+            <div class="absolute title-panel">
+                <h3 class="font-w300 font-s18">ویرایش جلسه</h3>
+            </div>
+            <div class="colm2 colm pull-left pad-5 colm spacer-t50-mob">
+                <label for="start-date" class="gui-label pad-5">تاریخ پایان جلسه </label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                    <input dir="ltr" class="gui-select sans-digit start-date2" name="date_meeting_end" value="{{ the_event.startuptime.first.to_date|date:'Y-m-d' }}"
+                        id="date-meeting-end" data-etarikh="{{ the_event.startuptime.first.to_date|date:'Y-m-d' }}"  autocomplete="off" readonly required>
+                    <input type="hidden" id="date-meeting-endd" class="start-date2 observer-start-date-alt2" name="date_meeting_e">
+                </label>
+            </div>
+            <div class="colm2 colm pull-left pad-5 colm ">
+                <label for="start-date" class="gui-label pad-5">تاریخ شروع جلسه </label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                    <input dir="ltr" class="gui-select sans-digit start-date1" name="date_meeting_start" value="{{ the_event.startuptime.first.the_date|date:'Y-m-d' }}"
+                        id="date-meeting-start" data-starikh="{{ the_event.startuptime.first.the_date|date:'Y-m-d' }}" autocomplete="off" readonly required>
+                    <input type="hidden" id="date-meeting-startt" class="start-date1 observer-start-date-alt1" name="date_meeting_s">
+                </label>
+            </div>
+            <div class="clearfix"></div>
+            <div class="frm-row pad-t40">
+                <div class="overflow-scroll pad-b40">
+                    <table class="table color6 retable">
+                        <thead>
+                            <tr>
+                                <th>ردیف</th>
+                                <th>مربی</th>
+
+                                {% for x in the_event.startuptime.all %}
+                                <th class="btn-intro" data-status="{{ forloop.counter }}" data-stime="{{ x.from_time|time:'H:i' }}" data-etime="{{ x.to_time|time:'H:i' }}">
+                                    <div class="flex-center">
+                                        <time class="digit display-block font-w300 pintor font-s12 color-blue day{{ forloop.counter }} time{{ forloop.counter }}">{{ x.from_time|time:"H:i" }} تا {{ x.to_time|time:"H:i" }}</time>
+                                        <input type="hidden" name="startuptime" value="{{x.pk}}">
+                                        
+                                        <p class="font-s10 color-startup pointer sg-tab d{{ forloop.counter }}" data-id="{{ forloop.counter }}">ویرایش ساعت</p>
+                                    </div>
+                                </th>
+                                {% endfor %} {% if the_event.startuptime.count == 8 %} {% else %} {% list_counter the_event.startuptime.count as h %} {% list_counter_for the_event.startuptime.count as heh %} {% for item in 'x'|rjust:h %}
+                                <th class="btn-intro" data-status="{{ forloop.counter|add:heh }}" data-stime="" data-etime="">
+                                    <div class="flex-center">
+                                        <time class="digit display-block font-w300 font-s17 color-blue day{{ forloop.counter|add:heh }} "></time>
+                                        <time class="digit font-s13 color-startup time{{ forloop.counter|add:heh }} "></time>
+                                        <p class="font-s12 color-startup pointer sg-tab d{{ forloop.counter|add:heh }} " data-id="{{ forloop.counter|add:heh }} ">ثبت ساعت</p>
+                                    </div>
+                                </th>
+                                {% endfor %} {% endif %}
+
+                                <div class="modal-overlay">
+                                    <div class="modal">
+
+                                        <a class="close-modal">
+                                            <svg viewBox="0 0 20 20">
+                                                <path fill="#000000"
+                                                    d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z">
+                                                </path>
+                                            </svg>
+                                        </a>
+                                        <!-- close modal -->
+
+                                        <div class="modal-content colm10 colm" id="modal-delete">
+                                            {% for x in the_event.startuptime.all %}
+                                            <input type="hidden" name="startup_time_id" value="{{x.pk}}">
+                                            <div class="colm12 cont-{{ forloop.counter }}" id="{{ forloop.counter }}">
+                                                <h2 class="pad-b20"> ایجاد جلسه با <span class="name color-red">مربیان</span> صد استارتاپ</h2>
+                                                <div class="colm6 pad-5 colm pull-right spacer-b20">
+                                                    <label for="start-date" class="gui-label pad-5">ساعت جلسه از:
+                                                    </label>
+                                                    <label class="relative">
+                                                        <span class="icon-gui flex-center"><i
+                                                                class="fa fa-calendar-alt"></i></span>
+                                                        <input dir="ltr"
+                                                            class="gui-input  timepicker-s{{ forloop.counter }}"
+                                                            name="meeting_time_s1" value="{{ x.from_time|date:'H:i'}}"
+                                                            id="meeting_time_s{{ forloop.counter }}" autocomplete="off"
+                                                            readonly required>
+                                                        <input type="hidden"
+                                                            class="timepicker-s{{ forloop.counter }} observer-timepicker-s-alt{{ forloop.counter }}"
+                                                            name="meeting_time_s"
+                                                            id="meeting_time_ss{{ forloop.counter }}">
+                                                    </label>
+                                                </div>
+                                                <div class="colm6 pad-5 colm pull-right spacer-b20">
+                                                    <label for="start-date" class="gui-label pad-5">ساعت جلسه تا:
+                                                    </label>
+                                                    <label class="relative">
+                                                        <span class="icon-gui flex-center"><i
+                                                                class="fa fa-calendar-alt"></i></span>
+                                                        <input dir="ltr"
+                                                            class="gui-input  timepicker-e{{ forloop.counter }}"
+                                                            name="meeting_time_e1" value="{{ x.to_time|date:'H:i'}}"
+                                                            id="meeting_time_e{{ forloop.counter }}" autocomplete="off"
+                                                            readonly required>
+                                                        <input type="hidden"
+                                                            class="timepicker-e{{ forloop.counter }} observer-timepicker-e-alt{{ forloop.counter }}"
+                                                            name="meeting_time_e"
+                                                            id="meeting_time_ee{{ forloop.counter }}">
+                                                    </label>
+                                                </div>
+                                                <div class="clom12 colm spacer-t40">
+                                                    <div class="colm4 colm margin-auto">
+                                                        <span class=" btn-webb bg-dis spacer-t40 colm12 colm flex-center pointer date" data-save="{{ forloop.counter }}">ثبت تاریخ</span>
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </div>
+                                            {% endfor %} {% if the_event.startuptime.count == 8 %} {% else %} {% list_counter the_event.startuptime.count as h %} {% list_counter_for the_event.startuptime.count as heh %} {% for item in 'x'|rjust:h %}
+                                            <div class="colm12 cont-{{ forloop.counter|add:heh }}" id="{{ forloop.counter|add:heh }}">
+                                                <h2 class="pad-b20"> ایجاد جلسه با <span class="name color-red">مربیان</span> صد استارتاپ</h2>
+                                                <div class="colm6 pad-5 colm pull-right spacer-b20">
+                                                    <label for="start-date" class="gui-label pad-5">ساعت جلسه از:
+                                                    </label>
+                                                    <label class="relative">
+                                                        <span class="icon-gui flex-center"><i
+                                                                class="fa fa-calendar-alt"></i></span>
+                                                        <input dir="ltr"
+                                                            class="gui-input sans-digit timepicker-s{{forloop.counter|add:heh}}"
+                                                            name="meeting_time_s1" value=""
+                                                            id="meeting_time_s{{ forloop.counter|add:heh }}"
+                                                            autocomplete="off" readonly required>
+                                                        <input type="hidden"
+                                                            class="timepicker-s{{forloop.counter|add:heh}} observer-timepicker-s-alt{{forloop.counter|add:heh}}"
+                                                            name="meeting_time_s">
+                                                    </label>
+                                                </div>
+                                                <div class="colm6 pad-5 colm pull-right spacer-b20">
+                                                    <label for="start-date" class="gui-label pad-5">ساعت جلسه تا:    
+                                                    </label>
+                                                    <label class="relative">
+                                                        <span class="icon-gui flex-center"><i
+                                                                class="fa fa-calendar-alt"></i></span>
+                                                        <input dir="ltr"
+                                                            class="gui-input sans-digit timepicker-e{{forloop.counter|add:heh}}"
+                                                            name="meeting_time_e1" value=""
+                                                            id="meeting_time_e{{ forloop.counter|add:heh }}"
+                                                            autocomplete="off" readonly required>
+                                                        <input type="hidden"
+                                                            class="timepicker-e{{forloop.counter|add:heh}} observer-timepicker-e-alt{{forloop.counter|add:heh}}"
+                                                            name="meeting_time_e">
+                                                    </label>
+                                                </div>
+                                                <div class="clom12 colm spacer-t40">
+                                                    <div class="colm4 colm margin-auto">
+                                                        <span class=" btn-webb bg-dis spacer-t40 colm12 colm flex-center pointer date" data-save="{{ forloop.counter|add:heh }}">ثبت تاریخ</span>
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </div>
+                                            {% endfor %} {% endif %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for coach_event in all_events %}
+                            <tr id="{{coach_event.pk}}" class="">
+                                <td class="iransansdigit"></td>
+                                <td class="colm4">
+                                    <div class="relative pull-right pad-5 pad-b20 coach-box">
+                                        <label class="relative">
+                                            <span class="icon-gui flex-center"><i
+                                                    class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                            <input type="text"
+                                                oninput="searchApi('search_companion','companion-result' , 'coach', 1,)"
+                                                class="w165-mob search_companion referee-name gui-input sans-digit choosen-name"
+                                                value="{{coach_event.content_object.first_name}} {{coach_event.content_object.last_name}}"
+                                                placeholder="نام مربی را وار نمایید" required>
+                                            <input type="hidden" class="choosen-id" name="coach[]"
+                                                value="{{ coach_event.content_object.pk }}"
+                                                data-row="{{forloop.counter}}" />
+                                            <input type="hidden" name="c_e_id" value="{{coach_event.pk}}">
+                                            <div id="companion-result"></div>
+                                        </label>
+                                    </div>
+                                </td>
+
+                                {% for is_full in coach_event.theevent_coachevent.all %}
+                                <td class="colm1">
+                                    <div class="relative pull-right pad-5 pad-b20 colm12 pintor">
+                                        <label class="relative pad-b20">
+                                            <select class="w100-mob input-mentor new-name gui-select save-s s"
+                                                name="{% if coach_event %}meeting-{{ coach_event.content_object.pk }}{% endif %}">
+                                                <option
+                                                    value="">انتخاب</option>
+                                                <option {% if is_full.th_time == 1 %}selected{% endif %} value="1">آزاد</option>
+                                                <option {% if is_full.th_time == 2 %}selected{% endif %} value="2">پر</option>
+                                            </select>
+                                            <input type="hidden" class="coach_pk" name="{% if coach_event %}coach_pk-{{ coach_event.content_object.pk }}{% endif %}" value="{{is_full.pk}}">
+                                        </label>
+                                    </div>
+                                </td>
+
+                                {% endfor %} {% if coach_event.theevent_coachevent.count == 8 %} {% else %} {% list_counter coach_event.theevent_coachevent.count as c %} {% for item in 'x'|rjust:c %}
+                                <td class="colm1">
+                                    <div class="relative pull-right pad-5 pad-b20 colm12 pintor">
+                                        <label class="relative pad-b20">
+                                            <select class="w100-mob input-mentor new-name gui-select save-s s"
+                                                name="{% if coach_event %}meeting-{{ coach_event.content_object.pk }}{% endif %}">
+                                                <option value="">انتخاب</option>
+                                                <option value="1">آزاد</option>
+                                                <option value="2">پر</option>
+                                            </select>
+                                            <input type="hidden" class="coach_pk" name="" value="">
+                                        </label>
+                                    </div>
+                                </td>
+                                {% endfor %} {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <h1>
+                        {{c}}
+                    </h1>
+                </div>
+                <div class="margin-auto colm2 colm6-mob pad-b25 spacer-t25-mob">
+                    <button type="submit" name="submit_event" class="btn-webb bg-dis colm12 colm">ثبت
+                        جلسه</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div id="demo"></div>
+{% endblock %} {% block script %}
+<script>
+    function convertTimeToTimestamp(time) {
+        let times = time.split(':');
+        let date = new Date();
+        date.setHours(times[0]);
+        date.setMinutes(times[1]);
+        return date.getTime();
+    }
+
+    function fillTimes([valueId, targetId], length) {
+        for (let idx = 1; idx < length; idx++) {
+            const time = document.getElementById(valueId + idx).value;
+            if (!time) continue;
+            document.getElementById(targetId + idx).value = convertTimeToTimestamp(time);
+        }
+    }
+
+
+
+    jQuery(document).ready(function($) {
+
+
+        $( ".coach-box" ).each(function() {
+            var leadervalue = $(this).find("input.choosen-id").val(); 
+            var className2 = $(this).find("input.choosen-id").parents().eq(3).find('.coach_pk');
+            $(className2).attr('name', 'coach_pk-' + leadervalue);
+            
+        });
+        fillTimes(['meeting_time_s', 'meeting_time_ss'], 8);
+        fillTimes(['meeting_time_e', 'meeting_time_ee'], 8);
+
+        var sdatetime = document.getElementById("date-meeting-start").getAttribute("data-starikh");
+        var svaltimstamp = Date.parse(sdatetime);
+        document.getElementById("date-meeting-startt").value = svaltimstamp;
+
+        var edatetime = document.getElementById("date-meeting-end").getAttribute("data-etarikh");
+        var evaltimstamp = Date.parse(edatetime);
+        document.getElementById("date-meeting-endd").value = evaltimstamp;
+
+
+        jQuery('.btn-intro').on('click', function() {
+            var startupName = jQuery(this).data('name');
+            var introduce = jQuery(this).data('introduce');
+            var startupId = jQuery(this).data('startup-id');
+            var times = jQuery(this).data('stime');
+            var timee = jQuery(this).data('etime');
+            var status = jQuery(this).data('status');
+            var elements = jQuery('.modal-overlay, .modal');
+            var elements1 = jQuery('.cont-1');
+            var elements2 = jQuery('.cont-2');
+            var elements3 = jQuery('.cont-3');
+            var elements4 = jQuery('.cont-4');
+            var elements5 = jQuery('.cont-5');
+            var elements6 = jQuery('.cont-6');
+            var elements7 = jQuery('.cont-7');
+            var elements8 = jQuery('.cont-8');
+            var btnInterest = jQuery('.btn-interest');
+            var vals1 = jQuery('#meeting_time_ss' + status);
+            var vals2 = jQuery('#meeting_time_ee' + status);
+
+
+            if (status == 1) {
+                elements1.show();
+                elements2.hide();
+                elements3.hide();
+                elements4.hide();
+                elements5.hide();
+                elements6.hide();
+                elements7.hide();
+                elements8.hide();
+
+            } else if (status == 2) {
+                elements2.show();
+                elements1.hide();
+                elements3.hide();
+                elements4.hide();
+                elements5.hide();
+                elements6.hide();
+                elements7.hide();
+                elements8.hide();
+            } else if (status == 3) {
+                elements3.show();
+                elements1.hide();
+                elements2.hide();
+                elements4.hide();
+                elements5.hide();
+                elements6.hide();
+                elements7.hide();
+                elements8.hide();
+            } else if (status == 4) {
+                elements4.show();
+                elements1.hide();
+                elements2.hide();
+                elements3.hide();
+                elements5.hide();
+                elements6.hide();
+                elements7.hide();
+                elements8.hide();
+
+            } else if (status == 5) {
+                elements4.hide();
+                elements1.hide();
+                elements2.hide();
+                elements3.hide();
+                elements5.show();
+                elements6.hide();
+                elements7.hide();
+                elements8.hide();
+
+            } else if (status == 6) {
+                elements4.hide();
+                elements1.hide();
+                elements2.hide();
+                elements3.hide();
+                elements5.hide();
+                elements6.show();
+                elements7.hide();
+                elements8.hide();
+
+            } else if (status == 7) {
+                elements4.hide();
+                elements1.hide();
+                elements2.hide();
+                elements3.hide();
+                elements5.hide();
+                elements6.hide();
+                elements7.show();
+                elements8.hide();
+
+            } else if (status == 8) {
+                elements4.hide();
+                elements1.hide();
+                elements2.hide();
+                elements3.hide();
+                elements5.hide();
+                elements6.hide();
+                elements7.hide();
+                elements8.show();
+            }
+
+            elements.addClass('active');
+            jQuery('.date').on('click', function() {
+                var i = jQuery(this).data('save');
+                var d = '.d' + i;
+                var meetingS = '#meeting_time_s' + i;
+                var meetingE = '#meeting_time_e' + i;
+                var showT = '.time' + i;
+                var showS = jQuery(meetingS).val();
+                var showE = jQuery(meetingE).val();
+                var mess = showS + ' تا ' + showE;
+
+                jQuery(showT).text(mess);
+                elements.removeClass('active');
+                jQuery(d).hide();
+            });
+            jQuery('.close-modal').click(function() {
+                elements.removeClass('active');
+            });
+        });
+
+
+
+
+        $("td.radif").each(function(){
+            let loop  = $(this).data('loop');
+            let child = $(this).parents().eq(0).attr('data-rows');
+            $(this).children(0).find(".idchild").attr('oninput',`searchApi('search_companion${child}${loop}','subscriber-result${child}${loop}' , 'subscriber',${child},'companion')`);
+            $(this).children(0).find(".idchild").addClass(`search_companion${child}${loop}`)
+            $(this).children(0).find(".chengeid").attr('id',`subscriber-result${child}${loop}`)
+        })
+
+
+        $( document ).ready(function() {
+            $( ".leader-box" ).each(function() {
+                var leadervalue = $(this).find("input.choosen-id-leader").val(); 
+                var className = $(this).find("input.choosen-id-leader").parents().eq(3).find('.new-name');
+                var className2 = $(this).find("input.choosen-id-leader").parents().eq(3).find('.lead_pk');
+                $(className).attr('name', 'startup-' + leadervalue);
+                $(className2).attr('name', 'lead_pk-' + leadervalue);
+              
+            });
+        });
+        $(document).on('change','.choosen-id-leader',function() {
+            var valu = $(this).val();
+            var className = $(this).parents().eq(3).find('.new-name');
+            var className2 = $(this).parents().eq(3).find('.lead_pk');
+            console.log(valu);
+            $(className).attr('name', 'startup-' + valu);
+            $(className2).attr('name', 'lead_pk-' + valu);
+        });
+
+
+
+
+        $(document).on('change', '.choosen-id', function() {
+            var valu = $(this).val();
+            var className = $(this).parents().eq(3).find('.new-name');
+            console.log(className);
+            $(className).attr('name', 'meeting-' + valu);
+        });
+    });
+</script>
+{% endblock %}

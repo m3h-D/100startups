@@ -1,0 +1,173 @@
+{% extends 'base/base-panel.html' %}
+{% load jalali_tags %}
+{% load static %}
+{% block title %}ارسال پیام{% endblock %}
+{% block body %}
+    <div class="frm-row pad-t40 colm10 colm margin-auto">
+        <div class="colm12 colm12-tab colm12-tab colm pad-15 pad-t40 pad-5-mob wow slideInRight" data-wow-duration="1.5s">
+            <div class="body-form relative pad-b10">
+                <div class="payam">
+                    <div class="bg-chart5 body-form-top absolute flex-center">
+                        <i class="fa fa-comment vertical font-s30 color-white"></i>
+                    </div>
+                    <div class="absolute title-panel">
+                        <h3 class="font-w300 font-s18">پیام های فرستاده شده به <span class="color-red"> {{ receiver.first_name }} {{ receiver.last_name }}</span> </h3>
+                    </div>
+                </div>
+                <div class="pad-table overflow-scroll">
+                    <table class="table color6">
+                        <thead>
+                            <tr>
+                                <th class="center">عنوان</th>
+                                <th class="center">نام فرستنده</th>
+                                <th class="center">نام گیرنده</th>
+                                <th class="center">تاریخ</th>
+                                <th class="center">وضعیت</th>
+                                <th class="center">مشاهده</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in all_messages %}
+                            {% ifchanged m.message_title %}
+                          <tr class="{{ m.pk }}">
+                            <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.message_title }}</td>
+                            <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.send_message.last.sender.first_name }} {{ m.send_message.last.sender.last_name }}</td>
+                            <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.send_message.last.receiver.first_name }} {{ m.send_message.last.receiver.last_name }}</td>
+                            <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{{ m.created_date|to_jalali:'%Y/%m/%d' }}</td>
+                            <td class="center {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}">{% if m.send_message.first.is_readed == True %}خوانده شده{% else %}خوانده نشده{% endif %}</td>
+                            <td class="center">
+                                <a class="color-silver {% if m.send_message.first.is_readed == True %}{% else %}bold-message{% endif %}" title="نمایش" href="{% url 'message:show_messages' m.pk %}">
+                                  <span>
+                                    <i class="align-center font-s20 fa fa-eye"></i>
+                                  </span>
+                                </a>
+                            </td>
+                          </tr>
+                          {% endifchanged %}
+                          {% empty %}
+
+
+<tr>
+   <th style="background: #f7f5ed;" colspan="7">
+    <img height="174" src="{% static 'images/whitespace/notification.png' %}" alt="whitespace">
+   </th> 
+</tr>
+
+
+
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class=" pull-right  relative pad-10 colm12 colm spacer-t30">
+            <div class="body-form wow fadeInUpBig" data-wow-duration="1s">
+                <div class="body-form-top bg-chart4 flex-center absolute">
+                    <i class="fa fa-comments font-s30 color-white vertical"></i>
+                </div>
+                <div class="title-panel absolute pad-t10">
+                    <h3 class="font-s18 font-w300">ارسال پیام</h3>
+                </div>
+                <div class="overflow-scroll pad-t40 pad-30">
+                    <form method="post" action="" id="sending-message">{% csrf_token %}
+                        <div class="colm6 colm pull-right pad-5 pad-b20">
+                            <label for="receiver" class="gui-label">نام گیرنده :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>
+                                <input class="gui-input" type="text" value="{{ receiver.first_name }} {{ receiver.last_name }}" id="receiver" disabled>
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5 pad-b20">
+                            <label for="title" class="gui-label">عنوان پیام :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-comment-dots vertical"></i></span>
+                                <input class="gui-input" type="text" name="message_title" id="title">
+                            </label>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 pad-b20">
+                            <label for="content" class="gui-label">متن پیام :</label>
+                            <label class="relative">
+                                <textarea class="input-send gui-textarea" id="message-content" cols="25" rows="5" type="text" name="message_content"></textarea>
+                            </label>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="btn-message flex-center align-center">
+                            <div  onclick="sendMessage('receiver','title','message-content','','sending-message')" class="btn-panel pad-10 color-white iransans">ارسال<span class="loader-request"></span></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+
+    <div id="toast">
+        <div id="img">وضعیت</div>
+        <div id="desc">پیام شما با موفقیت ارسال شد</div>
+    </div>
+
+    <div id="toast-err">
+        <div id="img-err">وضعیت</div>
+        <div id="desc-err">پیام شما ارسال نشد دوباره تلاش کنید</div>
+    </div>
+
+    <div id="toast-not">
+        <div id="img-not">وضعیت</div>
+        <div id="desc-not">لطفا همه فیلد ها را کامل کنید</div>
+    </div>
+
+
+    <style>
+        header, footer {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script>
+        function sendMessage(input1,input2,input3,url,data) {
+            jQuery( ".button-send" ).prop( "disabled", true );
+            jQuery('.loader-request').css('display','block');
+            var part1 = jQuery('#'+ input1).val();
+            var part2 = jQuery('#'+ input2).val();
+            var part3 = jQuery('#'+ input3).val();
+            if((part1.length > 0) && (part2.length > 0) && (part3.length > 0)) {
+                jQuery.ajax({
+                    url: url,
+                    method:'POST',
+                    data: {message_title: part2, message_content: part3, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success: function(data) {
+                        console.log(data);
+                        // var redirectPage = jQuery(response).filter('.redirect').text();
+                        jQuery( ".input-send" ).prop( "disabled", true );
+                        jQuery('.loader-request').css('display','none');
+                        var x = document.getElementById('toast');
+                        x.className = "show";
+                        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+                        // setTimeout(function(){ location.href = "{% url 'message:message_box' %}"; }, 4000);
+                    }
+                }).error(function(data){
+                    console.log(send);
+                    console.log(data.send);
+                    jQuery( ".input-send" ).prop( "disabled", true );
+                    jQuery('.loader-request').css('display','none');
+                    var x = document.getElementById("toast-err");
+                    x.className = "show";
+                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+                    // setTimeout(function(){ location.reload(); }, 4000);
+                })
+            }else {
+                jQuery( ".button-send" ).prop( "disabled", false );
+                var x = document.getElementById("toast-not");
+                jQuery('.loader-request').css('display','none');
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+            }
+        };
+
+
+    </script>
+{% endblock %}

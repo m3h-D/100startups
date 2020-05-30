@@ -1,0 +1,126 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load sunny %}
+{% load jalali_tags %}
+{% block title %}لیست ایونت ها{% endblock %}
+{% block body %}
+    <style>
+        header,
+        footer {
+            display: none;
+        }
+
+        .hide-tab {
+            display: none;
+        }
+    </style>
+                                {% for event in events %}
+    <div class="pad-t20">
+            <div class="body-form  relative spacer-t30">
+                <div class="bg-chart2 body-form-top absolute flex-center">
+                    <i class="fa fa-handshake vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18  hide-mob">
+                        <span class="color-dashboard font-s13">ایجاد کننده رویداد : {{ event.owner.first_name }} {{ event.owner.last_name }}</span>
+                    </h3>
+                </div>
+                <div class="pull-left pad-10">
+					{# <a href="{% url 'theevent:edit_create_event' event.pk %}" class="btn-excel color-white font-s11 iransans pad-5"><i class="fa fa-edit pad-l5 vertical"></i>ویراش رویداد</a>   #}
+				</div>
+                <span class="color-dashboard font-s12 pull-left pad-10  hide-mob">تاریخ ایجاد : {{ event.created_date|to_jalali:'%Y/%m/%d'}}</span>
+                <div class="clearfix"></div>
+                <div class="frm-row pad-t40">
+                    <div class="overflow-scroll pad-b40">
+                        <table class="table color6 retable">
+                            <thead>
+
+                                <tr>
+                                    <th>سرمایه گذار</th>
+                                    {% time_event event as startups %}
+                                    {% for startup in startups %}
+
+                                    <th class="btn-intro">
+                                        <div class="flex-center">
+                                            <input type="hidden" class="time{{ forloop.counter }}"  name="time{{ forloop.counter }}" value="{{ startup.the_date }}{{ startup.from_time }}{{ startup.to_time }}">
+                                            <time class="digit display-block font-w300 font-s13 color-blue day">{{ startup.from_time|time:"H:i" }} تا {{ startup.to_time|time:"H:i" }}</time>                                  
+                                            <p class="font-s14 color-startup  ">{% if startup.the_date %}{{ startup.the_date|to_jalali:'%Y/%m/%d' }}{% else %}تاریخ ثبت نشده{% endif %}</p>
+                                            
+                                        </div>
+                                    </th>
+                                    {% endfor %}
+                                    {% if startups.count == 4 %}
+                                    {% else %}
+                                    {% list_counter2 startups.count as c %}
+                                    {% for item in 'x'|rjust:c %}
+                                    <th class="btn-intro">
+                                        <div class="flex-center">
+
+                                            <p class="font-s14 color-startup  ">تاریخ ثبت نشده</p>
+                                            
+                                        </div>
+                                    </th>
+                                {% endfor %}
+                                {% endif %}
+
+                            </thead>
+
+                            <tbody>
+                                
+                                {% for x in event.c_event.all %}
+                                <tr id="{{ x.pk }}" class="">
+                                    <td>
+                                        <div class="relative pull-right pad-5 pad-b20">
+                                            <label for="" class="gui-label">سرمایه گذار: </label>
+                                            <label class="relative">
+                                                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                                <input type="text"  class="w165-mob search_companion referee-name gui-input iransans  choosen-name" value="{{x.content_object.user.first_name }} {{x.content_object.user.last_name }} "  disabled>
+
+                                                <div id="companion-result"></div>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    {% startups_c_event x as startups %}
+                                   
+                                   {% for startup in startups %}
+                                    <td>
+ 
+                                        <div class="relative pull-right pad-5 pad-b20">
+                                            <label for="roles-search" class="gui-label">استارتاپ:</label>
+                                            <label class="relative pad-b20">
+                                                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                                                <input class="w165-mob input-mentor gui-input save-s s1 iransans" value="{% if startup %}{{ startup.startup.title }}{% else %}استارتاپ ثبت نشده{% endif %}" disabled>
+                                                </i>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    {% endfor %}
+                                    {% if startups.count == 4 %}
+                                    {% else %}
+                                    {% list_counter2 startups.count as c %}
+                                    {% for item in 'x'|rjust:c %}
+                                    <td>
+ 
+                                        <div class="relative pull-right pad-5 pad-b20">
+                                            <label for="roles-search" class="gui-label">استارتاپ:</label>
+                                            <label class="relative pad-b20">
+                                                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                                                <input class="w165-mob input-mentor gui-input save-s s1 iransans" value="استارتاپ ثبت نشده" disabled>
+                                                </i>
+                                            </label>
+                                        </div>
+                                    </td>
+                                {% endfor %}
+                                {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    {% empty %}
+        {% endfor %}
+{% endblock %}

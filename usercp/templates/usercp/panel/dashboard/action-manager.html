@@ -1,0 +1,348 @@
+<div class="pad-t40">
+	<div class="frm-row">
+		<div>
+			<div class="colm3 colm pull-right pad-15 wow fadeInDown" data-wow-duration="1s">
+				<div class="body-form pad-15 relative">
+					<div class="pad-b10">
+						<div class="bg-chart1 icon-cat-panel absolute  flex-center">
+							<i class="fa fa-rocket vertical font-s30 color-white"></i>
+						</div>
+						<div class="align-right">
+							<a href="" class="color-darkgray font-w200 font-s15">استارتاپ ها</a>
+							<h4 class="font-w300 font-s20 title-panel"><?php echo count($user_query_sub->get_results()) ?></h4>
+						</div>
+					</div>
+					<div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 verticall"></i>
+						</span>
+						<span>
+							آمار استــارتاپ های سایت
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="colm3 colm pull-right pad-15 wow fadeInDown" data-wow-duration="1s">
+				<div class="body-form pad-15 relative">
+					<div class="pad-b10">
+						<div class="bg-chart2 icon-cat-panel absolute flex-center">
+							<i class="fa fa-users vertical font-s30 color-white"></i>
+						</div>
+						<div class="align-right">
+							<a href="" class="color-darkgray font-w200 font-s15">داوران</a>
+							<h4 class="font-w300 font-s20 title-panel"></h4>
+						</div>
+					</div>
+					<div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+						<span>
+							آمار داوران سایت
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="colm3 colm pull-right pad-15 wow fadeInDown" data-wow-duration="2s">
+				<div class="body-form pad-15 relative">
+					<div class="pad-b10">
+						<div class="bg-chart3 icon-cat-panel absolute flex-center">
+							<i class="fa fa-gem  vertical font-s30 color-white"></i>
+						</div>
+						<div class="align-right">
+							<a href="" class="color-darkgray font-w200 font-s15">سرمایه گذاران</a>
+							<h4 class="font-w300 font-s20 title-panel"></h4>
+						</div>
+					</div>
+					<div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+						<span>
+							آمار سرمایه گذاران سایت
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="colm3 colm pull-right pad-15 wow  fadeInDown" data-wow-duration="2.5s">
+				<div class="body-form pad-15 relative">
+					<div class="pad-b10">
+						<div class="bg-chart4 icon-cat-panel absolute  flex-center">
+							<i class="fa fa-chalkboard-teacher vertical font-s30 color-white"></i>
+						</div>
+						<div class="align-right">
+							<a href="" class="color-darkgray font-w200 font-s15">مربیان</a>
+							<h4 class="font-w300 font-s20 title-panel"></h4>
+						</div>
+					</div>
+					<div class="border-t-chart font-w200 font-s12 pad-t10">
+						<span class="font-w300">
+							<i class="fa fa-chart-bar pad-l5 vertical"></i>
+						</span>
+						<span>
+							آمار مربیان سایت
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<div class="frm-row pad-t40 ">
+		<div>
+			<div class="colm8 colm pull-right pad-15 wow slideInRight" data-wow-duration="1.5s">
+				<div class="body-form relative pad-b10">
+					<div class="payam">
+		     			<div class="bg-chart5 body-form-top absolute flex-center">
+							<i class="fa fa-comment vertical font-s30 color-white"></i>
+						</div>
+						<div class="absolute title-panel">
+							<h3 class="font-w300 font-s18">آخرین پیام ها</h3>
+						</div>
+					</div>
+					<div class="pad-table overflow-scroll">
+						<table class="table color6">
+							<thead>
+								<tr>
+									<th class="center">عنوان پیام</th>
+									<th class="center">نام فرستنده</th>
+									<th class="center">ایمیل فرستنده</th>
+									<th class="center">خلاصه پیام</th>
+								 </tr>
+							</thead>
+							<tbody>
+
+							 <tr class="<?php echo $class; ?>">
+								<td class="center"><?php echo $startup_name; ?></td>
+								<td class="center"><?php echo $firstname.' '.$lastname; ?></td>
+								<td class="center"><?php echo jdate('Y/m/d',$user->user_registered);?></td>
+								<td class="center">
+									<a class="color-silver" title="نمایش" href="<?php echo home_url("/information/$user_id") ?>"
+										<span>
+											<i class="align-center font-s20 fa fa-address-card"></i>
+										</span>
+									</a>
+								</td>
+					  		</tr>
+					  		<tr class="">
+								<td class="center"></td>
+								<td class="center"></td>
+								<td class="center"></td>
+								<td class="center">
+									<a class="color-silver" title="نمایش" href=""
+										<span>
+											<i class="align-center font-s20 fa fa-address-card"></i>
+										</span>
+									</a>
+								</td>
+					  		</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="colm4 colm pull-right pad-15 wow slideInLeft" data-wow-duration="1.5s">
+				<div class=" body-form height320 pad-15 relative">
+					<div class="magin-auto absolute content-ch pad-20 ">
+						<h3 class="font-w300 font-s18">بازدید روزانه</h3>
+						<h3 class="colm12 colm border-b-panel font-w200 font-s14">آمار بازدید روزانه سایت </h3>
+						<div class="color-bottom-chart font-w200 font-s12 pad-t5">
+							<span class="">
+								<i class="fa fa-clock vertical"></i>
+							</span>
+							<span>
+								ویرایش شده در دو روز پیش
+							</span>
+						</div>
+					</div>
+					<div class="bg-chart1 chart-panel magin-auto absolute pad-20">
+						<div class="ct-chart" id="completedTasksChart"></div>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+	<div class="frm-row pad-t40 pad-15">
+		<div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+			<div class="pad-b10">
+     			<div class="bg-chart1 body-form-top absolute flex-center">
+					<i class="fa fa-rocket vertical font-s30 color-white"></i>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18">10 استــارتاپ آخر</h3>
+				</div>
+				<div class="frm-row pad-t25-mob">
+
+				</div>
+			</div>
+			<div class="frm-row pad-t40 pad-b20">
+				<div class="pad-table overflow-scroll">
+					<table class="table color6">
+						<thead>
+							<tr>
+								<th class="center">نام استــارتاپ</th>
+								<th class="center">رهبر گروه</th>
+								<th class="center">تاریخ ثبت نام</th>
+								<th class="center">عملیات</th>
+							 </tr>
+						</thead>
+						<tbody>
+
+						 <tr class="<?php echo $class; ?>">
+							<td class="center"></td>
+							<td class="center"></td>
+							<td class="center"></td>
+							<td class="center">
+								<a class="color-silver" title="نمایش" href="<?php echo home_url("/information/$user_id") ?>"
+									<span>
+										<i class="align-center font-s20 fa fa-address-card"></i>
+									</span>
+								</a>
+							</td>
+				  		</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<style>
+
+	rect.highcharts-background{
+		fill:transparent
+	}
+	g.highcharts-exporting-group {
+    display: none;
+}
+text.highcharts-credits {
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+   let breakCards = !0
+  , searchVisible = 0
+  , transparent = !0
+  , transparentDemo = !0
+  , fixedTop = !1
+  , mobile_menu_visible = 0
+  , mobile_menu_initialized = !1
+  , toggle_initialized = !1
+  , bootstrap_nav_initialized = !1
+  , seq = 0
+  , delays = 80
+  , durations = 500
+  , seq2 = 0
+  , delays2 = 80
+  , durations2 = 500;
+
+		function startAnimationForLineChart(e) {
+        e.on("draw", function(e) {
+            "line" === e.type || "area" === e.type ? e.element.animate({
+                d: {
+                    begin: 600,
+                    dur: 700,
+                    from: e.path.clone().scale(1, 0).translate(0, e.chartRect.height()).stringify(),
+                    to: e.path.clone().stringify(),
+                    easing: Chartist.Svg.Easing.easeOutQuint
+                }
+            }) : "point" === e.type && (seq++,
+            e.element.animate({
+                opacity: {
+                    begin: seq * delays,
+                    dur: durations,
+                    from: 0,
+                    to: 1,
+                    easing: "ease"
+                }
+            }))
+        }),
+        seq = 0
+    }
+
+    function startAnimationForBarChart(e) {
+        e.on("draw", function(e) {
+            "bar" === e.type && (seq2++,
+            e.element.animate({
+                opacity: {
+                    begin: seq2 * delays2,
+                    dur: durations2,
+                    from: 0,
+                    to: 1,
+                    easing: "ease"
+                }
+            }))
+        }),
+        seq2 = 0
+    }
+
+		function initDashboardPageCharts() {
+        if (0 != jQuery("#dailySalesChart").length || 0 != jQuery("#completedTasksChart").length || 0 != jQuery("#websiteViewsChart").length) {
+            dataDailySalesChart = {
+                labels: ["M", "T", "W", "T", "F", "S", "S"],
+                series: [[12, 17, 7, 17, 23, 18, 38]]
+            },
+            optionsDailySalesChart = {
+                lineSmooth: Chartist.Interpolation.cardinal({
+                    tension: 0
+                }),
+                low: 0,
+                high: 50,
+                chartPadding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0
+                }
+            };
+            var e = new Chartist.Line("#dailySalesChart",dataDailySalesChart,optionsDailySalesChart);
+            startAnimationForLineChart(e),
+            dataCompletedTasksChart = {
+                labels: ["12p", "3p", "6p", "9p", "12p", "3a", "6a", "9a"],
+                series: [[230, 750, 450, 300, 280, 240, 200, 190]]
+            },
+            optionsCompletedTasksChart = {
+                lineSmooth: Chartist.Interpolation.cardinal({
+                    tension: 0
+                }),
+                low: 0,
+                high: 1e3,
+                chartPadding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0
+                }
+            };
+            var a = new Chartist.Line("#completedTasksChart",dataCompletedTasksChart,optionsCompletedTasksChart);
+            startAnimationForLineChart(a);
+            var t = Chartist.Bar("#websiteViewsChart", {
+                labels: ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"],
+                series: [[542, 443, 320, 780, 553, 453, 326, 434, 568, 610, 756, 895]]
+            }, {
+                axisX: {
+                    showGrid: !1
+                },
+                low: 0,
+                high: 1e3,
+                chartPadding: {
+                    top: 0,
+                    right: 5,
+                    bottom: 0,
+                    left: 0
+                }
+            }, [["screen and (max-width: 640px)", {
+                seriesBarDistance: 5,
+                axisX: {
+                    labelInterpolationFnc: function(e) {
+                        return e[0]
+                    }
+                }
+            }]]);
+            startAnimationForBarChart(t)
+        }
+    }
+		initDashboardPageCharts();
+		</script>

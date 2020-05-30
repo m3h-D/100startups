@@ -1,0 +1,124 @@
+<style>
+    .searchresult {
+        left: -3px;
+    }
+</style>
+<form method="post" id="choosementor" autocomplete="off">{% csrf_token %}
+
+{% if startup.rahbar %}
+    <div class="align-right colm colm8 margin-auto pad-r30 pad-t20">
+        <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+        <label>
+            <input type="radio" id="companion-notification1" name="companion_notification" value="1" class="dastresi" checked >
+            <label for="companion-notification1" class="pad-5">بله</label>
+            <input type="radio" id="companion-notification0" name="companion_notification" value="0" class="dastresi">
+            <label for="companion-notification0" class="pad-5">خیر</label>
+        </label>
+    </div>
+    <div class="colm8 colm margin-auto pad-20">
+        <div class="colm12 colm margin-auto pad-5">
+            <label for="" class="gui-label pad-5 align-right">راهبر پیشنهاد شده:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" class="gui-input sans-digit" value="{{ startup.rahbar.first_name }} {{ startup.rahbar.last_name }}" disabled>
+            </label>
+        </div>
+
+        {% if startup == th_leaders.first.startup %}
+        <div class="colm12 colm margin-auto pad-5">
+            <label for="" class="gui-label pad-5 align-right">راهبرانی که پیشنهاد راهبری تیم را قبول کردند:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" class="gui-input sans-digit" value="{% for lead in th_leaders %}{{lead.event.content_object.first_name}} {{lead.event.content_object.last_name}} {% if not forloop.last %} و {% endif%}{% endfor %}" disabled>
+            </label>
+        </div>
+        {% endif %}
+        <div class="colm12 colm margin-auto pad-5">
+            <label for="" class="gui-label pad-5 align-right">انتخاب راهبر:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" oninput="searchApi('search_companion','companion-result' , 'leader')" class="search_companion referee-name gui-input sans-digit choosen-name" value="{% if startup.rahbar_asli %}{{ startup.rahbar_asli.first_name }} {{ startup.rahbar_asli.last_name }}{% endif %}" placeholder="مثال : علی عباسپور" required >
+                <input type="hidden" class="choosen-id" name="companion" value="" />
+                <div id="companion-result"></div>
+            </label>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+{% elif startup.shetab_dahande %}
+        <div class="align-right colm colm8 margin-auto pad-r30 pad-t20">
+            <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+            <label>
+                <input type="radio" id="companionra-notification1" name="companionra_notification" value="1" class="dastresi" checked >
+                <label for="companionra-notification1" class="pad-5">بله</label>
+                <input type="radio" id="companionra-notification0" name="companionra_notification" value="0" class="dastresi">
+                <label for="companionra-notification0" class="pad-5">خیر</label>
+            </label>
+        </div>
+        <div class="colm8 colm margin-auto pad-20">
+            <div class="colm12 colm margin-auto pad-5">
+                <label for="" class="gui-label pad-5 align-right">شتاب دهنده پیشنهاد شده:</label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class=" fa fa-tachometer-alt vertical"></i></span>
+                    <input type="text" class="gui-input sans-digit" value="{{ startup.shetab_dahande.name_shtabdahande }}" disabled>
+                </label>
+            </div>
+            <div class="colm12 colm margin-auto pad-5">
+                <label for="" class="gui-label pad-5 align-right">راهبر تیم:</label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class=" fa fa-tachometer-alt vertical"></i></span>
+                    <input type="text" class="gui-input sans-digit" value="{{ startup.rahbar_asli.first_name }} {{ startup.rahbar_asli.last_name }} (نماینده شتاب دهنده : {{ startup.shetab_dahande.name_shtabdahande }})" disabled>
+                </label>
+            </div>
+
+            <!-- <div class="colm12 colm margin-auto pad-5">
+                <label for="" class="gui-label pad-5 align-right">انتخاب شتاب دهنده:</label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                    <input type="text" oninput="searchApi('search_companiona','companion-resulta' , 'accelerator')" class="search_companiona referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required >
+                    <input type="hidden" class="choosen-id" name="companionra" value="" />
+                    <div id="companion-resulta"></div>
+                </label>
+            </div> -->
+            <div class="clearfix"></div>
+        </div>
+        {% else %}
+        {% if startup == th_leaders.first.startup %}
+        <div class="colm8 spacer-b20 colm margin-auto pad-5">
+            <label for="" class="gui-label pad-5 align-right">راهبرانی که پیشنهاد راهبری تیم را قبول کردند:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" class="gui-input sans-digit"
+                    value="{% for lead in th_leaders %}{{lead.event.content_object.first_name}} {{lead.event.content_object.last_name}} {% if not forloop.last %} و {% endif%}{% endfor %}"
+                    disabled>
+            </label>
+        </div>
+        {% endif %}
+
+        <div class="colm8 colm margin-auto spacer-b20 pad-5">
+            <div class="align-right colm colm8 margin-auto pad-r30 pad-t20">
+                <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+                <label>
+                    <input type="radio" id="companion-notification1" name="companion_notification" value="1" class="dastresi" checked >
+                    <label for="companion-notification1" class="pad-5">بله</label>
+                    <input type="radio" id="companion-notification0" name="companion_notification" value="0" class="dastresi">
+                    <label for="companion-notification0" class="pad-5">خیر</label>
+                </label>
+            </div>
+            <label for="" class="gui-label pad-5 align-right">انتخاب راهبر:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" oninput="searchApi('search_companion','companion-result' , 'leader')"
+                    class="search_companion referee-name gui-input sans-digit choosen-name"
+                    value="{% if startup.rahbar_asli %}{{ startup.rahbar_asli.first_name }} {{ startup.rahbar_asli.last_name }}{% endif %}"
+                    placeholder="مثال : علی عباسپور" required>
+                <input type="hidden" class="choosen-id" name="companion" value="{% if startup.rahbar_asli %}{{ startup.rahbar_asli.pk }}{% endif %}" />
+                <div id="companion-result"></div>
+            </label>
+        </div>
+{% endif %}
+
+    <div class="align-center">
+        <button name="btn_companion" type="submit" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+    </div>
+
+</form>

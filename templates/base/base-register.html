@@ -1,0 +1,404 @@
+{% load static %}
+{% load sunny %}
+<html class="no-js" dir="rtl" lang="fa-IR">
+<!doctype html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'stylesheets/dropzone.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheets/chartist.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheets/persian-datepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheets/icon.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheets/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheets/style.css' %}">
+    <link rel="stylesheet" href="{% static 'stylesheets/responsive.css' %}">
+    {% url 'usercp:register' as register %}
+    {% url 'usercp:verify' as verify %}
+    <title>{%block title%}{% endblock %}{% if request.path == register %}{%else%} - {% endif %}100 استارت آپ</title>
+</head>
+
+<body>
+    <div id="wrapper">
+<style>
+    .ghost-exit{
+        position: absolute;
+        top: 7px;
+        right: 70px;
+    }
+    .ghost-exit li{
+        list-style: none;
+    }
+</style>
+        <!--<div class="loader">
+			<div class="loadfix">
+                <img width="200" src="" />
+            </div>
+		</div>-->
+
+        <!--- <header id="header" class="container-fluid hide-tab">
+             <div class="container">
+                 <div class="header-logo pull-right pad-t10 pad-l40">
+                 	<a href="">
+                 		<span>صـــداستــارت آپ</span>
+                 	</a>
+                 </div>
+                 <div class="header-menu pull-right">
+                 	<nav class="main-menu">
+
+                 	</nav>
+                 </div>
+                 <div class="header-signup pull-left pad-10">
+
+                 		<a href="">
+	             			<span class="font-s14 color-white">خروج</span>
+	             		</a>
+
+         				<div class="pad-5 pull-right">
+	         				<a href="/register">
+		             			<span class="font-s14 color-white">ثبت نام</span>
+		             		</a>
+         				</div>
+
+						<div class="clearfix"></div>
+                 </div>
+                 <div class="clearfix"></div>
+             </div>
+	    </header>-->
+        <!-- Mobile
+<div class="mobile hide bg-gray hide-mob">
+	<div>
+		<div class="header-right-mob pull-right relative">
+	        <i class="color-white fa fa-bars vertical"></i>
+	    </div>
+	    <div class="align-center pull-right pad-10 ">
+	    	<h3 class="color-purple font-s16"></h3>
+	    </div>
+	    <div class="header-icon-mob pull-left align-center">
+	    	<a class="color-darkgray" href="">
+	    		<i class="icon-user-plus vertical vertical"></i>
+	    	</a>
+	    </div>
+	    <div class="clearfix"></div>
+	</div>
+    <div class="mobile-menu-right">
+	    <div class="mobile-menu-logo align-center pad-t20 pad-b20">
+	        <a href="">
+	            <img alt="logo" height="40" src="" />
+	        </a>
+	        <h2 class="color-white font-s16 pad-t10"></h2>
+	    </div>
+	    <div class="mobile-menu font-s13">
+
+	    </div>
+	</div>
+	<div class="mob-swipe-bg"></div>
+    <div class="mobile-search hide">
+        <form method="get" class="mobile-search-form" action="">
+            <div class="mobile-site-search">
+                <i class="icon-android-close search-close"></i>
+                <div class="mobile-search-input-box">
+                    <input class="mobile-search-input" name="s" type="search" placeholder="جستجو کنید ...">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>-->
+
+        <div id="section-step" class="container-fluide  min-100vh flex-center">
+            <div class="container pad-20 pad-step pad-50-tmob">
+                <div id="section-step-content"
+                
+                    class="relative colm8 colm10-tab colm margin-auto pad-40 pad-20-tab pad-10-mob bg-white spacer-t40 spacer-b40">
+                    <div class="rtl">
+                        <div id="steps">
+                            <ul>
+                                <li><a href="">
+                                        <div class="step {% if request.path == register %}active{% endif %}"
+                                            data-desc="آغاز ثبت نام" align="">1</div>
+                                    </a></li>
+                                <li><a href="">
+                                        <div class="step {% if request.path == '/verify/' %}active{% endif %}"
+                                            data-desc="اعتبارسنجی" align="">2</div>
+                                    </a></li>
+                                <li><a
+                                        href="{% if request.user.step == 'startup' or request.user.step == 'team' or request.user.step == 'upload' or request.user.step == 'presentation' or request.user.step == 'finish' %}/startup/{% endif %}">
+                                        <div class="step {% if request.path == '/startup/' %}active{% endif %}"
+                                            data-desc="معرفی استارتاپ" align="">3</div>
+                                    </a></li>
+                                <li><a
+                                        href="{% if request.user.step == 'team' or request.user.step == 'upload' or request.user.step == 'presentation' or request.user.step == 'finish' %}/team/{% endif %}">
+                                        <div class="step {% if request.path == '/team/' %}active{% endif %}"
+                                            data-desc="اطلاعات تیم" align="">4</div>
+                                    </a></li>
+                                <li><a
+                                        href="{% if request.user.step == 'upload' or request.user.step == 'presentation' or request.user.step == 'finish' %}/upload/{% endif %}">
+                                        <div class="step {% if request.path == '/upload/' %}active{% endif %}"
+                                            data-desc="معرفی ویدئویی" align="">5</div>
+                                    </a></li>
+                                <li><a
+                                        href="{% if request.user.step == 'presentation' or request.user.step == 'finish' %}/presentation/{% endif %}">
+                                        <div class="step {% if request.path == '/presentation/' %}active{% endif %}"
+                                            data-desc="پیچ دک" align="">6</div>
+                                    </a></li>
+                                <li><a href="{% if request.user.step == 'finish' %}/finish/{% endif %}">
+                                        <div class="step {% if request.path == '/finish/' %}active{% endif %}"
+                                            data-desc="تایید نهایی" align="">7</div>
+                                    </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% if request.path != register and request.path != verify %}
+
+                    <div class="absolute support-register">
+
+                        <div class="">
+                            <a title="گزارش خطا"><i
+                                    class="fa fa-headset color-support font-s25 pointer btn-support"></i></a>
+                        </div>
+                    </div>
+                    <form action="" id="form-fidback" method="post" data-html2canvas-ignore="true">{% csrf_token %} 
+                        <div class="support-overlay ">
+                            <div class="support bg-white colm4 colm ">
+
+                                <a class="close-support">
+                                    <svg viewBox="0 0 20 20">
+                                        <path fill="#000000"
+                                            d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z">
+                                        </path>
+                                    </svg>
+                                </a><!-- close modal -->
+                                <div class="support-content colm12" >
+                                    <div class="pad-20">
+                                        <h2 class="align-center pad-t15">مسائل مربوط به سامانه یا ایده های خود را به تیم
+                                            فنی
+                                            ارسال کنید.</h2>
+                                        <div class="colm6 colm pull-right pad-10 pad-t20">
+                                            <label for="r_title" class="gui-label">عنوان پیام :</label>
+                                            <label class="relative">
+                                                <input class="input-send pad-fidback gui-input" type="text" name="message_title"
+                                                    id="r_title" required>
+                                            </label>
+                                        </div>
+                                        <div class="colm12 colm pull-right pad-10 pad-t20 pad-b20 ">
+                                            <label for="r_content" class="gui-label">متن پیام :</label>
+                                            <label class="relative">
+                                                <textarea class="input-send gui-textarea" cols="25" rows="5" type="text"
+                                                    name="message_content" id="r_content" required></textarea>
+                                            </label>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="margin-auto align-center">
+                                            <button
+                                                class="button-send btn-panel pad-10 color-white iransans">ارسال<span
+                                                    class="loader-request"></span></button>
+                                        </div>
+                                    </div>
+                                </div><!-- content -->
+                            </div><!-- modal -->
+                        </div><!-- overlay -->
+                    </form>
+                    {% if 'iam_ghosting' in request.session %}
+                    <div class="ghost-exit">
+                        <li>
+                            <i class="fa fa-bug"></i>
+                            <a class="font-s13" href="{% url 'usercp:ghost_mode_out' %}">خروج از حالت روح</a>
+                        </li>
+                    </div>
+                {% endif %}
+                    <div class="absolute support-screen">
+                        <span class="color-support screen-support font-s12 pointer btn-support2">ارسال پیام به پشتیبانی</span>
+                    </div>
+                    <form  method="post"  action="{% url 'message:support_msg' %}" id="form-screen" enctype="multipart/form-data">{% csrf_token %}
+                        <div class="support-overlay2">
+                            <div class="support2 bg-white colm4 colm ">
+                                <a class="close-support2">
+                                    <svg viewBox="0 0 20 20">
+                                        <path fill="#000000"
+                                            d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z">
+                                        </path>
+                                    </svg>
+                                </a>
+                                <div class="support-content2 colm12">
+                                    <div class="pad-20">
+                                        <h2 class="align-center pad-t15">مسائل مربوط به سامانه یا ایده های خود را به تیم
+                                            فنی
+                                            ارسال کنید.</h2>
+                                        <div class="colm6 colm pull-right pad-10 pad-t20">
+                                            <label for="r_title" class="gui-label">نام و نام خانوادگی :</label>
+                                            <label class="relative">
+                                                <input class="input-send pad-fidback gui-input" type="text" name="name"
+                                                    id="r_title" required>
+                                            </label>
+                                        </div>
+                                        <div class="colm6 colm pull-right pad-10 pad-t20">
+                                            <label for="r_title" class="gui-label">آپلود تصویر :</label>
+                                            <label class="relative">
+                                                <input class="input-send pad-fidback gui-input"  type="file" name="screenshot" accept="image/*">
+                                            </label>
+                                        </div>
+                                        <div class="colm12 colm pull-right pad-10 pad-t20 pad-b20 ">
+                                            <label for="r_content" class="gui-label">متن پیام :</label>
+                                            <label class="relative">
+                                                <textarea class="input-send gui-textarea" cols="25" rows="5" type="text"
+                                                    name="content" id="r_content" required></textarea>
+                                            </label>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <div class="margin-auto align-center">
+                                            <button class="btn-panel pad-10 color-white iransans">ارسال</button>
+                                        </div>
+                                    </div>
+                                </div><!-- content -->
+                            </div><!-- modal -->
+                        </div><!-- overlay -->
+                    </form>
+                {% endif %}
+                    <div class="colm12 colm11-tab colm margin-auto pad-5-mob">
+                        <div class="spacer-t5">
+                            {% if messages %}
+                            {% for message in messages %}
+                            <p id="validation-errors" class="{{ message.tags }} messages validation-errors hide">{{ message|safe }}</p>
+                            {% endfor %}
+                            {% endif %}
+                            <!-- <ul id="validation-errors" class="messages validation-errors">
+                                <li style="color:crimson" {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message|safe }}</li>
+                            </ul> -->
+
+                            {% block body %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    <a rel="nofollow" id="scroll" class="scrollToTop color-white align-center font-s25 hide" href="#top">
+        <i class="fa fa-chevron-up vertical"></i>
+    </a>
+    </div><!-- Wrapper -->
+    <script src="{% static 'javascript/jquery.js' %}"></script>
+    <script src="{% static 'javascript/croppie.min.js' %}"></script>
+    <script src="{% static 'javascript/dropzone.min.js' %}"></script>
+    <script src="{% static 'javascript/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'javascript/additional-methods.min.js' %}"></script>
+    <script src="{% static 'javascript/validate.js' %}"></script>
+    <script src="{% static 'javascript/chartist.min.js' %}"></script>
+    <script src="{% static 'javascript/persian-date.min.js' %}"></script>
+    <script src="{% static 'javascript/persian-datepicker.min.js' %}"></script>
+    <script src="{% static 'javascript/address.js' %}"></script>
+    <script src="{% static 'javascript/script.js' %}"></script>
+    {% block js %}
+    {% endblock %}
+    <script>
+        jQuery(document).ready(function ($) {
+            $(function () {
+                var current = location.pathname.slice(0, -1);;
+                $('#cssmenu li a').each(function () {
+                    var $this = $(this);
+                    if ($this.attr('href').indexOf(current) !== -1) {
+                        $this.addClass('bg-dasboard');
+                        if ($this.parents().hasClass('has-sub')) {
+                            $this.parents().eq(2).addClass('open');
+                            $this.parents().eq(1).show();
+                        }
+                    }
+                })
+            })
+        });
+
+        document.addEventListener("DOMContentLoaded", function (e) {
+
+            let pageUrl = window.location.pathname;
+            let path = pageUrl.replace(/\\|\//g, '');
+            let urlStartup = pageUrl.substr(pageUrl.indexOf('startup'));
+            let urlTeam = pageUrl.substr(pageUrl.indexOf('team'));
+            let urlUploads = pageUrl.substr(pageUrl.indexOf('uploads'));
+            let urlPresentation = pageUrl.substr(pageUrl.indexOf('presentation'));
+            if (urlStartup || urlTeam || urlUploads || urlPresentation) {
+                let section = document.getElementById("section-step");
+                let form = section.getElementsByTagName("form").item(0);
+                let es = form.elements;
+                let btn = form.getElementsByTagName('button').item(0);
+                let result = [];
+                let n = 0;
+                for (let i = es.length >>> 0; i--;) {
+                    if (es[i].tagName == "TEXTAREA" || es[i].tagName == "INPUT" || es[i].tagName == "SELECT") {
+                        result[i] = es[i];
+                        let prev = result[i].value;
+                        result[i].onchange = function (v) {
+                            if (prev != result[i].value) {
+                                es[i].tagName == "INPUT" ? es[i].tagName.value = v : '';
+                                n++;
+                            }
+
+                        };
+
+
+                    }
+                }
+
+
+            }
+        });
+
+
+        function findParameter(parameter) {
+
+            var result = null;
+            tmp = [];
+            location.search.substr(1)
+                .split("&").forEach(function (item) {
+                    tmp = item.split("=");
+                    if (tmp[0] === parameter) result = decodeURIComponent(tmp[1]);
+                });
+            return result;
+        }
+
+          jQuery(document).ready(function ($) {              
+
+            var elements2 = $('.support-overlay2, .support2');
+            $('.screen-support').click(function () {
+                elements2.addClass('actives');
+            });
+
+            $('.close-support2').click(function () {
+                elements2.removeClass('actives');
+            });
+            
+            var elements = $('.support-overlay, .support');
+            $(document).on('submit', '#form-fidback', function (e) {
+              var $form = $(this);
+              var $inputs = $form.find("input, select, button, textarea");
+              var serializedData = $form.serialize();
+              var token = '{{csrf_token}}';
+              $('.loader-request').css('display', 'block');
+              $inputs.prop("disabled", true);
+              request = $.ajax({
+                headers: { "X-CSRFToken": token },
+                url: "{% url 'message:send_message_error' %}",
+                type: "post",
+                data: serializedData
+              });
+              request.done(function (response, textStatus, jqXHR) {
+                $('.loader-request').css('display', 'none');
+                $('#load-request-content').load(" #load-request");
+                $inputs.val("");
+                var x = document.getElementById("toast");
+                elements.removeClass('actives');
+              });
+              request.always(function () {
+                $inputs.prop("disabled", false);
+              });
+              e.preventDefault();              
+            })
+
+            $('.close-support2').click(function () {
+                elements2.removeClass('actives');
+            });
+          });
+        
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,334 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load sunny %}
+{% load jalali_tags %}
+{% block title %}درخواست مالی{% endblock %}
+{% block body %}
+<style>
+  .btn-requste {
+    background: linear-gradient(45deg, #267b81, #538e40);
+    position: relative;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: background 0.25s cubic-bezier(0.55, 0, 0.1, 1);
+  }
+</style>
+<div class="all">
+  <div class="frm-row">
+    <div>
+
+      <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+        <div class="body-form pad-15 relative">
+          <div class="pad-b10">
+            <div class="bg-chart2 icon-cat-panel absolute  flex-center">
+              <i class="fa fa-clipboard-check vertical font-s30 color-white"></i>
+            </div>
+            <div class="align-right">
+              <a href="#" class="color-darkgray font-w200 font-s15">تایید شده</a>
+              <h4 class="font-w300 font-s20 title-panel">{% count_requests all_req request status='accepted_leader' %}</h4>
+            </div>
+          </div>
+          <div class="border-t-chart font-w200 font-s12 pad-t10">
+            <span class="font-w300">
+              <i class="fa fa-chart-bar pad-l5 verticall"></i>
+            </span>
+            <span>آمار درخواست های تایید شده</span>
+          </div>
+        </div>
+      </div>
+      <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+        <div class="body-form pad-15 relative">
+          <div class="pad-b10">
+            <div class="bg-chart1 icon-cat-panel absolute flex-center">
+              <i class="fa fa-window-close vertical font-s30 color-white"></i>
+            </div>
+            <div class="align-right">
+              <a href="#" class="color-darkgray font-w200 font-s15">تایید نشده</a>
+              <h4 class="font-w300 font-s20 title-panel">{% count_requests all_req request status='failed_leader' %}</h4>
+            </div>
+          </div>
+          <div class="border-t-chart font-w200 font-s12 pad-t10">
+            <span class="font-w300">
+              <i class="fa fa-chart-bar pad-l5 vertical"></i>
+            </span>
+            <span>آمار درخواست های تایید نشده</span>
+          </div>
+        </div>
+      </div>
+      <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+        <div class="body-form pad-15 relative">
+          <div class="pad-b10">
+            <div class="bg-chart4 icon-cat-panel absolute flex-center">
+              <i class="fa fa-hourglass-half  vertical font-s30 color-white"></i>
+            </div>
+            <div class="align-right">
+              <a href="" class="color-darkgray font-w200 font-s15">در حال انتظار</a>
+              <h4 class="font-w300 font-s20 title-panel">{% count_requests all_req request status='waiting' %}</h4>
+            </div>
+          </div>
+          <div class="border-t-chart font-w200 font-s12 pad-t10">
+            <span class="font-w300">
+              <i class="fa fa-chart-bar pad-l5 vertical"></i>
+            </span>
+            <span>آمار درخواست های در حال انتظار</span>
+          </div>
+        </div>
+      </div>
+      <div class="colm3 colm12-tab colm pull-right pad-15 pad-5-mob spacer-b25-mob">
+        <div class="body-form pad-15 relative">
+          <div class="pad-b10">
+            <div class="bg-chart3 icon-cat-panel absolute  flex-center">
+              <i class="fa fa-poll-h vertical font-s30 color-white"></i>
+            </div>
+            <div class="align-right">
+              <a href="#" class="color-darkgray font-w200 font-s15">همه درخواست ها</a>
+              <h4 class="font-w300 font-s20 title-panel">{% count_requests all_req request %}</h4>
+            </div>
+          </div>
+          <div class="border-t-chart font-w200 font-s12 pad-t10">
+            <span class="font-w300">
+              <i class="fa fa-chart-bar pad-l5 vertical"></i>
+            </span>
+            <span>آمار همه درخواست ها</span>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+  <div class="spacer-t20">
+    <!-- {% for message in messages %}
+    {% if 'request_money_form_error' in message.extra_tags %}
+    <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+        data-wow-duration="1.5s">
+        <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>{{ message.tags }}</h2>
+    </div>
+    {% endif %}
+    {% endfor %} -->
+    <div class="colm9 colm12-tab colm12-tab colm pull-right pad-15 pad-5-mob">
+      <div class="body-form relative pad-b10">
+        <div class="payam">
+          <div class="bg-chart6 body-form-top absolute flex-center">
+            <i class="fa fa-history vertical font-s30 color-white"></i>
+          </div>
+          <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18">تاریخچه درخواست ها</h3>
+          </div>
+        </div>
+        <div id="load-request" class="pad-table overflow-scroll">
+          <div id="load-request-content">
+            <table class="table color6">
+              <thead>
+                <tr>
+                  <th class="center">نام استارتاپ</th>
+                  <th class="center">عنوان</th>
+                  <th class="center">دسته</th>
+                  <th class="center">تاریخ</th>
+                  <th class="center">مبلغ</th>
+                  <th class="center">وضعیت</th>
+                  <th class="center">جزئیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for req in the_requests %}
+                <tr class="{{ req.pk }}">
+                  <td class="center">{{ req.startup.title }}</td>
+                  <td class="center">{{ req.request_title }}</td>
+                  <td class="center">{{ req.get_request_cat_display }}</td>
+                  <td class="center">{{ req.created_date|to_jalali:'%Y/%m/%d' }}</td>
+                  <td class="center">{{ req.request_money }}</td>
+                  <td class="center">{{ req.get_status_display }}</td>
+                  <td class="center">
+                    <a class="color-silver" title="نمایش" href="{% url 'startup:single_requestmoney' req.pk %}" <span>
+                      <i class="align-center font-s20 fa fa-address-card"></i>
+                      </span>
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- {% for message in messages %}
+  {% if 'UR_not_startup' in message.extra_tags %}
+  <div
+    class="colm8 colm margin-auto alert-sucsess bg-white flex-center color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+    data-wow-duration="1.5s">
+    <h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>فقط استارت اپ می تواند درخواست اعتبار کند</h2>
+  </div>
+  {% endif %}
+  {% endfor %} -->
+  <div class="colm3 colm pad-t15 pull-left">
+
+    <div class="frm-row" >
+    {# <button data-isstartup="{% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}{% elif not request.user.startup.pk %}1{% endif %}" class="btn-requste iransans colm12 colm ">ایجاد درخواست</button> #}
+      <button data-isstartup="{% if not request.user.startup.pk %}1{% endif %}" class="btn-requste iransans colm12 colm ">ایجاد درخواست</button>
+    </div>
+    <!-- modal -->
+    <div class="modal-overlay">
+      <div class="modal">
+
+        <a class="close-modal">
+          <svg viewBox="0 0 20 20">
+            <path fill="#000000"
+              d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z">
+            </path>
+          </svg>
+        </a><!-- close modal -->
+
+        <div class="modal-content">
+          <form id="form-request" method="post" action="">{% csrf_token %}
+            <div class="pad-15">
+              <div class="colm4 colm pull-right pad-5 pad-t20">
+                <label for="request-title" class="pull-right font-w300 font-s15 color-blue">عنوان درخواست:</label>
+                <label class="relative">
+                  <span class="icon-gui flex-center"><i class=" fa fa-asterisk vertical"></i></span>
+                  <input type="text" class="x gui-input sans-digit pad-t10" id="request_title" value=""
+                    name="request_title" required>
+                </label>
+              </div>
+              <div class="colm4 colm pull-right pad-5 pad-t20">
+                <label for="request-title" class="pull-right font-w300 font-s15 color-blue">مبلغ مورد نیاز
+                  (تومان):</label>
+                <label class="relative">
+                  <span class="icon-gui flex-center"><i class=" fa fa-file-invoice-dollar vertical"></i></span>
+                  <input type="number" class="x gui-input sans-digit colm pad-t10" value="" id="request_money"
+                    name="request_money" data-rule-letternumbe="true" required>
+                </label>
+              </div>
+              <div class="colm4 colm pull-right pad-5 pad-t20">
+                <label for="prototype" class="pull-right font-w300 font-s15 color-blue">دسته</label>
+                <label class="relative">
+                  <span for="prototype" class="flex-center icon-select">
+                    <i class="fa fa-chevron-down vertical"></i>
+                  </span>
+                  <select class="x gui-select sans-digit" id="request_cat" name="request_cat" required>
+                    <option value="">انتخاب کنید</option>
+                    <option value="support">پشتیبانی</option>
+                    <option value="human">نیروی انسانی</option>
+                    <option value="bazzar">بازاریابی</option>
+                    <option value="prototype_money">هزینه نمونه های اول</option>
+                  </select>
+                </label>
+              </div>
+              <div class="clearfix"></div>
+              <div class="colm12 colm  pad-5 pad-t20">
+                <label for="request-title" class="pull-right font-w300 font-s15 color-blue">توضیحات:</label>
+                <label class="relative">
+                  <textarea type="text" cols="50" rows="3" class="x gui-input sans-digit pad-t10"
+                    id="request_expression" name="request_expression" required></textarea>
+                </label>
+              </div>
+
+            </div>
+            <!-- <div class="pad-5-mob colm7-mob"> -->
+            <!-- <button id="disable-req" type="submit" class="y colm btn-sub pointer">ارسال<span
+              class="loader-request"></span></button> -->
+            <!-- </div> -->
+            <div class="pad-5-mob colm7-mob">
+              <button type="submit" id="disable-req" class="colm btn-sub pointer">
+                ارسال<span class="loader-request"></span>
+              </button>
+            </div>
+          </form>
+        </div><!-- content -->
+      </div><!-- modal -->
+    </div><!-- overlay -->
+  </div>
+</div>
+<div id="toast">
+  <div id="img">وضعیت</div>
+  <div id="desc">درخواست شما با موفقیت ارسال شد</div>
+</div>
+
+<div id="toast-err">
+  <div id="img-err">وضعیت</div>
+  <div id="desc-err">درخواست شما ارسال نشد دوباره تلاش کنید</div>
+</div>
+
+<div id="toast-not">
+  <div id="img-not">وضعیت</div>
+  <div id="desc-not">لطفا همه فیلد ها را کامل کنید</div>
+</div>
+
+
+<div id="toast-not-r">
+  <div id="img-not">وضعیت</div>
+  <div id="desc-not">شما نمیتوانید درخواست اعتبار کنید</div>
+</div>
+
+
+
+<style>
+  header,
+  footer {
+    display: none;
+  }
+</style>
+{% endblock %}
+{% block script %}
+
+<script>
+  jQuery(document).ready(function ($) {
+    var elements = $('.modal-overlay, .modal');
+    
+    $('.btn-requste').click(function () {
+      var isStartup = $(this).data('isstartup');
+      console.log(isStartup);
+      if(isStartup == 1){ 
+        var startupError = document.getElementById("toast-not-r");
+        startupError.className = "show";
+        setTimeout(function () { startupError.className = startupError.className.replace("show", ""); }, 5000);
+      }else{
+      elements.addClass('active');
+      }
+
+    });
+
+    $(document).on('submit', '#form-request', function (e) {
+      var $form = $(this);
+      var $inputs = $form.find("input, select, button, textarea");
+      var serializedData = $form.serialize();
+      var token = '{{csrf_token}}';
+      $('.loader-request').css('display', 'block');
+      $inputs.prop("disabled", true);
+      request = $.ajax({
+        headers: { "X-CSRFToken": token },
+        url: "{% url 'startup:send_request_money' %}",
+        type: "post",
+        data: serializedData
+      });
+      request.done(function (response, textStatus, jqXHR) {
+        $('.loader-request').css('display', 'none');
+        $('#load-request-content').load(" #load-request");
+        $inputs.val("");
+        var x = document.getElementById("toast");
+        x.className = "show";
+        setTimeout(function () { x.className = x.className.replace("show", ""); }, 5000);
+        elements.removeClass('active');
+      });
+      request.always(function () {
+        $inputs.prop("disabled", false);
+      });
+      e.preventDefault();
+     
+      
+    })
+    $('.close-modal').click(function () {
+      elements.removeClass('active');
+    });
+  });
+</script>
+
+{% endblock %}

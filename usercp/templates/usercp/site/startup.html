@@ -1,0 +1,600 @@
+{% extends 'base/base-register.html' %}
+{% load static %}
+{% load sunny %}
+{% load jalali_tags %}
+{% block title %}ثبت اطلاعات استارتاپ{% endblock %}
+{% block body %}
+
+<style>
+    header,
+    footer,
+    .mobile {
+        display: none;
+    }
+
+    .hide-tab {
+        display: none;
+    }
+
+    .bg-cat {
+        background: #58bb58;
+        color: #fff;
+    }
+
+    .shetab {
+        color: #5b5b5b;
+    }
+
+    .ldr {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .searchresult {
+        display: block;
+        position: absolute;
+        background: #fff;
+        border: 1px solid #e7e7e7;
+        border-radius: 0 0 7px 7px;
+        box-shadow: 0px 5px 6px 0 rgba(0, 0, 0, .3);
+        padding: 10px 15px;
+        z-index: 5;
+        width: 265px;
+        left: -2px;
+        top: 33px;
+    }
+
+    .opa-0 {
+        opacity: 0;
+    }
+
+    .opa-1 {
+        opacity: 1;
+    }
+    .bordererror{
+        border: 1px solid red;
+    }
+    .bordererror:focus{
+        border: 1px solid red;
+    }
+    .emerror{
+        padding: 5px 25px;
+        color: #f10000;
+        font-size: 11px;
+    }
+   input[type=checkbox] + label:before {
+    visibility: hidden;
+    }
+    input[type=checkbox]{
+    display: inline-block;
+}
+</style>
+<div  class="colm10 colm11-tab colm margin-auto pad-5-mob">
+    <div class="pad-b5">
+        <h2 class="font-s30 color6">معرفی استارتاپ</h2>
+        <p class="color-darkgray font-s14 pad-t15">لطفا اطلاعات مربوط به استارتاپ خود را پر کنید </p>
+    </div>
+    <div class="spacer-t5">
+        <form method="post" class="smart-validate" id="choosementor" name="startup" enctype="multipart/form-data"
+            action="">
+            {% csrf_token %}
+
+            <div class="person">
+                <div class="relative">      
+                    <div class="absolute imgre hide" title="حذف لوگو">
+                        <!-- <i class="removeimg pointer fa fa-times"></i> -->
+                        حذف
+                    </div>          
+                    <div id="avatarbox" class="avatar-box flex-center pad-10 relative">
+                    {% if form_start.instance.image %}
+                        <img name="image" class="img-avatar not" src="{{ form_start.instance.image.url }}">
+                        {% else %}
+                        <img id="output" class="pre-logo hide img-avatar image-remove">
+                        <p class="color-darkgray font-s24 uploading align-center imgicon"><i class="fa fa-upload"></i></p>
+                        <p class="color-darkgray font-s14 uploading align-center imgicon">لوگو تیم را بارگذاری کنید</p>
+                        {% endif %}
+                    </div>
+                    <input type="file" class="uploadlogo" name="image" id="avatar" value="{% if form_start.instance.image %}{{ form_start.instance.image }}{% endif %}">
+                    <textarea name="avatar_base64" class="avatar-base64 hide"></textarea>
+                </div>
+                <div class="frm-row">
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="startup-name" class="gui-label pad-5">نام استارتاپ </label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class="fa fa-rocket vertical"></i></span>
+
+                            <input id="startup-name" type="text" class="gui-input sans-digit input"
+                                value="{% if form_start.instance.pk %}{{form_start.instance.title }}{%endif%}"
+                                name="title" placeholder="مثال : رویداد" required>
+                        </label>
+                    </div>
+
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="website" class="gui-label pad-5">سایت استارتاپ </label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class="fab fa-internet-explorer vertical"></i></span>
+                            <input type="text" dir="ltr" class="gui-input sans-digit"
+                                value="{% if form_start.instance.pk %}{{form_start.instance.site }}{%endif%}"
+                                name="site" id="website" placeholder="http://100startup.ir" data-rule-website="true">
+                        </label>
+                        <p id="ddemo" class="emerror"></p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="frm-row">
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="province-startup" class="gui-label pad-5"> استان محل استقرار</label>
+                        <label class="relative">
+                            <select id="province-startup" class="province gui-input sans-digit" name="province_startup"
+                                data-value="" required />
+                            <option
+                                value="{% if form_start.instance.pk %}{{form_start.instance.province_startup }}{%endif%}">
+                                {% if form_start.instance.pk %}{{form_start.instance.province_startup }}{% else %}لطفا
+                                یک استان را انتخاب کنید{%endif%}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="city-startup" class="gui-label pad-5">شهر محل استقرار</label>
+                        <label class="relative">
+                            <select id="city-startup" class="city gui-input sans-digit" name="city_startup"
+                                data-value="" required />
+                            <option
+                                value="{% if form_start.instance.pk %}{{form_start.instance.city_startup }}{%endif%}">
+                                {% if form_start.instance.pk %}{{form_start.instance.city_startup }}{% else %}لطفا یک
+                                شهر را انتخاب کنید{%endif%}</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="frm-row">
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="start-date" class="gui-label pad-5">تاریخ شروع به کار </label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                            <input dir="ltr" class="gui-input sans-digit" name="start_date1"
+                                value="{% if form_start.instance.pk %}{{form_start.instance.start_date|to_jalali:'%Y/%m/%d' }}{%endif%}"
+                                id="start-date" autocomplete="off" readonly placeholder="1398/10/02" required>
+                        </label>
+                    </div>
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="prototype" class="gui-label pad-5">آیا نمونه اولیه ساخته اید </label>
+                        <label class="relative">
+                            <span for="prototype" class="flex-center icon-select">
+                                <i class="fa fa-chevron-down vertical"></i>
+                            </span>
+                            <select class="gui-select sans-digit" id="prototype" name="prototype" required>
+                                <option
+                                    value="">انتخاب
+                                    کنید</option>
+                                <option {% if form_start.instance.prototype == 'yes' %} selected{% endif %} value="yes">بله</option>
+                                <option {% if form_start.instance.prototype == 'no' %}  selected{% endif %} value="no">خیر</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="investment" class="gui-label pad-5 font-s13">آیا تا‌کنون ‌سرمایه ‌جذب‌کرده‌اید
+                        </label>
+                        <label class="relative">
+                            <span class="icon-select flex-center">
+                                <i class="fa fa-chevron-down vertical"></i>
+                            </span>
+                            <select class="gui-select sans-digit" id="investment" name="investment" required>
+                                <option
+                                    value="">انتخاب
+                                    کنید</option>
+                                <option {% if form_start.instance.investment == 'yes' %} selected {% endif %} value="yes">بله</option>
+                                <option {% if form_start.instance.investment == 'no' %} selected {% endif %} value="no">خیر</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="pull-left relative colm">
+                        <div class="check-shetab">
+                                <input type="checkbox" data-show-id="shetabdahande" class="showhide cat-shetab"
+                                name="sheatb" {% if db_startup.shetab_shude == True %}checked{% endif %} value="1" />
+                            <span class="shetab shetabb font-s11">از طرف شتاب دهنده معرفی شده ام.</span>
+                        </div>
+                    </div>
+                    <div id="shetabdahande" class="colm6 colm pull-right  pad-5 hide hidden">
+                        <label for="" class="gui-label pad-5 align-right">شتاب دهنده:</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-tachometer-alt vertical"></i></span>
+                            <span class="ldr start-load hide"><img width="25" src="{% static 'images/Ldr.gif' %}" /></span>
+                            <input type="text" id="choosenname"
+                                class="val-shetab choosenname search_companiona referee-name gui-input  sans-digit"
+                                value="{% if db_startup.shetab_dahande %}{{db_startup.shetab_dahande.name_shtabdahande}}{% endif %}" name="companion1" placeholder="مثال : صد استارتاپ" required>
+                            <input type="hidden" class="choosenid val-shetab" name="companion1" value="{% if db_startup.shetab_dahande %}{{db_startup.shetab_dahande.pk}}{% endif %}" />
+                            <div id="companion-resulta"></div>
+
+                        </label>
+                    </div>
+                    <div class="colm6 colm pull-right pad-5 hiderahbar">
+                        <label for="mentor-id" class="gui-label pad-5">انتخاب راهبر</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>
+                            <span class="ldr start-load hide"><img width="25" src="{% static 'images/Ldr.gif' %}" /></span>
+                            <input type="text" id="mentor-id"
+                                class="val choosen-name search-leaders input gui-input sans-digit"
+                                oninput="searchApi('search-leaders','leader-results','leader','startup')" value="{% if db_startup.rahbar and db_startup.rahbar.mentor_user == False %}{{ db_startup.rahbar.first_name}} {{db_startup.rahbar.last_name}}{% endif %}"
+                                name="leader_name" placeholder="مثال : علی">
+                            <input type="hidden" class="choosen-id val" name="mentor_name" value="{% if db_startup.rahbar and db_startup.rahbar.mentor_user == False %}{{ db_startup.rahbar.pk }}{% endif %}">
+                            <div id="leader-results"></div>
+                        </label>
+                    </div>
+                    {% if user_mentor %}
+                    <div id="created-leader" class="hiderahbar">
+                        <div class="colm4 colm pull-right pad-5 relative">
+                            <span class="pointer remove-created-leader remove-leader absolute"><i
+                                    class="fa fa-times-circle color-startup"></i></span>
+                            <label for="mentor-fname" class="gui-label pad-5">نام راهبر</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>
+                                <input type="text" id="mentor-fname" class="gui-input sans-digit mentor"
+                                    value="{{ user_mentor.rahbar.first_name }}"
+                                    name="mentor_fname" placeholder="مثال : عباسپور">
+                            </label>
+                        </div>
+                        <div class="colm4 colm pull-right pad-5">
+                            <label for="mentor-lname" class="gui-label pad-5">نام خانوادگی راهبر</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>
+                                <input type="text" id="mentor-lname" class="gui-input sans-digit mentor"
+                                    value="{{ user_mentor.rahbar.last_name }}"
+                                    name="mentor_lname" placeholder="مثال : عباسپور">
+                            </label>
+                        </div>
+                        <div class="colm4 colm pull-right pad-5">
+                            <label for="mentor-number" class="gui-label pad-5">شماره موبایل راهبر</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-mobile vertical"></i></span>
+                                <input dir="ltr" id="mentor-number" type="text" class="gui-input sans-digit mentor"
+                                    value="{{ user_mentor.rahbar.phone }}" name="mentor_number"
+                                    data-rule-customphone="true" placeholder="09XXXXXXX">
+                            </label>
+                        </div>
+                        <div class="colm12 colm pull-right pad-5 div-mobile hide">
+                            <p class="color-red font-s12 pad-t15">شما نمیتوانید راهبر باشید</p>
+                        </div>
+                        <div class="cleafix"></div>
+                    </div>
+{% endif %}
+                    <div class="clearfix"></div>
+                </div>
+                <div class="frm-row">
+                    <div class="create colm12 colm">
+                        <div class="pad-5 char-count">
+                            <label for="introduction" class="gui-label pad-5"> توضیح استارتاپ در 70 کاراکتر </label>
+                            <label class="relative text-counter">
+                                <textarea name="explain_startup" id="introduction" maxlength="70" class="gui-textarea"
+                                    value="{% if form_start.instance.explain_startup %}{{ form_start.instance.explain_startup }}{% endif %}"
+                                    placeholder="آموزش آنلاین - فروشگاه آنلاین ابزار صنعتی"
+                                    required>{% if form_start.instance.explain_startup %}{{ form_start.instance.explain_startup }}{% endif %}</textarea>
+                                <p class="align-left font-w200 font-s12 color-blue pad-l5">
+                                    {{ form_start.instance.explain_startup|length }}</p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="align-center spacer-t10">
+                    <label for="catc" class="gui-label spacer-b20 ">
+                        <span class="color-red">*</span>
+                        انتخاب دسته بندی ضروری می باشد
+                    </label>
+                    <label class="relative">
+                        <a class="button-pop font-s13" id="catc" href="#open-modal1">انتخاب دسته بندی</a>
+                    </label>
+                    <div class="font-s13 color-red  spacer-t20 show-error ">
+                        <i class="fa fa-arrow-left font-s11"></i>
+                        لطفا انتخاب دسته بندی را تکمیل کنید
+                    </div>
+                </div>
+                <div id="open-modal1" class="modal-window" data-html2canvas-ignore="true">
+                    <div class="content colm6 colm margin-auto">
+                        <a href="#modal-close" title="بستن" class="modal-close"><i class="fa fa-times"></i></a>
+                        <h1 class="digit">حداکثر 3 دسته بندی انتخاب شود</h1>
+                        <div class="contentt">
+                            <div class="spacer-t10">
+                                {% for cat in categories %}
+                                <div class="colm2 colm6-mob align-center pull-right cat-image">
+                                    <input class="cat-check" id="{{ cat.pk }}" name="category" value="{{ cat.pk }}"
+                                        type="checkbox" title="{{ cat.title }}"
+                                        {% if form_start.instance.pk %}
+                                    {% if form_start.instance.category %}
+                                           {% if cat in form_start.instance.category.all %}
+                                           checked
+                                           {% endif %}
+                                           {% endif %}
+                                           {% endif %}
+                                    />
+                                    <label for="{{ cat.pk }}">
+                                        <img width="" src="{% if cat.image %}{{ cat.image.url }}{% endif %}" />
+                                        <div class="cat-title">{{ cat.title }}</div>
+                                    </label>
+                                </div>
+                                {% endfor %}
+
+                                <div class="clearfix"></div>
+                                <div class="align-center spacer-t25">
+                                    <a href="#modal-close"  class="btn-web margin-auto show">ثبت</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spacer-t20 margin-auto align-center">
+                <span class="catname color-blue  font-s12"></span>
+            </div>
+            <div id="get-errors">
+                                        
+            </div>
+            <div class="align-left spacer-t40">
+                <div class="pull-left pad-5-mob colm7-mob">
+                    <button type="submit" id="btn-web" class="btn-web  colm disabled">مرحله بعد</button>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+
+        </form>
+        
+    </div>
+</div>
+
+<div class="popup-frame hide">
+    <div class="resize-frame pad-20">
+        <div class="crop-image">
+            <img id="imgs" src="{% static 'images/avatar.png' %}">
+        </div>
+        <div id="crop" class="btn-ui align-center font-s14 font-w3">بـرش تصویر</div>
+        <img src="{% static 'images/button-close.png' %}" class="closeicon" />
+    </div>
+</div>
+
+    
+</div>
+<!----- checkbox ---->
+
+<style>
+    .remove-leader {
+        right: -20px;
+    }
+</style>
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+    jQuery(document).ready(function ($) {
+        $(document).change(function() {
+            //  var imgremove=$("img").hasClass("image-remove");
+            //  var imgsrc= $(".image-remove").attr('src');
+            //  if(imgsrc){  
+            //      alert(111);
+            //      console.log(222);
+            //      imgtimes.show(); 
+            //      $(".imgre").click(function() {
+            //          $(imgattr).attr('src', '');
+            //      });
+            //  }
+             var imgremove=$("img").hasClass("image-remove");
+             var imgattr= $(".image-remove");
+             var imgtimes= $(".imgre");
+             var imgicon= $(".imgicon");
+             if(imgremove){
+                $("#crop").click(function() {
+                    imgtimes.removeClass("hide");
+                    imgtimes.addClass("show"); 
+                    $(".imgre").click(function() {
+                    $(imgattr).removeAttr("src");
+                    $(imgicon).removeClass("hide");
+                    imgtimes.removeClass("show");
+                    imgtimes.addClass("hide"); 
+                    });
+                });
+             }
+        });
+        $(".cat-check:checked").each(function () {
+            var title = $(this).attr('title');
+            $(".catname").append(title, " / ");
+            $(".show-error").hide();
+        })
+        $(".cat-check").change(function () {
+
+            var max = 3;
+            if ($(".cat-check:checked").length == max) {
+                $(".cat-check").attr('disabled', 'disabled');
+                $(".cat-check:checked").removeAttr('disabled');
+            } else {
+                $(".cat-check").removeAttr('disabled');
+            }
+
+            var min = 0;
+            if ($(".cat-check:checked").length > min) {
+                $(".btn-web").prop("disabled", false);
+            } else {
+                $(".btn-web").prop("disabled", true);
+            }
+            if ($(".cat-check:checked").length > min) {
+                $(".button-pop").addClass("bg-cat");
+            } else {
+                $(".button-pop").removeClass("bg-cat");
+            }
+            if ($(".cat-check:checked").length > min) {
+                $(".show-error").hide();
+            } else {
+                $(".show-error").show();
+            }
+            var title = '';
+            if ($(".cat-check").is(':checked')) {
+                $(".cat-check:checked").each(function () {
+                    title += $(this).attr('title') + '/';
+                    $(".catname").html(title);
+                })
+            } else {
+                title = '';
+                $(".catname").html(title);
+            }
+        })
+        $('.cat-check').each(function () {
+
+            var max = 3;
+            if ($(".cat-check:checked").length == max) {
+                $(".cat-check").attr('disabled', 'disabled');
+                $(".cat-check:checked").removeAttr('disabled');
+            } else {
+                $(".cat-check").removeAttr('disabled');
+            }
+            if ($(".cat-check:checked").length > 0) {
+                $(".button-pop").addClass("bg-cat");
+            } else {
+                $(".button-pop").removeClass("bg-cat");
+                $(".show-error").show();
+            }
+        })
+        var min = 0;
+        if ($(".cat-check:checked").length > min) {
+            $(".btn-web").prop("disabled", false);
+        } else {
+            $(".btn-web").prop("disabled", true);
+
+
+        }
+
+
+        var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
+
+
+        var searchRequest = null;
+        var minlength = 2;
+        var shahidAPI = "/api/?";
+        $("#choosenname").on('input', function() {
+		clearTimeout(this.delay);
+		this.delay = setTimeout( function() {
+
+			var id, title, that = this, value = $(this).val();
+			var resultid = 'companion-resulta'
+			if (value.length >= minlength) {
+                $(".start-load").show();
+				$.getJSON(shahidAPI, {
+					type : 'accelerator',
+					fields : value,
+				}).done(function(data) {
+                    if (data.length) {
+                        $(".start-load").hide();
+                        var output = '<ul class="searchresult">';
+                        $.each(data, function(i, item) {
+                            console.log(item.id)
+                            output += '<li data-id="' + item.id + '" data-name="' + item.name + '">';
+                            output += '<span>' + item.name + '</span>';
+                            output += '</li>';
+                            if (i === 8) {
+                                return false;
+                            }
+                        });
+                        output += '</ul>';
+                        $('#' + resultid).show().html(output);
+                    }else{                  
+                        console.log(1);
+                        $(".start-load").hide();
+                        var output = '<ul class="searchresult">';
+                        output += '<li>';
+                        output += '<span>موردی با این نام پیدا نشد</span>';
+                        output += '</li>';
+                        output += '</ul>';
+                        $('#' + resultid).show().html(output);
+                    }
+				}).fail(function() {
+					console.log("error");
+				}).always(function() {
+
+				});
+			} else {
+				$('#' + resultid).html('').hide();
+			}
+		}.bind(this), 500);
+	});
+
+        $(document).on('click', '#companion-resulta .searchresult li', function () {
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+            $('.choosenid').val(id);
+            $('.choosenname').val(name);
+            $('.searchresult').hide()
+        });
+
+    });
+
+    jQuery(document).ready(function ($) {
+        $('.uploadlogo').change(function () {
+            $('.pre-logo').removeClass('hide').addClass('show');
+            $('.uploading').addClass('hide');
+        })
+        // var classes = document.querySelectorAll('.mentor');
+        $(document).on('keyup', '.mentor', function () {
+            if ($('#mentor-fname').val().length > 0 || $('#mentor-lname').val().length > 0 || $('#mentor-number').val().length > 0)
+                $('.mentor').prop('required', true);
+            else $('.mentor').prop('required', false);
+        })
+        $(document).on('blur', '#mentor-number', function () {
+            var mentorNum = $('input[type=text][name=mentor_number]').val();
+            if (mentorNum == 'qqq>') $('.div-mobile').show();
+            else $('.div-mobile').hide();
+        })
+
+        $(document).on('click', '.create-leader', function () {
+            $('.create').html('<div class="removing">\n' +
+                '<div class="colm4 colm pull-right pad-5 relative">\n' +
+                '                                    <span class="pointer remove-leader absolute"><i class="fa fa-times-circle color-red"></i></span>\n' +
+                '                                    <label for="mentor-fname" class="gui-label pad-5">نام راهبر</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>\n' +
+                '                                        <input type="text" id="mentor-fname" class="gui-input val sans-digit mentor" value="" name="mentor_fname"  placeholder="مثال : عباسپور" >\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '<div class="colm4 colm pull-right pad-5">\n' +
+                '                                    <label for="mentor-lname" class="gui-label pad-5">نام خانوادگی راهبر</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class="fa fa-user vertical"></i></span>\n' +
+                '                                        <input type="text" id="mentor-lname" class="gui-input val sans-digit mentor" value="" name="mentor_lname"  placeholder="مثال : عباسپور" >\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                                <div class="colm4 colm pull-right pad-5">\n' +
+                '                                    <label for="mentor-number" class="gui-label pad-5">شماره موبایل راهبر</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class="fa fa-mobile vertical"></i></span>\n' +
+                '                                        <input dir="ltr" id="mentor-number" type="text" class="gui-input val sans-digit mentor" value="" name="mentor_number" data-rule-customphone="true"  placeholder="09XXXXXXX" >\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                                <div class="colm12 colm pull-right pad-5 div-mobile hide">\n' +
+                '                                    <p class="color-red font-s12 pad-t15">شما نمیتوانید راهبر باشید</p>\n' +
+                '                                </div>\n' +
+                '<div class="cleafix"></div>\n' +
+                '                                </div>');
+            $('#mentor-id').prop('disabled', true);
+        })
+        $(document).on('click', '.remove-created-leader', function () {
+            $('#created-leader').remove();
+            $('#mentor-id').prop('disabled', false);
+        })//http://127.0.0.1:8000/startup/#modal-close
+        $(document).on('click', '.remove-leader', function () {
+            $('.removing').remove();
+            $('#mentor-id').prop('disabled', false);
+        })
+    });
+
+
+</script>
+{% endblock %}

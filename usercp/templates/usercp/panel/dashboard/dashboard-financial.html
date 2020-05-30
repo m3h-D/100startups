@@ -1,0 +1,79 @@
+{% load jalali_tags %}
+<style>
+	.hide-tab{
+		display: none;
+	}
+</style>
+<div class="pad-t40">
+	<div class="frm-row pad-t40 pad-15 pad-5-mob spacer-t25-mob">
+		<div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+			<div class="pad-b10">
+     			<div class="bg-chart2 body-form-top absolute flex-center">
+					<i class="fa fa-file-invoice-dollar vertical font-s30 color-white"></i>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18">10 درخواست آخر</h3>
+				</div>
+				<div class="frm-row pad-t25-mob pad-t30-tab">
+					<div class="colm4 colm12-tab colm pull-left pull-none relative pad-20">
+
+				    </div>
+				</div>
+			</div>
+			<div class="frm-row pad-t40 pad-b10-mob pad-b10-tab pad-b20 overflow-scroll">
+				<div class="pad-table">
+                <table class="table color6">
+                    <thead>
+                    <tr>
+						<th class="center">نام تیم</th>
+                        <th class="center">عنوان</th>
+                        <th class="center">مبلغ</th>
+                        <th class="center">تاریخ درخواست</th>
+                        <th class="center">وضعیت</th>
+                        <th class="center">جزئیات</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+{% for req in the_requests %}
+                            <tr class="{{req.id }}">
+								<td class="center">{{ req.startup.title }}</td>
+                                <td class="center">{{ req.request_title }}</td>
+                                <td class="center">{{ req.request_money }}</td>
+                                <td class="center">{{ req.created_date|to_jalali:'%y/%m/%d' }}</td>
+                                <td class="center">{{ req.get_status_display }}</td>
+                                <td class="center">
+                                    <a class="color-silver" title="نمایش" href="{% url 'startup:single_requestmoney' req.pk %}">
+                                    <span>
+	                                	<i class="align-center font-s20 fa fa-address-card"></i>
+									</span>
+                                    </a>
+                                </td>
+                            </tr>
+{% endfor %}
+                    </tbody>
+                </table>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="clearfix"></div>
+</div>
+<style>
+	rect.highcharts-background{
+		fill:transparent
+	}
+	g.highcharts-exporting-group {
+    display: none;
+}
+text.highcharts-credits {
+    display: none;
+}
+.activee {
+     background: #eeeeee;
+     color: #222;
+}
+.cursor-step{
+	cursor: context-menu;
+}
+</style>
+

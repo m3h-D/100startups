@@ -1,0 +1,215 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block title %}نمایش پیام{% endblock %}
+{% block body %}
+<style>
+    .url-length{
+    direction: ltr;
+    overflow-x: auto;
+    }
+</style>
+    <div class="colm8 colm12-tab colm margin-auto spacer-t50">
+
+        {% for message in all_messages.send_message.all|dictsort:"created_date" %}
+        <div class="body-form relative pad-20 spacer-b30">
+            <input type="hidden" name="message_id" value="{{message.pk}}">
+            <div class="pad-20">
+            <div class="bg-chart4 body-form-top absolute flex-center">
+                <div class="fa fa-money-check vertical font-s30 color-white"></div>
+            </div>
+            <div class="absolute title-panel">
+                <h3 class="font-w300 font-s18"><span class="font-s15">فرستنده : </span><span class="color-red">{{ message.sender.first_name }} {{ message.sender.last_name }}</span></h3>
+            </div>
+            <div class="pad-30">
+                <div class="spacer-t30">
+                    <div class="font-s14 pad-10">
+                        <span class="colm4 pull-right">گیرنده : <span class="detail-message">{% if forloop.first %}{% if all_messages.message_type == 'error' %}مدیر سیستم{% else %}{{ message.receiver.first_name }} {{ message.receiver.last_name }}{% endif %}{% else %}{{ message.receiver.first_name }} {{ message.receiver.last_name }}{% endif %}</span></span>
+                        <span class="colm4 pull-right">عنوان پیام : <span class="detail-message">{{ all_messages.message_title }}</span></span>
+                        <span class="colm4 pull-right">نوع پیام : <span class="detail-message">{{ all_messages.get_message_type_display }}</span></span>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="font-s14 pad-10">
+                        <span class="colm4 pull-right">وضعیت : <span class="detail-message">{% if message.is_readed == True %}خوانده شده{% else %}خوانده نشده{% endif %}</span></span>
+                        <span class="colm4 pull-right">تاریخ ارسال : <span class="detail-message">{{message.created_date|to_jalali:'%Y/%m/%d' }} {{message.created_date|time:"H:i:s"}}</span></span>
+                        <div class="clearfix"></div>
+                    </div>
+                    <hr>
+                    <div class="font-s14 pad-10">
+                        <div class="font-s18">متن پیام : </div>                    
+                    </div>
+                    <div class="detail-message spacer-t20">{{message.message_content}}</div>
+                                   
+                    {% if all_messages.message_type == 'error' %}
+                    {% if forloop.first %}
+ 
+                    <div class="font-s14 pad-10">
+                        <div class="font-s18">لینک صفحه ارسال گزارش : </div>                    
+                    </div>
+                    <div class="detail-message spacer-t20 url-length">{{ message.url }}</div>
+                    {% endif %}
+                    {% endif %}
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+        <!-- <div  class="spacer-b20 spacer-t20">
+                <div class="body-form relative spacer-t40">
+                    <div class="bg-chart4 body-form-top absolute flex-center">
+                        <div class="fa fa-money-check vertical font-s30 color-white"></div>
+                    </div>
+                    <div class="absolute title-panel">
+                        <h3 class="font-w300 font-s18"><span class="font-s15">فرستنده : </span><span class="color-red"></span></h3>
+                    </div>
+                    <div class="pad-30">
+                        <div class="spacer-t30">
+                            <div class="font-s14 pad-10">
+                                <span class="colm4 pull-right">گیرنده : <span class="detail-message"></span></span>
+                                <span class="colm4 pull-right">عنوان پیام : <span class="detail-message"></span></span>
+                                <span class="colm4 pull-right">نوع پیام : <span class="detail-message">گفتگو</span></span>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="font-s14 pad-10">
+                                <span class="colm4 pull-right">وضعیت : <span class="detail-message"></span></span>
+                                <span class="colm4 pull-right">تاریخ ارسال : <span class="detail-message"></span></span>
+                                <div class="clearfix"></div>
+                            </div>
+                            <hr>
+                            <div class="font-s14 pad-10">
+                                <div class="pull-right font-s18">متن پیام : </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="detail-message spacer-t20"></div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+        </div> -->
+        <!-- <form method="post" action="" id="sending-message">{% csrf_token %}
+            {{ SendForm.as_p }}
+            <button type="submit">asdsad</button>
+
+            </form> -->
+        <div class="spacer-t30 cnt1 reply hide body-form" id="1">
+            <form method="post" action="" id="sending-message">{% csrf_token %}
+                <!-- {{ SendForm.as_p }}
+                <button type="submit">asdsad</button> -->
+
+                <div class="colm10 colm pad-5 pad-b20 margin-auto pad-t20">
+                    <label for="content" class="font-s14 gui-label">ارسال پیام :</label>
+                    <label class="relative">
+                        <textarea class="border-message input-send gui-textarea" id="message-content" cols="25" rows="5" type="text" name="message_content"></textarea>
+                    </label>
+                </div>
+                <div class="clearfix"></div>
+                <input type="hidden" id="title" value="{{ the_title }}">
+                <div class="btn-message flex-center align-center">
+                    <div onclick="sendMessage('receiver','title','message-content','','sending-message')" name="submit" class="bg-btn-message pointer btn-panel pad-10 color-white iransans spacer-b20">ارسال<span class="loader-request"></span></div>
+                </div>
+            </form>
+        </div>
+        <div class="pull-left spacer-t20">
+            <button class="btn-reply iransans">پاسخ</button>
+        </div>
+    </div>
+  	<div class="clearfix"></div>
+  	    <div id="toast">
+        <div id="img">وضعیت</div>
+        <div id="desc">پیام شما با موفقیت ارسال شد</div>
+    </div>
+
+    <div id="toast-err">
+        <div id="img-err">وضعیت</div>
+        <div id="desc-err">پیام شما ارسال نشد دوباره تلاش کنید</div>
+    </div>
+
+    <div id="toast-not">
+        <div id="img-not">وضعیت</div>
+        <div id="desc-not">لطفا همه فیلد ها را کامل کنید</div>
+    </div>
+    <style>
+        header , footer{
+            display: none;
+        }
+
+        .unread {
+            background: #39d188;
+        }
+        .border-message {
+            background: #effdde3d;
+            border: 2px solid #a9daa9bd;
+        }
+        .bg-btn-message{
+            background:linear-gradient(45deg,#7ebf58 ,#5eb790);
+        }
+        .btn-reply {
+            padding: 7px 27px;
+            border: 1px solid #F99029;
+            border-radius: 25px;
+            outline: none;
+            color: #F99029;
+            font-size: 18px;
+            background: transparent;
+            transition: 0.5s;
+            cursor: pointer;
+        }
+        .btn-reply:hover {
+            background: #F99029;
+            color: #fff;
+        }
+        .detail-message {
+            color: black;
+            font-size: 16px;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    	<script>
+        function sendMessage(input1,input2,input3,url,data) {
+            jQuery( ".button-send" ).prop( "disabled", true );
+            jQuery('.loader-request').css('display','block');
+
+            var part1 = jQuery('#'+ input1).val();
+            var part2 = jQuery('#'+ input2).val();
+            var part3 = jQuery('#'+ input3).val();
+            console.log(part2);
+            if((part3.length > 0)) {
+                jQuery.ajax({
+                    url: url,
+                    method:'POST',
+                    data: {message_content: part3, message_title: part2, csrfmiddlewaretoken: '{{ csrf_token }}'},
+                    success: function(response) {
+                        jQuery( ".input-send" ).prop( "disabled", true );
+                        jQuery('.loader-request').css('display','none');
+                        var x = document.getElementById('toast');
+                        x.className = "show";
+                        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+                        setTimeout(function(){ location.reload(); }, 4000);
+                    }
+                }).error(function(){
+                    jQuery( ".input-send" ).prop( "disabled", true );
+                    jQuery('.loader-request').css('display','none');
+                    var x = document.getElementById("toast-err");
+                    x.className = "show";
+                    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+                    setTimeout(function(){ location.reload(); }, 4000);
+                })
+            }else {
+                jQuery( ".button-send" ).prop( "disabled", false );
+                var x = document.getElementById("toast-not");
+                jQuery('.loader-request').css('display','none');
+                x.className = "show";
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+            }
+        };
+
+        jQuery(document).ready(function($){
+            $('.btn-reply').on('click',function(){
+                $('.reply').removeClass('hide');
+            })
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base/base-register.html' %}
+{% load static %}
+{% block title %}مرحله نهایی{% endblock %}
+{% block body %}
+<style>
+  header, footer, .mobile {
+    display: none;
+  }
+
+  .hide-tab {
+    display: none;
+  }
+
+  .hide-tab {
+    display: none;
+  }
+</style>
+
+<div class="colm8 colm11-tab colm margin-auto pad-5-mob">
+  <div class="pad-b20 align-center">
+    <h2 class="font-s30 color6">ثبت نام با موفقیت انجام شد</h2>
+    <p class="color-darkgray font-s14">پس از بررسی اطلاعات و تایید، اطلاعات حساب شما و راهنمای ادامه فرآیند، از طریق
+      ایمیل یا شماره تلفن ارسال خواهند شد.</p>
+  </div>
+  <div id="get-errors">
+                                        
+  </div>
+  <div class="align-center spacer-t20 colm">
+    <div class="pull-right">
+      <a href="/presentation/" class="btn-prv font-s13 colm">مرحله قبل </a>
+    </div>
+    <form action="" method="post">{% csrf_token %}
+
+      <button name="redirect_to_100" class="btn-web pull-left colm5 colm7-mob btn-finish-responsive margin-auto show">تایید نهایی</button>
+    </form>
+    <div class="clearfix"></div>
+  </div>
+</div>
+
+
+{% endblock %}
+<script>
+    jQuery(document).ready(function () {
+        var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
+    });
+</script>

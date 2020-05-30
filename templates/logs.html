@@ -1,0 +1,15 @@
+
+<body class="container">
+    
+    {% for x in the_logs %}
+    {% if "INFO" in x %}
+    <h5 style="color: darkslateblue;">{{x}}</h5>
+    {% endif %}
+    {% if "ERROR " in x %}
+    <h5 style="color:red;">{{x}}</h5>
+    {% endif %}
+    {% if "WARNING" in x %}
+    <h5 style="color:rgb(0, 38, 255);">{{x}}</h5>
+    {% endif %}
+{% endfor %}
+</body>

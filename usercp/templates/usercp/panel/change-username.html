@@ -1,0 +1,99 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% block title %}تغیید نام کاربری{% endblock %}
+{% block body %}
+	<style>
+		.hide-tab {
+			display: none;
+		}
+	</style>
+	<div class="colm6 colm12-tab colm margin-auto spacer-t50">
+		<form action="" method="post" class="smart-validate" enctype="multipart/form-data">{% csrf_token %}
+			<div class="body-form relative">
+				<div class="bg-chart4 body-form-top absolute flex-center">
+					<div class="fa fa-address-card vertical font-s30 color-white"></div>
+				</div>
+				<div class="absolute title-panel">
+					<h3 class="font-w300 font-s18 pad-r25">تغییر نام کاربری</h3>
+				</div>
+				<div class="pad-30">
+					<!-- <div class="pad-t30">
+						<h2 class="font-s30 color6">نکته:</h2>
+						<p class="color-darkgray font-s12 align-justify pad-t15"><span class="color-red font-s15 pad-l5">*</span>لطفا توجه بفرمایید پس از تغییر نام کاربری سیستم شما رابه صفحه لاگین ارجاع می کند تا با نام کاربری جدید وارد پنل شوید.</p>
+					</div> -->
+					<div class="frm-row  spacer-t30">
+						<div class="colm10 colm margin-auto pad-5">
+							<label for="user-name" class="gui-label pad-5">نام کاربری قبلی :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" fa fa-user-tag vertical"></i></span>
+								<input type="text" class="gui-input sans-digit" value="{{ request.user.username }}" disabled>
+							</label>
+						</div>
+						<div class="colm10 colm margin-auto pad-5">
+							<label for="user-name" class="gui-label pad-5">نام کاربری جدید :</label>
+							<label class="relative">
+								<span class="icon-gui flex-center"><i class=" fa fa-user-tag vertical"></i></span>
+								<input type="text" class="gui-input sans-digit check-error" id="user-name" name="user_name" data-type="name_user" placeholder="مثال : U-8468655" data-rule-lettersonlyen="true" required>
+							</label>
+							<span class="color-red font-s12 pad-t15 hide error-hide" id="error_name">نام کاربری وارد شده تکراری است</span>
+						</div>
+
+						{% for message in messages %}
+										
+						{% if 'username_exists' in message.extra_tags %}
+						<div class="colm colm10 margin-auto">
+							<h2 class="color-red error-user  font-s12">این نام کاربری موجود است</h2>
+						</div>
+						{% endif %}
+						{% endfor %}
+						<div class="clearfix"></div>
+					</div>
+				</div>
+				<div class="margin-auto align-center pad-b25">
+					<button type="submit" name="submit" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<style>
+		header,
+		footer {
+			display: none;
+		}
+	</style>
+{% endblock %}
+{% block script %}
+<script>
+	jQuery(document).ready(function($) {
+		window.setTimeout(function() {
+			$(".alert-sucsess").fadeTo(500, 0).slideUp(500, function() {
+				$(this).remove();
+			});
+		}, 4000);
+		var uri = window.location.toString();
+		if (uri.indexOf("?") > 0) {
+			var clean_uri = uri.substring(0, uri.indexOf("?"));
+			window.history.replaceState({}, document.title, clean_uri);
+		}
+
+		$('.check-error').blur(function() {
+			var dataValue = $(this).val();
+			var dataType = $(this).data('type');
+			$.ajax({
+				url: '',
+				method: 'POST',
+				data: {
+					type: dataType,
+					value: dataValue
+				},
+				success: function(response) {
+					var error = $(response).filter('.notify').text();
+					if (error == 'error_name') $('#' + error).show();
+					else $('.error-hide').hide();
+
+				}
+			})
+		});
+	});
+</script>
+{% endblock %}

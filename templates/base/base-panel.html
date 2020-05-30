@@ -1,0 +1,994 @@
+{% load static %}
+{% load sunny %}
+<html class="no-js" dir="rtl" lang="fa-IR">
+<!doctype html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="{% static 'stylesheets/dropzone.min.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/chartist.min.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/persian-datepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/icon.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/style.css' %}">
+  <!-- <link rel="stylesheet" href="/static/stylesheets/style.css"> -->
+  <link rel="stylesheet" href="{% static 'stylesheets/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/responsive.css' %}">
+    <title>100 استارتاپ - {% block title %}{% endblock %}</title>
+</head>
+<body>
+  
+ <style>
+   .circlee{
+    border-radius: 50%;
+}   
+ </style> 
+<div id="wrapper">
+
+  <!-- Mobile -->
+  <div class="mobile hide bg-gray overflow hide-mob hide-decstop">
+    <div class="relative pull-left pad-l10 hidden-md pad-t15">
+      <a class="color-menu pad-lheader" title="خروج" href="">
+        <i class="fa fa-door-open pad-l5 font-s18 pointer"></i>
+      </a>
+    </div>
+    <div class="relative pull-left pad-l10 hidden-md pad-t15">
+      <div class="pad-lheader">
+        <a title="اعلان ها" href="{% url 'message:notification' %}" class="">
+          <i class="fa fa-bell color-menu font-s18 pointer"></i>
+        </a>
+      </div>
+    </div>
+    <div class="relative pull-left pad-l10 hidden-md pad-t15">
+      <div class="pad-lheader">
+        <a title="پیام ها" href="{% url 'message:message_box' %}" class="">
+          <i class="fa fa-envelope color-menu font-s18 pointer"></i>
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="header-right-mob pull-right relative">
+        <i class="color-white fa fa-bars vertical"></i>
+      </div>
+      <div class="align-center pull-right pad-10 ">
+        <h3 class="color-purple font-s16"></h3>
+      </div>
+      <div class="header-icon-mob pull-left align-center">
+        <a class="color-darkgray" href="">
+          <i class="icon-user-plus vertical vertical"></i>
+        </a>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="mobile-menu-right">
+      <div class="mobile-menu-logo align-center pad-t20 pad-b20">
+        <a href="">
+          <img style="border-radius:50%;" class="fa fa-user ver vertical avatar-user pointer circlee" width="50" height="50"
+          src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'images/avatar1.png' %}{% endif %}"/>
+        </a>
+        <h2 class="color-white font-s16 pad-t10">{{request.user.first_name}} {{request.user.last_name}}</h2>
+      </div>
+      <div class="mobile-menu font-s13">
+             <nav class="sidebar-wrapper">
+        <div id="cssmenu" class="menu-drawer">
+          <ul class="font-s14">
+            <li class="pad-t10">
+              <a href="{% url 'usercp:dashboard_panel' %}">
+                <i class="fa fa-laptop  vertical font-s22 pad-l15"></i>
+                میزکار
+              </a>
+            </li>
+            <!---- Super Admin ------>
+            {% if  request.user.startup and request.user.user_type == 'startup' %}
+            <li class="pad-t10">
+              <a href="{% url 'startup:my_startup_information' %}">
+                <i class="fa fa-rocket vertical font-s22 pad-l15"></i>
+                استارت آپ من
+              </a>
+            </li>
+            {% endif %}
+{% if request.user.user_type == 'manager' or request.user.is_admin or request.user.can_see_startups == True or is_op in request.user.role.all %}
+            <li class="pad-t10">
+              <a href="{% url 'startup:list_startup' %}">
+                <i class="fa fa-rocket vertical font-s22 pad-l15"></i>
+                استارت آپ ها
+              </a>
+            </li>
+{% endif %}
+{% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                کاربران
+              </a>
+              <ul class="sub-menu">
+                {%if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:create_user' %}">
+                    <i class="fa fa-user-plus vertical font-s22 pad-l15"></i>
+                    اضافه کردن کاربر
+                  </a>
+                </li>
+                {% endif %}
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:list_user' %}">
+                    <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                    لیست کاربران
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {% endif %}
+{% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                شتاب دهنده
+              </a>
+              <ul class="sub-menu">
+                <li class="pad-t10">
+                  <a href="{% url 'startup:create_accelerator' %}">
+                    <i class="fa fa-user-plus vertical font-s22 pad-l15"></i>
+                    ایجاد شتاب دهنده
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_accelerator' %}">
+                    <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                    لیست شتاب دهنده ها
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {% endif %}
+                                                        {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-clipboard-list vertical font-s22 pad-l15"></i>
+                لیست ها
+              </a>
+              <ul class="sub-menu">
+
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_referee' %}">
+                    <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                    لیست داوران
+                  </a>
+                </li>
+
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_coach' %}" class="">
+                    <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                    لیست مربیان/راهبران
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_investor' %}">
+                    <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                    لیست سرمایه گذاران
+                  </a>
+                </li>
+              </ul>
+            </li>
+                                {% endif %}
+{% if request.user.user_type == 'manager' or request.user.is_admin  or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                <i class="fa fa-columns vertical font-s22 pad-l15"></i>
+                دسته بندی ها
+              </a>
+              <ul class="sub-menu">
+                <li class="pad-t10">
+                  <a href="{% url 'category:create_cat' %}">
+                    <i class="fa fa-folder-plus vertical font-s22 pad-l15"></i>
+                    ایجاد دسته بندی
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'category:list_cat' %}">
+                    <i class="fa fa-map vertical font-s22 pad-l15"></i>
+                    لیست دسته بندی ها
+                  </a>
+                </li>
+              </ul>
+            </li>
+                        {% endif %}
+{% if request.user.is_admin or request.user.user_type == 'manager' or is_op in requset.user.role.all %}
+            <li class="pad-t10">
+              <a href="{% url 'usertracker:user_activities' %}">
+                <i class="fa fa-calendar-week vertical font-s22 pad-l15"></i>
+              فعالیت های کاربران
+              </a>
+            </li>
+            {% endif %}
+                                                        {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                  <i class="fa fa-user-clock vertical font-s22 pad-l15"></i>
+                  منتورینگ
+              </a>
+              <ul class="sub-menu">
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:meeting_coach' %}">
+                          <i class="fa fa-folder-plus vertical font-s22 pad-l15"></i>
+                          ایجاد جلسه
+                      </a>
+                  </li>
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:list_meeting' %}">
+                          <i class="fa fa-map vertical font-s22 pad-l15"></i>
+                          لیست جلسات
+                      </a>
+                  </li>
+              </ul>
+          </li>
+                                {% endif %}
+              {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                  <i class="fa fa-columns vertical font-s22 pad-l15"></i>
+                  ایونت
+              </a>
+              <ul class="sub-menu">
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:create_event' %}">
+                          <i class="fa fa-folder-plus vertical font-s22 pad-l15"></i>
+                          ایجاد ایونت
+                      </a>
+                  </li>
+                  <li class="pad-t10">
+                    <a href="{% url 'theevent:list_event' %}">
+                        <i class="fa fa-map vertical font-s22 pad-l15"></i>
+                        لیست ایونت ها
+                    </a>
+                </li>
+                </ul>
+                               <ul class="sub-menu">
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:list_event' %}">
+                          <i class="fa fa-map vertical font-s22 pad-l15"></i>
+                          لیست ایونت ها
+                      </a>
+                  </li>
+              </ul>
+              </li>
+                        {% endif %}
+                        {% if request.user.user_type == 'manager' or request.user.is_admin or request.user.user_type == 'startup' and request.user.startup.credi %}
+
+              <li class="pad-t10">
+                <a href="{% url 'startup:request_money' %}" class="">
+                  <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                  درخواست اعتبار
+                </a>
+              </li>
+  
+              {% endif %}
+              <li class="pad-t10">
+                <a href="{% url 'message:message_box' %}" class="relative {% for x in request.user.messagereceiver.all %}{% if x.is_readed == False %} box-message {% endif %}{% endfor %}">
+                  <i class="fa fa-envelope vertical font-s22 pad-l15"></i>
+                  صندوق پیام
+                </a>
+              </li>
+              <li class="has-sub pad-t10">
+                <a href="" class="">
+                  <i class="fa fa-address-card vertical font-s22 pad-l15"></i>
+                  حساب کاربری
+                </a>
+ 
+          </li>
+                      
+                      {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                  <i class="fa fa-route vertical font-s22 pad-l15"></i>
+                  اختصاص راهبر
+              </a>
+              <ul class="sub-menu">
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:offerto_leader' %}">
+                          <i class="fa fa-tasks vertical font-s22 pad-l15"></i>
+                          پیشنهاد استارتاپ
+                      </a>
+                  </li>
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:list_offer' %}">
+                          <i class="fa fa-history vertical font-s22 pad-l15"></i>
+                          لیست پیشنهاد ها
+                      </a>
+                  </li>
+              </ul>
+          </li>
+                      {% endif %}
+
+            <!---- Super Admin ------>
+                                  {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all or is_leader in request.user.role.all or is_finance in request.user.role.all  %}
+            <li class="pad-t10">
+              <a href="{% url 'startup:manage_request' %}">
+                <i class="fa fa-file-invoice-dollar vertical font-s22 pad-l15"></i>
+                مدیریت درخواست ها
+              </a>
+            </li>
+                                  {% endif %}
+
+
+           
+            {% if request.user.user_type == 'manager' or request.user.is_admin or request.user.user_type == 'startup' and request.user.startup.credit %}
+
+            <li class="pad-t10">
+              <a href="{% url 'startup:request_money' %}" class="">
+                <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                درخواست اعتبار
+              </a>
+            </li>
+
+            {% endif %}
+            <li class="pad-t10">
+              <a href="{% url 'message:message_box' %}" class="relative {% for x in request.user.messagereceiver.all %}{% if x.is_readed == False %} box-message {% endif %}{% endfor %}">
+                
+                <i class="fa fa-envelope vertical font-s22 pad-l15"></i>
+                صندوق پیام
+              </a>
+            </li>
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-address-card vertical font-s22 pad-l15"></i>
+                حساب کاربری
+              </a>
+              <ul class="sub-menu">
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:profile' %}" class="">
+                    <i class="fa fa-user-cog vertical font-s22 pad-l15"></i>
+                    تنظیمات
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:change_username' %}" class="">
+                    <i class="fa fa-spell-check vertical font-s22 pad-l15"></i>
+                    تغییر نام کاربری
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:change_password' %}" class="">
+                    <i class="fa fa-lock vertical font-s22 pad-l15"></i>
+                    تغییر کلمه عبور
+                  </a>
+                </li>
+              </ul>
+            </li>
+<!-- 
+            <li class="pad-t10">
+              <a href="{% url 'usertracker:user_activities' %}">
+                <i class="fa fa-diagnoses vertical font-s22 pad-l15"></i>
+                فعالیت های من
+              </a>
+            </li> -->
+
+          </ul>
+        </div>
+      </nav>
+      </div>
+    </div>
+    <div class="mob-swipe-bg"></div>
+    <div class="mobile-search hide">
+      <form method="get" class="mobile-search-form" action="">
+        <div class="mobile-site-search">
+          <i class="icon-android-close search-close"></i>
+          <div class="mobile-search-input-box">
+            <input class="mobile-search-input" name="s" type="search" placeholder="جستجو کنید ...">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="container-fluide bg-gray overflow">
+    <!------ sidebar -------->
+    <div class="sidebar hidden-xs">
+      <div class="logo relative pad-15 align-center color-blue">
+        <img width="140" src="{% static 'images/logo-panel.svg' %}"/>
+      </div>
+      <nav class="sidebar-wrapper">
+        <div id="cssmenu" class="menu-drawer">
+          <ul class="font-s14">
+            <li class="pad-t10">
+              <a href="{% url 'usercp:dashboard_panel' %}">
+                <i class="fa fa-laptop  vertical font-s22 pad-l15"></i>
+                میزکار
+              </a>
+            </li>
+            {% if request.user.startup and request.user.user_type == 'startup' %}
+            <li class="pad-t10">
+              <a href="{% url 'startup:my_startup_information' %}">
+                <i class="fa fa-rocket vertical font-s22 pad-l15"></i>
+                استارت آپ من
+              </a>
+            </li>
+            {% endif %}
+            <!---- Super Admin ------>
+{% if request.user.user_type == 'manager' or request.user.is_admin or request.user.can_see_startups == True or is_op in request.user.role.all %}
+            <li class="pad-t10">
+              <a href="{% url 'startup:list_startup' %}">
+                <i class="fa fa-rocket vertical font-s22 pad-l15"></i>
+                استارت آپ ها
+              </a>
+            </li>
+{% endif %}
+{% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                کاربران
+              </a>
+              <ul class="sub-menu">
+                {%if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:create_user' %}">
+                    <i class="fa fa-user-plus vertical font-s22 pad-l15"></i>
+                    اضافه کردن کاربر
+                  </a>
+                </li>
+                {% endif %}
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:list_user' %}">
+                    <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                    لیست کاربران
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {% endif %}
+{% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                شتاب دهنده
+              </a>
+              <ul class="sub-menu">
+                <li class="pad-t10">
+                  <a href="{% url 'startup:create_accelerator' %}">
+                    <i class="fa fa-user-plus vertical font-s22 pad-l15"></i>
+                    ایجاد شتاب دهنده
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_accelerator' %}">
+                    <i class="fa fa-users vertical font-s22 pad-l15"></i>
+                    لیست شتاب دهنده ها
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {% endif %}
+                                                        {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-clipboard-list vertical font-s22 pad-l15"></i>
+                لیست ها
+              </a>
+              <ul class="sub-menu">
+
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_referee' %}">
+                    <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                    لیست داوران
+                  </a>
+                </li>
+
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_coach' %}" class="">
+                    <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                    لیست مربیان/راهبران
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'startup:list_investor' %}">
+                    <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                    لیست سرمایه گذاران
+                  </a>
+                </li>
+              </ul>
+            </li>
+                                {% endif %}
+{% if request.user.user_type == 'manager' or request.user.is_admin  or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                <i class="fa fa-columns vertical font-s22 pad-l15"></i>
+                دسته بندی ها
+              </a>
+              <ul class="sub-menu">
+                <li class="pad-t10">
+                  <a href="{% url 'category:create_cat' %}">
+                    <i class="fa fa-folder-plus vertical font-s22 pad-l15"></i>
+                    ایجاد دسته بندی
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'category:list_cat' %}">
+                    <i class="fa fa-map vertical font-s22 pad-l15"></i>
+                    لیست دسته بندی ها
+                  </a>
+                </li>
+              </ul>
+            </li>
+                        {% endif %}
+
+                        {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in requset.user.role.all %}
+                        <li class="pad-t10">
+                          <a href="{% url 'usertracker:user_activities' %}">
+                            <i class="fa fa-calendar-week vertical font-s22 pad-l15"></i>
+                          فعالیت های کاربران
+                          </a>
+                        </li>
+                        {% endif %}
+                                                        {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                  <i class="fa fa-user-clock vertical font-s22 pad-l15"></i>
+                  منتورینگ
+              </a>
+              <ul class="sub-menu">
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:meeting_coach' %}">
+                          <i class="fa fa-folder-plus vertical font-s22 pad-l15"></i>
+                          ایجاد جلسه
+                      </a>
+                  </li>
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:list_meeting' %}">
+                          <i class="fa fa-map vertical font-s22 pad-l15"></i>
+                          لیست جلسات
+                      </a>
+                  </li>
+              </ul>
+          </li>
+                                {% endif %}
+              {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                  <i class="fa fa-columns vertical font-s22 pad-l15"></i>
+                  ایونت
+              </a>
+              <ul class="sub-menu">
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:create_event' %}">
+                          <i class="fa fa-folder-plus vertical font-s22 pad-l15"></i>
+                          ایجاد ایونت
+                      </a>
+                  </li>
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:list_event' %}">
+                          <i class="fa fa-map vertical font-s22 pad-l15"></i>
+                          لیست ایونت ها
+                      </a>
+                  </li>
+              </ul>
+          </li>
+                      {% endif %}
+                      {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all %}
+            <li class="has-sub pad-t10">
+              <a class="" href="">
+                  <i class="fa fa-route vertical font-s22 pad-l15"></i>
+                  اختصاص راهبر
+              </a>
+              <ul class="sub-menu">
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:offerto_leader' %}">
+                          <i class="fa fa-tasks vertical font-s22 pad-l15"></i>
+                          پیشنهاد استارتاپ
+                      </a>
+                  </li>
+                  <li class="pad-t10">
+                      <a href="{% url 'theevent:list_offer' %}">
+                          <i class="fa fa-history vertical font-s22 pad-l15"></i>
+                          لیست پیشنهاد ها
+                      </a>
+                  </li>
+              </ul>
+          </li>
+                      {% endif %}
+
+            <!---- Super Admin ------>
+            {% if request.user.user_type == 'manager' or request.user.is_admin or is_op in request.user.role.all or is_leader in request.user.role.all or is_finance in request.user.role.all  %}
+            <li class="pad-t10">
+              <a href="{% url 'startup:manage_request' %}">
+                <i class="fa fa-file-invoice-dollar vertical font-s22 pad-l15"></i>
+                مدیریت درخواست ها
+              </a>
+            </li>
+            {% endif %}
+
+
+            {% if request.user.user_type == 'manager' or request.user.is_admin or request.user.user_type == 'startup' and request.user.startup.credit %}
+            <li class="pad-t10">
+              <a href="{% url 'startup:request_money' %}" class="">
+                <i class="fa fa-file-alt vertical font-s22 pad-l15"></i>
+                درخواست اعتبار
+              </a>
+            </li>
+
+
+            {% endif %}
+            <li class="pad-t10">
+              <a href="{% url 'message:message_box' %}" class="relative">
+                <span class="{% for x in request.user.messagereceiver.all %}{% if x.is_readed == False %} elan2 {% endif %}{% endfor %}">{{request.user.messagereceiver|not_readed_notification}}</span>
+                <i class="fa fa-envelope vertical font-s22 pad-l15"></i>
+                صندوق پیام
+              </a>
+            </li>
+            <li class="has-sub pad-t10">
+              <a href="" class="">
+                <i class="fa fa-address-card vertical font-s22 pad-l15"></i>
+                حساب کاربری
+              </a>
+              <ul class="sub-menu">
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:profile' %}" class="">
+                    <i class="fa fa-user-cog vertical font-s22 pad-l15"></i>
+                    تنظیمات
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:change_username' %}" class="">
+                    <i class="fa fa-spell-check vertical font-s22 pad-l15"></i>
+                    تغییر نام کاربری
+                  </a>
+                </li>
+                <li class="pad-t10">
+                  <a href="{% url 'usercp:change_password' %}" class="">
+                    <i class="fa fa-lock vertical font-s22 pad-l15"></i>
+                    تغییر کلمه عبور
+                  </a>
+                </li>
+              </ul>
+            </li>
+<!-- 
+            <li class="pad-t10">
+              <a href="{% url 'usertracker:user_activities' %}">
+                <i class="fa fa-diagnoses vertical font-s22 pad-l15"></i>
+                فعالیت های من
+              </a>
+            </li> -->
+
+          </ul>
+        </div>
+      </nav>
+      <div class="clearfix"></div>
+    </div>
+    <!---- end sidebar ----->
+
+    <div class="colm12 colm content">
+      <div class="colm12 colm  pad-10 bg-gray color-menu min-h100">
+        <div class="">
+
+          <div class="pad-lheader pull-left pad-t10 pad-l25-mob avatar-mob hide-mob">
+            <div class="pull-right pad-t10 pad-l15">
+              <h3 class="">{{request.user.first_name}} {{request.user.last_name}}</h3>
+            </div>
+            <div class="relative pull-right pad-l20 pad-t15">
+              <div class="pad-lheader">
+                <a title="گزارش خطا"><i class="fa fa-headset color-menu font-s25 pointer btn-support"></i></a>
+              </div>
+            </div>
+            <div class="support-overlay hide">
+              <div class="support bg-white colm4 colm ">
+
+                <a class="close-support">
+                  <svg viewBox="0 0 20 20">
+                    <path fill="#000000"
+                          d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+                  </svg>
+                </a><!-- close modal -->
+                {% comment %} {{ heh }} {% endcomment %}
+                <div class="support-content colm12">
+                  <form method="post" id="form-fidback" action="" class="pad-20">{% csrf_token %}
+
+                    <h2 class="align-center pad-t15">مسائل مربوط به سامانه یا ایده های خود را به تیم فنی ارسال
+                      کنید.</h2>
+                    <div class="colm6 colm pull-right pad-10 pad-t20">
+                      <label for="r_title" class="gui-label">عنوان پیام :</label>
+                      <label class="relative">
+                        <input class="input-send gui-input" type="text" name="message_title" id="r_title" required>
+                      </label>
+                    </div>
+                    {% comment %} {{ error_form.as_p }} {% endcomment %}
+                    <div class="colm12 colm pull-right pad-10 pad-t20 pad-b20 ">
+                      <label for="r_content" class="gui-label">متن پیام :</label>
+                      <label class="relative">
+                        <textarea class="input-send gui-textarea" cols="25" rows="5" type="text" name="message_content"
+                                  id="r_content" required></textarea>
+                      </label>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="margin-auto align-center">
+                      <button
+                              class="button-fidback btn-panel pad-10 color-white iransans">ارسال<span
+                        class="loader-request"></span></button >
+                    </div>
+                  </form>
+                </div><!-- content -->
+              </div><!-- modal -->
+            </div><!-- overlay -->
+            <div class="relative pull-right pad-l20 pad-t15">
+              <div class="pad-lheader">
+                <a title="اعلان ها" href="{% url 'message:notification' %}" class="">
+                  <span class="{% for x in request.user.notification.all|dictsort:'created_date' %}{% if x.is_readed == False %} elan {% endif %}{% endfor %}">{{request.user.notification|not_readed_notification}}</span>
+                  <i class="fa fa-bell color-menu font-s25 pointer"></i>
+                </a>
+              </div>
+            </div>
+
+            <div class="relative pull-right pad-l20 pad-t15">
+              <div class="pad-lheader">
+                <a title="پیام ها" href="{% url 'message:message_box' %}" class="">
+                  <span class="{% for x in request.user.messagereceiver.all %}{% if x.is_readed == False %} elan {% endif %}{% endfor %}">{{request.user.messagereceiver|not_readed_notification}}</span>
+                  <i class="fa fa-envelope color-menu font-s25 pointer"></i>
+                </a>
+              </div>
+            </div>
+            <div class=" relative pull-right">
+              <div class="pad-lheader color-menu font-s15">
+                <img style="border-radius:50%;" class="fa fa-user ver vertical avatar-user pointer circlee" width="50"
+                     src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'images/avatar1.png' %}{% endif %}"/>
+                <!-------dopdown avatar-------->
+                <div class="absolute dropd hide abso-avatar-main">
+                  <div class="absolute divdrop"></div>
+                  <ul>
+                    <li><a href="{% url 'usercp:dashboard_panel' %}">میز کار</a></li>
+                    <li><a href="{% url 'usercp:profile' %}">حساب کاربری</a></li>
+                    <li><a href="{% url 'usercp:change_password' %}">تغییر رمز عبور</a></li>
+                    <li><a href="{% url 'usercp:logout' %}">خروج از حساب</a></li>
+                  {% if 'iam_ghosting' in request.session %}
+                    <li><a href="{% url 'usercp:ghost_mode_out' %}">خروج از حالت روح</a></li>
+                    {% endif %}
+                  </ul>
+                </div>
+                <!-------dopdown avatar-------->
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="colm12 colm pad-15 pad-0 dashboard-content">
+        {% if request.user.is_compeleted == False %}
+          <div class="alert alert-danger spacer-t20 spacer-b30">
+            لطفا اطلاعات پروفایل خود را تکمیل نمایید.
+            <div class="pull-left">
+              <a href="{% url 'usercp:profile' %}" style='color: #0d6ea8'>تکمیل پروفایل</a>
+            </div>
+          </div>
+          {% endif %}
+          {% block body %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+    <a rel="nofollow" id="scroll" class="scrollToTop color-white align-center font-s25 hide" href="#top">
+      <i class="fa fa-chevron-up vertical"></i>
+    </a>
+  </div><!-- Wrapper -->
+  <style>
+    .elan{
+      position: absolute;
+      right: -4px;
+      top: 10px;
+      width: 17px;
+      padding-top: 2px;
+      height: 17px;
+      font-size: 9px;
+      border-radius: 50%;
+      background: #EB4D4D;
+      text-align: center;
+      color: #fff;
+    }
+    .elan2{
+      position: absolute;
+      right: 5px;
+      top: 7px;
+      width: 17px;
+      padding-top: 2px;
+      height: 17px;
+      font-size: 9px;
+      border-radius: 50%;
+      background: #EB4D4D;
+      text-align: center;
+      color: #fff;
+    }
+
+    .box-notify::before {
+      content: "\2022";
+      font-size: 47px;
+      position: absolute;
+      color: #EB4D4D;
+      top: -14px;
+      left: 36px;
+    }
+
+    .mob-notify::before {
+      content: "\2022";
+      font-size: 35px;
+      position: absolute;
+      color: #EB4D4D;
+      top: -7px;
+      right: -5px
+    }
+
+    .mob-message::before {
+      content: "\2022";
+      font-size: 35px;
+      position: absolute;
+      color: #EB4D4D;
+      top: -7px;
+      right: -5px
+    }
+
+    .support-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      background-color: rgba(0, 0, 0, 0.77);
+      opacity: 0;
+      visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), visibility 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    }
+
+    .support-overlay.actives {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .support {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 5px;
+      right: 9%;
+      visibility: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      backface-visibility: hidden;
+      transform: scale(1.2);
+      transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    }
+
+    .support .close-support {
+      position: absolute;
+      cursor: pointer;
+      top: -2%;
+      right: 0%;
+      opacity: 0;
+      backface-visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), transform 0.6s cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition-delay: 0.3s;
+    }
+
+    .support .close-support svg {
+      width: 1.75em;
+      height: 1.75em;
+    }
+
+    .support .support-content {
+      opacity: 0;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition-delay: 0.3s;
+    }
+
+    .support.actives {
+      visibility: visible;
+      opacity: 1;
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
+
+    .support.actives .support-content {
+      opacity: 1;
+    }
+
+    .support.actives .close-support {
+      -webkit-transform: translateY(10px);
+      transform: translateY(10px);
+      opacity: 1;
+    }
+
+    .alert {
+      position: relative;
+      padding: .75rem 1.25rem;
+      border: 1px solid transparent;
+      border-top-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+      border-radius: .25rem;
+    }
+
+    .alert-danger {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+  </style>
+  <script src="{% static 'javascript/jquery.js' %}"></script>
+  <script src="{% static 'javascript/croppie.min.js' %}"></script>
+  <script src="{% static 'javascript/dropzone.min.js' %}"></script>
+  <script src="{% static 'javascript/jquery.validate.min.js' %}"></script>
+  <script src="{% static 'javascript/additional-methods.min.js' %}"></script>
+  <script src="{% static 'javascript/validate.js' %}"></script>
+  <script src="{% static 'javascript/chartist.min.js' %}"></script>
+  <script src="{% static 'javascript/persian-date.min.js' %}"></script>
+  <script src="{% static 'javascript/persian-datepicker.min.js' %}"></script>
+  <script src="{% static 'javascript/address.js' %}"></script>
+  <script src="{% static 'javascript/script.js' %}"></script>
+  <script>
+      jQuery(document).ready(function ($) {
+          $(function () {
+              var current = location.pathname.slice(0, -1);
+              ;
+              $('#cssmenu li a').each(function () {
+                  var $this = $(this);
+                  if ($this.attr('href').indexOf(current) !== -1) {
+                      $this.addClass('bg-dasboard');
+                      if ($this.parents().hasClass('has-sub')) {
+                          $this.parents().eq(2).addClass('open');
+                          $this.parents().eq(1).show();
+                      }
+                  }
+              })
+          })
+      });
+  </script>
+  <script>
+
+jQuery(document).ready(function ($) {
+    var elements = $('.support-overlay, .support');
+    $(document).on('submit', '#form-fidback', function (e) {
+      var $form = $(this);
+      var $inputs = $form.find("input, select, button, textarea");
+      var serializedData = $form.serialize();
+      var token = '{{csrf_token}}';
+      $('.loader-request').css('display', 'block');
+      $inputs.prop("disabled", true);
+      request = $.ajax({
+        headers: { "X-CSRFToken": token },
+        url: "{% url 'message:send_message_error' %}",
+        type: "post",
+        data: serializedData
+      });
+      request.done(function (response, textStatus, jqXHR) {
+        $('.loader-request').css('display', 'none');
+        $('#load-request-content').load(" #load-request");
+        $inputs.val("");
+        var x = document.getElementById("toast");
+        elements.removeClass('actives');
+      });
+      request.always(function () {
+        $inputs.prop("disabled", false);
+      });
+      e.preventDefault();
+     
+      
+    })
+    $('.close-modal').click(function () {
+      elements.removeClass('active');
+    });
+  });
+
+</script>
+  {% block script %}
+
+  {% endblock %}
+</body>
+</html>

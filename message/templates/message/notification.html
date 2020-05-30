@@ -1,0 +1,176 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block title %}اعلان ها{% endblock %}
+{% block body %}
+    <div class="colm12 colm12-tab colm12-tab colm pad-15 pad-t40 pad-5-mob wow slideInRight" data-wow-duration="1.5s">
+        <div class="body-form relative pad-b10">
+            <div class="payam">
+                <div class="bg-chart1 body-form-top absolute flex-center">
+                    <i class="fa fa-bell vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18">اعلان ها</h3>
+                </div>
+            </div>
+            <div class="pad-table overflow-scroll">
+                <div class="frm-row pad-t40">
+                    <div class="overflow-scroll pad-b40">
+                        <table class="table color6 retable">
+                            <thead>
+                            <tr>
+                                <th>ردیف</th>
+                                <th>فعالیت</th>
+                                <th>تاریخ</th>
+                                <th>متن</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for not in notifications %}
+                                            <tr class="list">
+                                                <td>{{ forloop.counter0|add:notifications.start_index}}</td>
+                                                <td>{{ not.status.get_name_display }}</td>
+                                                <td>{{ not.created_date|to_jalali:'%Y/%m/%d'}}</td>
+                                                <td id="row{{forloop.counter}}" class="notif" data-startup="{% if request.user.user_type == 'karmand' or request.user.user_type2 == 'karmand' %}{{not.content_object.title}}{% elif request.user.user_type == 'startup' or request.user.user_type2 == 'startup' %}{{not.content_object.first_name}} {{not.content_object.last_name}}{% endif %}"  data-row="{{forloop.counter}}" data-role="{% if request.user.user_type == 'startup' or requerst.user.user_type2 == 'startup' %}startup{%else%}karmand{%endif%}" data-status="{{not.status.name}}"></td>
+                                            </tr>
+                                {% empty %}
+                                    <tr>
+                                        <th style="background: #f7f5ed;" colspan="7">
+                                        <img height="174" src="{% static 'images/whitespace/notification.png' %}" alt="whitespace">
+                                        </th> 
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="paging">
+                        {% if notifications.has_other_pages %}
+                        <div class="pagination">
+                            <br>
+                            {% if notifications.has_previous %}
+                            <a class="" href="?page=1">«</a>
+                            <a class="" href="?page={{ notifications.previous_page_number }}">‹</a>
+                            {% endif %}
+                    
+                            {% for num in notifications.paginator.page_range %}
+                            {% if notifications.number == num %}
+                            <span class="current">{{ num }}</span>
+                            {% elif num > notifications.number|add:'-3' and num < notifications.number|add:'3' %}
+                            <a class="" href="?page={{ num }}">{{ num }}</a>
+                            {% endif %}
+                            {% endfor %}
+                    
+                            {% if notifications.has_next %}
+                            <a class="btn btn-outline-warning mb-4" href="?page={{ notifications.next_page_number }}">›</a>
+                            <a class="btn btn-outline-warning mb-4" href="?page={{ notifications.paginator.num_pages }}">»</a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+              
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        header,footer {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+<script>
+const notificationStatus = {
+    'select-not-presence-referees': {
+        'karmand': 'شما به عنوان داور غیر حضوری p انتخاب  شدید',
+        'startup': 'p بعنوان داور غیر حضوری شما انتخاب شد'
+    },
+    'selected-startup': 'استارتاپ شما عنوان استارتاپ منتخب را گرفت',
+    'select-presence-referees': {
+        'karmand': 'شما به عنوان داور حضوری p انتخاب  شدید',
+        'startup': 'p بعنوان داور حضوری شما انتخاب شد'
+
+    },
+    'select-leader': {
+        'karmand': 'شما به عنوان راهبر استارتاپ p انتخاب  شدید',
+        'startup': 'p بعنوان راهبر استارتاپ شما انتخاب شد'
+
+    },
+    'selected-as-accelerator': {
+        'karmand': 'شما به عنوان شتاب دهنده استارتاپ p انتخاب  شدید',
+        'startup': 'p بعنوان شتاب دهنده استارتاپ شما انتخاب شد'
+
+    },
+    'assigne-startup-to-leader': {
+        'karmand': 'راهبری استارتاپ p به شما پیشنهاد شده است',
+        'startup': 'راهبری استارتاپ شما به p پیشنهاد داده شد'
+
+    },
+    'edit-offerto-leader': {
+        'karmand': 'تغییر پیشنهاد راهبری به استارتاپ p',
+        'startup': 'پیشنهاد راهبری استارتاپ شما به p تغییر کرد'
+
+    },
+    'create-event-investor': {
+        'karmand': 'شما به عنوان سرمایه گذار به استارتاپ p پیشنهاد شدید',
+        'startup': 'p بعنوان سرمایه گذار برای استارتاپ شما پیشنهاد شد'
+
+    },
+    'not-selected-startup': 'استارتاپ شما عنوان استارتاپ منتخب را از دست داد',
+    'delete-startup': 'استارتاپ شما حذف شد',
+    'suspended-startup': 'استارتاپ شما معلق شد',
+    'accept-document': 'مدارک استارتاپ شما پذیرفته شد',
+    'fail-document': 'مدارک استارتاپ شما رد شد',
+    'accept-first': 'وضعیت استارتاپ شما پذیرفته شد',
+    'fail-first': 'وضعیت استارتاپ شما رد شد',
+    'accept-first_referee': 'قبول داوری غیر حضوری استارتاپ شما',
+    'fail-first_referee': 'رد داوری غیر حضوری استارتاپ شما',
+    'accept-presence': 'قبول داوری حضوری استارتاپ شما',
+    'fail-presence': 'رد داوری حضوری استارتاپ شما',
+    'accept-session-investor': 'سرمایه گذار p می خواهد در جلسه با شما شرکت کند',
+    'fail-session-investor': 'سرمایه گذار p نمی خواهد در جلسه با شما شرکت کند',
+    'reconsider': 'تجدید نظر در وضعیت استارت اپ شما',
+    'editing-startup': 'تغییراتی در استارتاپ شما اعمال شد',
+    'accept-referee-scores-pres': 'داور p استارتاپ شما را تایید کرد',
+    'fail-referee-scores-pres': 'داور p استارتاپ شما را رد کرد',
+    'submit-scores': 'استارتاپ شما توسط داور p نمره داده شد',
+    'accept-referee-scores': 'داور p استارتاپ شما را تایید کرد',
+    'fail-referee-scores': 'داور p استارتاپ شما را رد کرد',
+    'accept-leader-request': 'راهبر درخواست استارتاپ شما را قبول کرد',
+    'fail-leader-request': 'راهبر درخواست استارتاپ شما را رد کرد',
+    'accept-manage-request': 'مالی درخواست استارتاپ شما را قبول کرد',
+    'fail-manage-request': 'مالی درخواست استارتاپ شما را رد کرد',
+    'sending-request-money': 'استارتاپ p درخواست اعتبار کرد',
+    'available-for-invest': 'استارتاپ شما وارد مرحله سرمایه گذاری شد',
+    'not-available-for-invest': 'استارتاپ شما غیر قابل مرحله سرمایه گذاری شد',
+    'send-email': 'یک ایمیل برای شما فرستاده شده است',
+    'edit-meetingto-coach': 'زمانبندی شما تغییر کرد',
+    'create-meetingto-coach': 'ثبت زمانبندی ملاقات برای شما',
+    'not-wants-to-meet-startup': 'p پیشنهاد راهبری استارتاپ شما را رد کرد',
+    'wants-to-meet-startup': 'p پیشنهاد راهبری استارتاپ شما را قبول کرد',
+    'send-sms': 'پیامکی به شماره تلفن شما ارسال شد',
+    'sorted-mentor': 'جایگاه شما در لیست منتورینگ تغییر کرد',
+
+
+
+}
+
+jQuery(document).ready(function ($) {
+    $("td.notif").each(function(){
+            var status= $(this).data('status');
+            var startups= $(this).data('startup');
+            var roles= $(this).data('role');
+            var row= $(this).data('row');
+            
+            let message;
+            if (typeof notificationStatus[status] === 'string') {
+                message = notificationStatus[status].replace('p', startups);
+                $("#row"+row).html(message)
+            } else {
+                message = notificationStatus[status][roles].replace('p', startups);
+                $("#row"+row).html(message)
+            }
+        })
+})
+</script>
+{% endblock %}

@@ -1,0 +1,280 @@
+{% extends 'base/base-public.html' %}
+{% load static %}
+{% block title %}پنل ورود{% endblock %}
+{% block body %}
+<style>
+	.hide-mob {
+		display: none;
+	}
+
+	#login-panel .btn-panel.activee {
+		background: linear-gradient(60deg, #345360, #0e463f);
+	}
+			header,
+			footer {
+				display: none;
+			}
+
+			.chenge-pass {
+				position: fixed;
+				left: 2%;
+				border: 1px solid #2222222e;
+				bottom: 5%;
+				box-shadow: 7px 10px 0px 2px #ffffff;
+			}
+
+			.mat-label {
+				display: block;
+				font-size: 13px;
+				transform: translateY(25px);
+				color: #bdb9b9;
+				transition: all 0.5s;
+			}
+
+			.mat-input {
+				position: relative;
+				background: transparent;
+				width: 100%;
+				border: none;
+				outline: none;
+				padding: 10px 10px;
+				font-size: 13px;
+			}
+
+			.mat-div {
+				position: relative;
+			}
+
+			.mat-div:after,
+			.mat-div:before {
+				content: "";
+				position: absolute;
+				display: block;
+				width: 100%;
+				height: 2px;
+				background-color: #e2e2e2;
+				bottom: 0;
+				left: 0;
+				transition: all 0.5s;
+			}
+
+			.mat-div::after {
+				background-color: #25aae1;
+				transform: scaleX(0);
+			}
+
+			.is-active::after {
+				transform: scaleX(1);
+			}
+
+			.is-active .mat-label {
+				color: #8E8DBE;
+			}
+
+			.is-completed .mat-label {
+				font-size: 13px;
+				transform: translateY(0);
+			}
+		</style>
+
+<!-- <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+	data-wow-duration="1.5s">
+	<h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>رمز عبور جدید با موفقیت ارسال شد</h2>
+</div> -->
+
+<div id="login-panel" class="container-fluide  min-100vh">
+	<div class="flex-center min-h100">
+		<div class="colm4-login colm10-mob colm6-tab colm">
+			<div class="pad-b20"></div>
+			<div class="spacer-t25">
+				<div class="body-form relative">
+					<div class=" body-form-top margin-auto absolute pad-b30">
+						<div class="img-login margin-auto">
+							<img src="{% static 'images/logo-panel.svg' %}" />
+						</div>
+					</div>
+					<div class="pad-t100">
+						<div class="flex-center-responsive">
+								<div class=" colm5 color-white pad pull-right pad-5 pintor">
+									<div id="er1" class="align-center btn-panel w100 font-s12 pad-5 sg-tab activee margin-auto"
+										data-id="one">ورود با موبایل</div>
+									</div>
+								<div class=" colm5 color-white pad pull-right pad-5 pintor">
+									<div id="er2" class="align-center btn-panel w100 font-s12 pad-5 sg-tab margin-auto"
+									data-id="two">ورود با نام کاربری</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						<div class="cntone sg-content" id="one">
+							<form action="" method="post" class="smart-validate">{% csrf_token %}
+								<div class="colm10 colm margin-auto font-s14 spacer-t10">
+									<div class="font-s12 pad-15">لطفا شماره موبایل خود را جهت ارسال رمز عبور وارد نمایید
+									</div>
+									<input class="input-panel" id="mobile" name="mobile" data-rule-customphone="true"
+									required>
+									<span class="bar"></span>
+									<label for="mobile" class="label font-s12 spacer-t10">شماره موبایل</label>
+								</div>
+								<div class="margin-auto align-center pad-b25 pad-t25 colm6-mob">
+									<button type="submit" name="submit_mobile"
+									class="btn-panel pad-10 color-white iransans  colm disabled">ارسال</button>
+								</div>
+								
+<!-- {% for m in messages %}
+
+<div class="colm8 colm margin-auto alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+data-wow-duration="1.5s">
+	<h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>کد اعتبار سنجی شما منقضی شد لطفا دوباره تلاش کنید</h2>
+</div>
+
+{% endfor %} -->
+
+								
+
+
+							</form>
+						</div>
+						<div class="cnttwo sg-content hide" id="two">
+							<form action="" method="post" class="smart-validate">{% csrf_token %}
+								<div class="colm10 margin-auto spacer-t25-mob font-s14 spacer-t20-tab">
+									<div class="mat-div spacer-b25">
+										<label for="username" class="mat-label">نام کاربری / ایمیل</label>
+										<input type="text" class="mat-input" name="username" id="username" required>
+									</div>
+								</div>
+								<div class="colm10 margin-auto spacer-t10 spacer-t25-mob font-s14 spacer-t20-tab">
+									<div class="mat-div spacer-b20">
+										<label for="password" class="mat-label">رمز عبور</label>
+										<input type="password" class="mat-input" name="password" id="password" required>
+									</div>
+								</div>
+								{% for message in messages %}
+								
+								{% if 'login_user_failed' in message.extra_tags %}
+								<div class="colm colm10 margin-auto">
+									<h2 class="color-red error-user  font-s12">نام کاربری یا رمز عبور اشتباه است</h2>
+								</div>
+								{% endif %}
+								{% if 'username_condition' in message.extra_tags %}
+								<div class="colm colm10 margin-auto">
+									<h2 class="color-red error-user  font-s12">لطفاً با نام کاربری یا ایمیل وارد شوید</h2>
+								</div>
+								{% endif %}
+								{% endfor %}
+
+								<div class="margin-auto align-center pad-b25 pad-t25 colm6-mob">
+									<button type="submit" name="submit"
+										class="btn-panel pad-10 color-white iransans  colm disabled">ورود</button>
+								</div>
+							</form>
+						</div>
+					</div>
+
+
+
+
+								{% for message in messages %}
+								{% if 'svf' in message.extra_tags %}
+								<div class="alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s13 border-ra5 a pad-20 chenge-pass le">
+									<h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>کد اعتبار سنجی شما منقضی شد لطفا دوباره تلاش کنید</h2>
+								</div>
+								{% comment %} <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center colm3 colm color-red font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+								data-wow-duration="1.5s">
+								  <h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>کد اعتبار سنجی شما منقضی شد لطفا دوباره تلاش کنید</h2>
+								</div> {% endcomment %}
+								{% endif %}
+								{% if 'can_login_phone' in message.extra_tags %}
+								<div class="alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s13 border-ra5 a pad-20 chenge-pass le">
+									<h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>پس از دو دقیفه دوباره تلاش کنید</h2>
+								</div>
+								{% comment %} <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center colm3 colm color-red font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+								data-wow-duration="1.5s">
+									<h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>پس از دو دقیفه دوباره تلاش کنید</h2>
+								</div> {% endcomment %}
+								{% endif %}
+								{% if 'cant_login_startup' in message.extra_tags %}
+								<div class="alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s13 border-ra5 a pad-20 chenge-pass le">
+									<h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>شما مراحل ثبت نام استارت آپ را کامل طی نکرده اید</h2>
+								</div>
+								{% comment %} <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center colm3 colm color-red font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+								data-wow-duration="1.5s">
+									<h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>شما مراحل ثبت نام استارت آپ را کامل طی نکرده اید</h2>
+								</div> {% endcomment %}
+								{% endif %}
+								{% if 'no_user_exists' in message.extra_tags %}
+								<div class="alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s13 border-ra5 a pad-20 chenge-pass le">
+									<h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>چنین حسابی وجود ندارد</h2>
+								</div>
+								{% comment %} <div class="colm8 colm margin-auto alert-sucsess bg-white flex-center colm3 colm color-red font-w400 font-s15 border-ra5 a pad-20 wow fadeInDown"
+								data-wow-duration="1.5s">
+									<h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>چنین حسابی وجود ندارد</h2>
+								</div> {% endcomment %}
+								{% endif %}
+
+								{% endfor %}
+
+{% for message in messages%}
+{% if 'password_changed' in message.extra_tags %}
+<div class="alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s13 border-ra5 a pad-20 chenge-pass le">
+	<h2 class="flex-center-row"><i class="fa fa-times pad-l5"></i>رمز عبور شما با موفقیت تغیر کرد</h2>
+</div>
+{% comment %} <div
+class="alert-sucsess bg-white flex-center colm3 colm color-black font-w400 font-s13 border-ra5 a pad-20 chenge-pass le">
+<h2 class="flex-center-row"><i class="fa fa-check pad-l5"></i>رمز عبور شما با موفقیت تغیر کرد
+</h2>
+</div> {% endcomment %}
+{% endif %}
+{% endfor %}
+
+				</div>
+			</div>
+			 <div class="forgot pad-t10 hide">
+				<a href="{% url 'usercp:forget_password' %}" class="title color-white">
+					<i class="fa fa-lock vertical pad-r5"></i>
+					<span>فراموشی رمز عبور</span>
+				</a>
+			</div> 
+			<div class="clearfix"></div>
+		</div>
+		{% endblock %}
+		{% block script %}
+		<script>
+			jQuery(document).ready(function ($) {
+				if($("h2").hasClass("error-user")){   
+					$("#one").addClass('hide');
+					$("#er1").removeClass('activee')
+					$("#two").removeClass('hide')
+					$("#er2").addClass('activee');
+				}
+       			$("#er2").click(function () {
+                    $(".forgot").removeClass("hide");
+                    $(".forgot").addClass("show");
+				});  
+       			$("#er1").click(function () {
+                    $(".forgot").removeClass("show");
+                    $(".forgot").addClass("hide");
+				});  
+				window.setTimeout(function () {
+					$(".alert-sucsess").fadeTo(500, 0).slideUp(500, function () {
+						$(this).remove();
+					});
+				}, 4000);
+				var uri = window.location.toString();
+				if (uri.indexOf("?") > 0) {
+					var clean_uri = uri.substring(0, uri.indexOf("?"));
+					window.history.replaceState({}, document.title, clean_uri);
+				}
+
+				$(".mat-input").focus(function () {
+					$(this).parent().addClass("is-active is-completed");
+				});
+
+				$(".mat-input").focusout(function () {
+					if ($(this).val() === "")
+						$(this).parent().removeClass("is-completed");
+					$(this).parent().removeClass("is-active");
+				})
+
+			});
+		</script>
+		{% endblock %}

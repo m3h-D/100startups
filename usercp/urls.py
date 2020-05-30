@@ -1,0 +1,41 @@
+from django.conf.urls import url
+from django.urls import path, include
+from usercp import views
+from django.contrib.auth.views import LoginView, PasswordResetView
+
+urlpatterns = [
+    path('register/', views.register_user, name='register'),
+    path('dashboard/', views.dashboard_panel, name='dashboard_panel'),
+    path('mentors/', views.profile_mentor, name='profile_mentor'),
+    path('sort-mentors/', views.sort_mentors, name='sort_mentors'),
+    path('add-to-mentor/', views.add_to_mentor, name='add_to_mentor'),
+    path('verify/', views.verify_user, name='verify'),
+    path('send-sms/verify', views.send_sms_again, name='send_sms_again'),
+    path('startup/', views.startup, name='startup'),
+    path('team/', views.team, name='team'),
+    path('upload/', views.upload, name='upload'),
+    path('uploadv/', views.upload_video_action, name='upload_video'),
+    path('presentation/', views.presentation, name='presentation'),
+    path('upload-pdf/<int:startup_id>/', views.pgdeck, name='pgdeck_pdf'),
+    path('upload-xwlt/<int:startup_id>/', views.pgdeckxwlt, name='pgdeckxwlt'),
+    path('finish/', views.finish, name='finish'),
+    path('profiles/<int:user_id>/', views.profiles, name='profiles'),
+    path('remove-team-member/', views.remove_team_member, name='remove_team_member'),
+    # path('remove-video/', views.remove_video, name='remove_video'),
+    # path('remove-from-mentor/', views.remove_from_mentor,
+    #      name='remove_from_mentor'),
+    path('edit-user/<int:user_id>/', views.edit_user, name='edit_user'),
+    path('ghost/<int:user_id>/', views.ghost_mode, name='ghost_mode'),
+    path('ghost-out/', views.ghost_mode_out, name='ghost_mode_out'),
+    path('list-user/', views.list_user, name='list_user'),
+    path('delete-user/', views.delete_user, name='delete_user'),
+    path('create-user/', views.create_user, name='create_user'),
+    path('login/', views.login_view, name='login'),
+    path('verify-phone/', views.verify_phone, name='verify_phone'),
+    path('logout/', views.logout_view, name='logout'),
+    path('profile/', views.profile, name='profile'),
+    path('forget-password/', views.forget_password, name='forget_password'),
+    path('change-username/', views.change_username, name='change_username'),
+    path('change-password/', views.change_password, name='change_password'),
+    url(r'^new-password/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.new_password, name='new_password'),
+]

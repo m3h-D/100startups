@@ -1,0 +1,248 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load sunny %}
+{% block title %}ویرایش ملاقات با راهبران{% endblock %}
+{% block body %}
+    <style>
+        header,footer{
+            display: none;
+        }
+        .hide-tab {
+            display: none;
+        }
+        .ldr {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .searchresult {
+            width: 200px;
+            left: -12px;    
+        }
+    </style>
+    <form method="post" action="">{% csrf_token %}
+    <div class="pad-t20">
+        <div class="body-form relative">
+            <div class="bg-chart2 body-form-top absolute flex-center">
+                <i class="fa fa-tasks vertical font-s30 color-white"></i>
+            </div>
+            <div class="absolute title-panel">
+                <h3 class="font-w300 font-s18">پیشنهاد استارتاپ به راهبران</h3>
+            </div>
+            <div class="frm-row pad-t50">
+                <div class="overflow-scroll pad-b40">
+                        <table class="table color6 retable">
+                            <tbody>
+                                {% for lead in leaders %}
+                            <tr id="" data-rows="{{ forloop.counter }}">
+                                <td class="iransansdigit">{{ forloop.counter }}</td>
+                                <td>
+                                    <div class="relative pull-right pad-5 pad-b20 leader-box">
+                                        <label for="" class="gui-label">راهبر:</label>
+                                        <label class="relative">
+                                              <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                            <!-- <span class="ldr start-load hide"><img width="25" src="assets/images/Ldr.gif" /></span> -->
+                                            <input type="text" oninput="searchApi('search_companion{{forloop.counter}}','companion-result{{forloop.counter}}' , 'leader', {{forloop.counter}})" class="w165-mob search_companion{{forloop.counter}} referee-name gui-input sans-digit choosen-name" value="{{ lead.content_object.first_name }} {{ lead.content_object.last_name }}" placeholder="مثال : علی عباسپور" required>
+                                            <input type="hidden" class="choosen-id choosen-id-leader" name="leader[]" value="{{ lead.content_object.pk }}" data-row="{{forloop.counter}}" />
+                                            <input type="hidden" name="c_e_id" value="{{lead.pk}}">
+                                            <div id="companion-result{{forloop.counter}}"></div>
+                                        </label>
+                                    </div>
+                                </td>
+                                
+                                {% for start in lead.theevent_leadermodel.all %}
+                                <td class="radif" data-loop="{{forloop.counter}}">
+                                    <div class="relative pull-right pad-5 pad-b20 colm12">
+                                        <label for="roles-search" class="gui-label">استارتاپ:</label>
+                                        <label class="relative">
+                                            <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                            <span class="ldr start-load hide"><img width="25" src="{% static 'images/Ldr.gif' %}" /></span>
+                                            <input type="text" {% if forloop.first %}required{% endif %} oninput="" class="w165-mob  referee-name gui-input sans-digit choosen-name idchild" value="{{ start.startup.title }}" placeholder="مثال : علی عباسپور" >
+                                            <input type="hidden" class="choosen-id new-name" name="{% if lead %}startup-{{ lead.content_object.pk }}{% endif %}" value="{{ start.startup.pk }}" data-row="{{forloop.counter}}" />
+                                            <input type="hidden" class="lead_pk" name="{% if lead %}lead_pk-{{ lead.content_object.pk }}{% endif %}" value="{{start.pk}}">
+                                            <div class="chengeid" id=""></div>
+                                        </label>
+                                    </div>
+                                </td>
+                                
+                                {% endfor %}
+                                {% if lead.theevent_leadermodel.count == 4 %}
+                                {% else %}
+                                {% list_counter_for lead.theevent_leadermodel.count as continue %}
+                                {% list_counter2 lead.theevent_leadermodel.count as c %}
+                                {% for item in 'x'|rjust:c %}
+                                <td class="radif"  data-loop="{{forloop.counter|add:continue}}">
+                                    <div class="relative pull-right pad-5 pad-b20 colm12">
+                                        <label for="roles-search" class="gui-label">استارتاپ:</label>
+                                        <label class="relative">
+                                            <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                                            <!-- <span class="ldr start-load hide"><img width="25" src="assets/images/Ldr.gif" /></span> -->
+                                            <input type="text" oninput="" class="w165-mob referee-name gui-input sans-digit choosen-name idchild" value="" placeholder="مثال : علی عباسپور" >
+                                            <input type="hidden" class="choosen-id new-name" name="" value="" data-row="{{forloop.counter|add:continue}}" />
+                                            <div class="chengeid" id=""></div>
+                                            <input type="hidden" class="lead_pk" name="" value="">
+                                        </label>
+                                    </div>
+                                </td>
+                                
+                                {% endfor %}
+                                {% endif %}
+                                {% endfor %}
+                            </tr>
+                            <tr class="clone"></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class=" pointer btn-add pull-left spacer-l10">
+                    <i class="add-event plus-rot fa fa-plus-circle vertical spacer-t10" ></i>
+                </div>
+                <div class="clearfix"></div>
+                <div class="margin-auto colm2 colm6-mob spacer-t25-mob pad-b20">
+                    <button type="submit" name="submit_event" class="btn-webb bg-dis colm12 colm">ثبت پیشنهاد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+    {% endblock %}
+    {% block script %}
+<script>
+    jQuery(document).ready(function($) {
+        
+
+        $("td.radif").each(function(){
+            let loop  = $(this).data('loop');
+            let child = $(this).parents().eq(0).attr('data-rows');
+            $(this).children(0).find(".idchild").attr('oninput',`searchApi('search_companion${child}${loop}','subscriber-result${child}${loop}' , 'subscriber',${child},'companion')`);
+            $(this).children(0).find(".idchild").addClass(`search_companion${child}${loop}`)
+            $(this).children(0).find(".chengeid").attr('id',`subscriber-result${child}${loop}`)
+        })
+
+
+
+        var i = 1;
+        $(".add-event").on("click", function() {
+            // let number= $(this).data('rows');
+            // let newnumber = number;
+            i++;
+            // console.log(newnumber);
+            var clone = '<tr id="" class="">\n' +
+                '                         <td class="iransansdigit">'+i+'</td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20 leader-box">\n' +
+                '                                    <label for="" class="gui-label">راهبر:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companionnrah'+i+'\',\'companion-resultrah'+i+'\' , \'leader\','+i+')" class="search_companionnrah'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required>\n' +
+                '                                        <input type="hidden" class="choosen-id choosen-id-leader" name="leader[]" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="companion-resultrah'+i+'"></div>\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion11'+i+'\',\'subscriber-result11'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion11'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" required>\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result11'+i+'"></div>\n' +
+                '                                        <input type="hidden" class="lead_pk" name="" value="">\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion22'+i+'\',\'subscriber-result22'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion22'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" >\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result22'+i+'"></div>\n' +
+                '                                        <input type="hidden" class="lead_pk" name="" value="">\n' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion33'+i+'\',\'subscriber-result33'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion33'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" >\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result33'+i+'"></div>\n' +
+                '                                        <input type="hidden" class="lead_pk" name="" value="">' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '                                <div class="relative pull-right pad-5 pad-b20">\n' +
+                '                                    <label for="" class="gui-label">استارتاپ:</label>\n' +
+                '                                    <label class="relative">\n' +
+                '                                        <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>\n' +
+                '                                        <input type="text" oninput="searchApi(\'search_companion44'+i+'\',\'subscriber-result44'+i+'\' , \'subscriber\','+i+',\'companion\')" class="search_companion44'+i+' referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" >\n' +
+                '                                        <input type="hidden" class="choosen-id new-name" name="" value="" data-row="'+i+'" />\n' +
+                '                                        <div id="subscriber-result44'+i+'"></div>\n' +
+                '                                        <input type="hidden" class="lead_pk" name="" value="">' +
+                '                                    </label>\n' +
+                '                                </div>\n' +
+                '                            </td>\n' +
+                '                          </tr>';
+            $('.clone').before(clone);
+            // if ($('.group').length < 20) {
+            //     $('.clone').clone().addClass('group').removeClass('clone hide').insertBefore('.clone');
+            // }
+        });
+        $(document).on('change','.choosen-id',function() {
+            var valu = $(this).val();
+            var num = $(this).data('row');
+            sendId(valu,num);
+        });
+        $( document ).ready(function() {
+            $( ".leader-box" ).each(function() {
+                var leadervalue = $(this).find("input.choosen-id-leader").val(); 
+                var className = $(this).find("input.choosen-id-leader").parents().eq(3).find('.new-name');
+                var className2 = $(this).find("input.choosen-id-leader").parents().eq(3).find('.lead_pk');
+                $(className).attr('name', 'startup-' + leadervalue);
+                $(className2).attr('name', 'lead_pk-' + leadervalue);
+              
+            });
+        });
+        $(document).on('change','.choosen-id-leader',function() {
+            var valu = $(this).val();
+            var className = $(this).parents().eq(3).find('.new-name');
+            var className2 = $(this).parents().eq(3).find('.lead_pk');
+            console.log(valu);
+            $(className).attr('name', 'startup-' + valu);
+            $(className2).attr('name', 'lead_pk-' + valu);
+        });
+    });
+
+
+    function sendId(id, num){
+        console.log(num);
+        var investorAPI = "/api/?";
+        args = {
+            investorId: id,
+        };
+        jQuery.getJSON(investorAPI, args).done(function(data) {
+            var show = '<option value="">انتخاب کنید</option>';
+            var clas = '.s'+ num;
+            if (data.length) {
+                jQuery.each(data , function(i, startup){
+                    show += '<option value="'+startup.startup_id+'">'+startup.startup_name+'</option>';
+                }) ;
+            } else {
+                console.log('empty');
+            }
+            jQuery(clas).html(show);
+        }).fail(function() {
+            console.log("error");
+        }).always(function() {
+
+        });
+    }
+    //   sendId(1123, 1);
+  
+</script>
+    {% endblock %}

@@ -1,0 +1,82 @@
+
+
+
+
+
+
+
+
+
+{% load static %}
+<form method="post" id="choosementor" autocomplete="off">
+    <div class="align-right colm margin-auto pad-r30 pad-t20">
+        <label class="gui-label">آیا به رهبر تیم ایمیل ارسال شود؟</label>
+        <label>
+            <input type="radio" id="pres-referee-notification1" name="pres_referee_notification" value="1" class="dastresi" checked>
+            <label for="pres-referee-notification1" class="pad-5">بله</label>
+            <input type="radio" id="pres-referee-notification0" name="pres_referee_notification" value="0" class="dastresi">
+            <label for="pres-referee-notification0" class="pad-5">خیر</label>
+        </label>
+    </div>
+
+    {% csrf_token %}
+    <div class="frm-row pad-20">
+
+
+        {% for ref in startup.referee.all %}
+        {% if ref.the_type == 'pres'%}
+        <div class="colm6 colm pull-right pad-5">
+            <label for="" class="gui-label">داور {{forloop.counter}}:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" oninput="searchApi('search_companionn21{{ref.pk}}','companion-resultt21{{ref.pk}}' , 'referee', 1)" class="search_companionn21{{ref.pk}} referee-name gui-input sans-digit choosen-name" value="{{ ref.user.first_name }} {{ ref.user.last_name }}" placeholder="مثال : علی عباسپور" required>
+                <input type="hidden" class="choosen-id" name="presence_referee" value="{{ ref.user.pk }}" data-row="1" />
+                <input type="hidden" name="referee_pk" value="{{ ref.pk }}" />
+                <div id="companion-resultt21{{ref.pk}}"></div>
+            </label>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+
+
+        <div class="colm6 colm pull-right pad-5">
+            <label for="" class="gui-label">داور 1:</label>
+            <label class="relative">
+                <span class="icon-gui flex-center"><i class=" fa fa-chalkboard-teacher vertical"></i></span>
+                <input type="text" oninput="searchApi('saearch_companionn22','caompanion-resultt22' , 'referee', 1)" class="saearch_companionn22 referee-name gui-input sans-digit choosen-name" value="" placeholder="مثال : علی عباسپور" {% for ref in startup.referee.all %}{% if ref %}{% else %}required{% endif %}{% endfor %}>
+                <input type="hidden" class="choosen-id" name="presence_referee" value="" data-row="1" />
+                <div id="caompanion-resultt22"></div>
+            </label>
+        </div>
+
+        <div class="clones"></div>
+        <div class=" pointer btn-add pull-left spacer-l10">
+            <i class="presence_referee plus-rot fa fa-plus-circle vertical spacer-t10"></i>
+        </div>
+        <div class="colm12 colm pull-right pad-5 hide" id="referees">
+            <p class="color-red font-s12 pad-t15">باید حداقل دو داور انتخاب شود</p>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="align-center">
+        <button type="submit" name="btn_select_referee" class="btn-panel pad-10 color-white iransans">بروزرسانی</button>
+    </div>
+
+
+</form>
+<script>
+    function requiredReferees() {
+        var referee1 = document.getElementById('referee1').value;
+        var referee2 = document.getElementById('referee2').value;
+        var referees = document.getElementById('referees');
+        if (referee1.length == 0 || referee2.length == 0) {
+            referees.classList.remove('hide');
+            referees.classList.add('show');
+        } else {
+            referees.classList.remove('show');
+            referees.classList.add('hide');
+        }
+    }
+</script>

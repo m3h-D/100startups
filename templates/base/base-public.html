@@ -1,0 +1,201 @@
+{% load static %}
+<html class="no-js" dir="rtl" lang="fa-IR">
+<!doctype html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="{% static 'stylesheets/dropzone.min.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/chartist.min.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/persian-datepicker.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/icon.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/style.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'stylesheets/responsive.css' %}">
+  <title>100 استارتاپ - {% block title %}{% endblock %}</title>
+</head>
+<body>
+
+<div id="wrapper">
+          {% block body %}{% endblock %}
+
+</div>
+
+  <a rel="nofollow" id="scroll" class="scrollToTop color-white align-center font-s25 hide" href="#top">
+    <i class="fa fa-chevron-up vertical"></i>
+  </a>
+  </div><!-- Wrapper -->
+  <style>
+    .box-message::after {
+      content: "\2022";
+      font-size: 47px;
+      position: absolute;
+      color: #EB4D4D;
+      top: 10px;
+      left: 80px;
+    }
+
+    .box-message1::before {
+      content: "\2022";
+      font-size: 47px;
+      position: absolute;
+      color: #EB4D4D;
+      top: -14px;
+      left: 36px;
+    }
+
+    .box-notify::before {
+      content: "\2022";
+      font-size: 47px;
+      position: absolute;
+      color: #EB4D4D;
+      top: -14px;
+      left: 36px;
+    }
+
+    .mob-notify::before {
+      content: "\2022";
+      font-size: 35px;
+      position: absolute;
+      color: #EB4D4D;
+      top: -7px;
+      right: -5px
+    }
+
+    .mob-message::before {
+      content: "\2022";
+      font-size: 35px;
+      position: absolute;
+      color: #EB4D4D;
+      top: -7px;
+      right: -5px
+    }
+
+    .support-overlay {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      background-color: rgba(0, 0, 0, 0.77);
+      opacity: 0;
+      visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), visibility 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    }
+
+    .support-overlay.actives {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .support {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 5px;
+      right: 9%;
+      visibility: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      backface-visibility: hidden;
+      transform: scale(1.2);
+      transition: all 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+    }
+
+    .support .close-support {
+      position: absolute;
+      cursor: pointer;
+      top: -2%;
+      right: 0%;
+      opacity: 0;
+      backface-visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1), transform 0.6s cubic-bezier(0.55, 0, 0.1, 1), -webkit-transform 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition-delay: 0.3s;
+    }
+
+    .support .close-support svg {
+      width: 1.75em;
+      height: 1.75em;
+    }
+
+    .support .support-content {
+      opacity: 0;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.55, 0, 0.1, 1);
+      transition-delay: 0.3s;
+    }
+
+    .support.actives {
+      visibility: visible;
+      opacity: 1;
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
+
+    .support.actives .support-content {
+      opacity: 1;
+    }
+
+    .support.actives .close-support {
+      -webkit-transform: translateY(10px);
+      transform: translateY(10px);
+      opacity: 1;
+    }
+
+    .alert {
+      position: relative;
+      padding: .75rem 1.25rem;
+      border: 1px solid transparent;
+      border-top-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+      border-radius: .25rem;
+    }
+
+    .alert-danger {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+    }
+  </style>
+  <script src="{% static 'javascript/jquery.js' %}"></script>
+  <script src="{% static 'javascript/croppie.min.js' %}"></script>
+  <script src="{% static 'javascript/dropzone.min.js' %}"></script>
+  <script src="{% static 'javascript/jquery.validate.min.js' %}"></script>
+  <script src="{% static 'javascript/additional-methods.min.js' %}"></script>
+  <script src="{% static 'javascript/validate.js' %}"></script>
+  <script src="{% static 'javascript/chartist.min.js' %}"></script>
+  <script src="{% static 'javascript/persian-date.min.js' %}"></script>
+  <script src="{% static 'javascript/persian-datepicker.min.js' %}"></script>
+  <script src="{% static 'javascript/address.js' %}"></script>
+  <script src="{% static 'javascript/script.js' %}"></script>
+  <script>
+      jQuery(document).ready(function ($) {
+          $(function () {
+              var current = location.pathname.slice(0, -1);
+              ;
+              $('#cssmenu li a').each(function () {
+                  var $this = $(this);
+                  if ($this.attr('href').indexOf(current) !== -1) {
+                      $this.addClass('bg-dasboard');
+                      if ($this.parents().hasClass('has-sub')) {
+                          $this.parents().eq(2).addClass('open');
+                          $this.parents().eq(1).show();
+                      }
+                  }
+              })
+          })
+      });
+  </script>
+  {% block script %}{% endblock %}
+</body>
+</html>

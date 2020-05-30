@@ -1,0 +1,658 @@
+{% extends 'base/base-register.html' %}
+{% load static %}
+{% load sunny %}
+{% load jalali_tags %}
+{% block title %}ثبت اطلاعات تیم{% endblock %}
+{% block body %}
+<style>
+    header,
+    footer,
+    .mobile {
+        display: none;
+    }
+
+    .hide-tab {
+        display: none;
+    }
+</style>
+
+
+<div class="colm10 colm11-tab colm margin-auto pad-5-mob">
+    <div class="pad-b5">
+        <h2 class="font-s30 color6">تیم</h2>
+        <p class="color-darkgray font-s14 pad-t15">لطفا اطلاعات تیم خود را وارد کنید </p>
+    </div>
+    {% if form.errors %}
+    {% for field in form %}
+    {% for error in field.errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+    <div class="alert alert-danger">
+        <strong>{{ error|escape }}</strong>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div id="get-errors">
+                                        
+    </div>
+    <div class="spacer-t10">
+        <form method="post" class="smart-validate" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!--            {{ team_form.management_form }}-->
+            <!--            {{ leader_form }}-->
+
+
+            <div>
+                <div class="frm-row">
+
+                    <div class="pad-5 char-count">
+                        <label for="introduction" class="gui-label pad-5"> نحوه آشنایی اعضای تیم با یکدیگر </label>
+                        <label class="relative text-counter">
+                            <textarea name="how_mem_meet" id="introduction" maxlength="255" class="gui-textarea"
+                                value="{% if db_startups.how_mem_meet %}{{ db_startups.how_mem_meet }}{% endif %}"
+                                placeholder="تعدادی از اعضای تیم رو از طریق جابینجا شناختم، با تعدادی از قبل همکار بودم و تعدادی از افراد تیم را هم از دوستانم معرفی کرده‌اند."
+                                required>{% if db_startups.how_mem_meet %}{{ db_startups.how_mem_meet }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5">
+                                {{ db_startups.how_mem_meet|length }}</p>
+                        </label>
+                    </div>
+                    <div class="pad-5 char-count">
+                        <label for="better" class="gui-label pad-5"> چه چیز باعث شده شما بهتر از بقیه باشید ؟</label>
+                        <label class="relative">
+                            <textarea name="what_m_better" maxlength="255" id="better" required id="team-excerpt1"
+                                value="{% if db_startups.what_m_better %}{{ db_startups.what_m_better }}{% endif %}" class="gui-textarea"
+                                placeholder="تلاش شبانه‌روزی، هوشمندی در شیوه توسعه کار و شبکه گسترده که برای تمامی آن‌ها در فایل ارائه دلایل و مستنداتی ذکر شده است. علاوه بر این ما افرادی را در تیم داریم که در حوزه خرید میوه و سبزیجات به صورت مستقیم کار کرده‌اند و با این بازار آشنا هستند. شبکه تامین‌کنندگان ما برای این کار سه برابر استارتاپ ب است و روند رشد ما دو برابر استارتاپ ب بوده است."
+                                required>{% if db_startups.what_m_better %}{{ db_startups.what_m_better }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5">
+                                {{ db_startups.what_m_better|length }}</p>
+                        </label>
+                    </div>
+                    <div class="pad-5 char-count">
+                        <label for="defect" class="gui-label pad-5"> تیم شما چه چیزی کم دارد ؟ </label>
+                        <label class="relative">
+                            <textarea name="what_u_need" id="defect" required maxlength="255" class="gui-textarea"
+                                value="{% if db_startups.what_u_need %}{{ db_startups.what_u_need }}{% endif %}"
+                                placeholder="سرمایه مناسب برای توسعه‌ی نمایندگی‌ها و همچنین برخی مجوزها برای صدور ضمانت‌نامه خرید و ... ."
+                                required>{% if db_startups.what_u_need %}{{ db_startups.what_u_need }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5">
+                                {{ db_startups.what_u_need|length }}</p>
+                        </label>
+                    </div>
+                    <div class="pad-5 char-count">
+                        <label for="reagent" class="gui-label pad-5">معرف شما چه کسی بوده ؟</label>
+                        <label class="relative">
+                            <textarea name="who_sent_you" id="reagent" required maxlength="255" class="gui-textarea"
+                                value="{% if db_startups.who_sent_you %}{{ db_startups.who_sent_you }}{% endif %}"
+                                required>{% if db_startups.who_sent_you %}{{ db_startups.who_sent_you }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5">1</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="person" id="personn">
+
+                <h2 class="bold font-s20 pad-15 bg-gray border-ra5">اعضای تیم</h2>
+                <h3 class="pad-15 bold">رهبر تیم</h3>
+                <div class="frm-row">
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="first-name" class="gui-label pad-5">نام :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                            <input type="text" class="gui-input sans-digit" id="first_name"
+                                value="{{ leader_form.instance.first_name }}" name="first_name"
+                                placeholder="مثال : محمد" data-rule-lettersonly="true" autocomplete="off" required>
+                        </label>
+                    </div>
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="last-name" class="gui-label pad-5">نام خانوادگی :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                            <input type="text" class="gui-input sans-digit" value="{{ leader_form.instance.last_name }}"
+                                name="last_name" placeholder="مثال : محمدی" data-rule-lettersonly="true" id="last-name"
+                                autocomplete="off" required>
+                        </label>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="frm-row">
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="mobile" class="gui-label pad-5"> شماره همراه:</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-mobile"></i></span>
+                            <input dir="ltr" name="phone" class="gui-input sans-digit" readonly
+                                value="{{ leader_form.instance.phone }}" id="mobile">
+                        </label>
+                    </div>
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="email" class="gui-label pad-5">ایمیل :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-at"></i></span>
+                            <input dir="ltr" type="email" class="gui-input sans-digit check-error" name="email"
+                                data-type="email_user" id="email" value="{{ leader_form.instance.email }}"
+                                placeholder="example@gmail.com" required>
+                        </label>
+                        <span class="color-red font-s12 pad-t15 hide error-hide " id="error_email">ایمیل وارد شده تکراری
+                            است</span>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="frm-row">
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="linkedin" class="gui-label pad-5">لینکدین :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fab fa-linkedin-in vertical"></i></span>
+                            <input dir="ltr" type="text" class="gui-input sans-digit"
+                                value="{% if leader_form.instance.linkdin %}{{ leader_form.instance.linkdin }}{% endif %}" name="linkdin" id="linkedin">
+                        </label>
+                    </div>
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="birthday" class="gui-label pad-5"> تاریخ تولد :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+                            <input dir="ltr" class="gui-input sans-digit datepicker-gregorian" name="birth_date"
+                                value="{{ leader_form.instance.birth_date|to_jalali:'%Y/%m/%d' }}" id="birthday"
+                                autocomplete="off" readonly required placeholder="1398/10/02">
+                        </label>
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="frm-row">
+                    <div class="colm6 colm pull-right pad-5">
+                        <label for="expertise" class="gui-label pad-5">تخصص:</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-laptop-code vertical"></i></span>
+                            <input type="text" class="gui-input sans-digit" name="skill"
+                                value="{% if leader_form.instance.skill %}{{ leader_form.instance.skill }}{% endif %}" id="expertise" placeholder="مثال : نرم افزار"
+                                required>
+                        </label>
+                    </div>
+
+                    <div class="colm6 colm pull-right pad-5">
+
+                        <label class="gui-label pad-5">تحصیلات:</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                            <select class="gui-input sans-digit" name="grade">
+                                <option value="{% if request.user.grade %}{{ leader_form.instance.grade }}{% endif %}">
+                                    میزان
+                                    تحصیلات خود را انتخاب کنید</option>
+                                <option {% if request.user.grade == 'diploma' %}selected{% endif %} value="diploma">دیپلم</option>
+                                <option {% if request.user.grade == 'associate' %}selected{% endif %} value="associate">کاردانی</option>
+                                <option {% if request.user.grade == 'bachelor' %}selected{% endif %} value="bachelor">کارشناسی</option>
+                                <option {% if request.user.grade == 'master' %}selected{% endif %} value="master">کارشناسی ارشد</option>
+                                <option {% if request.user.grade == 'phd' %}selected{% endif %} value="phd">دکتری</option>
+                            </select>
+                        </label>
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="frm-row">
+                    <div class="colm6 colm pad-5 pull-right">
+                        <label for="average" class="gui-label pad-5"> زمان اختصاص داده شده به استارتاپ در طول
+                            ماه:</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-clock vertical"></i></span>
+                            <input type="number" min="0" max="200" class="gui-input sans-digit"
+                                name="duration_per_month" value="{{ userprofile_form.instance.duration_per_month }}"
+                                id="average" placeholder="مثال : 100 ساعت">
+                        </label>
+                    </div>
+                    <div class="colm6 colm pad-5 pull-right">
+                        <label for="stock" class="gui-label pad-5">میزان سهام :</label>
+                        <label class="relative">
+                            <span class="icon-gui flex-center"><i class=" fa fa-percentage vertical"></i></span>
+                            <input type="number" min="0" max="100" class="gui-input sans-digit" name="saham"
+                                value="{{ userprofile_form.instance.saham }}" id="stock" placeholder="مثال :  20 درصد">
+                        </label>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                </div>
+            </div>
+
+            {% for the_team in teams %}
+            <div class="team">
+                <div class="relative">
+                    <input type="hidden" name="team_id" value="{{the_team.pk}}">
+                    <div style="position: relative;" class="remove-group align-right pointer close_user relative close-ta"  data-url="{% url 'usercp:remove_team_member'%}" data-idss="{{the_team.pk}}">
+                        <div class="absolute font-s16 flex-center close-u">
+                            <span class="">
+                                <i class="fa fa-times-circle color-red"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <h2 class="relative bold font-s20 pad-15 bg-gray border-ra5 spacer-t20 ">عضو گروه</h2>
+
+
+                    <!-- <input type="text" name="id[]" data-id="{{ the_team.pk }}" value="" class="" />
+                <input type="text" name="remove[]" value="" class="remove_web " /> -->
+
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="first-namel" class="gui-label pad-5">نام :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user verticall"></i></span>
+                                <input type="text" class="gui-input sans-digit" value="{{ the_team.t_first_name }}"
+                                    name="first_namel[]" placeholder="مثال : محمد" data-rule-lettersonly="true"
+                                    autocomplete="off" required aria-selected="true">
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="last-namel" class="gui-label pad-5">نام خانوادگی :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" value="{{ the_team.t_last_name }}"
+                                    name="last_namel[]" placeholder="مثال : محمدی" data-rule-lettersonly="true"
+                                    autocomplete="off" required>
+                            </label>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="mobilel" class="gui-label pad-5"> شماره همراه:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-mobile"></i></span>
+                                <input dir="ltr" class="gui-input sans-digit" name="mobilel[]"
+                                    data-rule-customphone="true" value="{{ the_team.t_phone }}" autocomplete="off"
+                                    placeholder="09000000000" required>
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="email-l" class="gui-label pad-5">ایمیل :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-at"></i></span>
+                                <input dir="ltr" type="email" class="gui-input sans-digit" name="email_l[]"
+                                    value="{% if the_team.t_email %}{{ the_team.t_email }}{% endif %}"
+                                    placeholder="example@gmail.com" required>
+                            </label>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label class="gui-label pad-5">لینکدین :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fab fa-linkedin-in vertical"></i></span>
+                                <input dir="ltr" type="text" class="gui-input sans-digit"
+                                    value="{% if the_team.t_linkdin %}{{ the_team.t_linkdin }}{% endif %}"
+                                    name="linkdinl[]">
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="birthdayl" class="gui-label pad-5"> تاریخ تولد :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+                                <input dir="ltr" class="gui-input sans-digit datepicker" name="birthdayl[]"
+                                    value="{{ the_team.t_birth_date|to_jalali:'%Y/%m/%d' }}" autocomplete="off"
+                                    placeholder="1398/10/02" required>
+                            </label>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="expertisel" class="gui-label pad-5">تخصص:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-laptop-code vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" name="expertisel[]"
+                                    value="{{ the_team.t_skill }}" placeholder="مثال : نرم افزار" required>
+                            </label>
+                        </div>
+
+                        <div class="colm6 colm pull-right pad-5">
+
+                            <label class="gui-label pad-5">تحصیلات:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                                <select class="gui-input sans-digit" name="educationl1[]">
+                                    <option value="{{ the_team.tgrade }}">میزان تحصیلات
+                                        خود
+                                        را انتخاب کنید</option>
+                                        <option {% if the_team.tgrade == 'diploma' %}selected{% endif %} value="diploma">دیپلم</option>
+                                        <option {% if the_team.tgrade == 'associate' %}selected{% endif %} value="associate">کاردانی</option>
+                                        <option {% if the_team.tgrade == 'bachelor' %}selected{% endif %} value="bachelor">کارشناسی</option>
+                                        <option {% if the_team.tgrade == 'master' %}selected{% endif %} value="master">کارشناسی ارشد</option>
+                                        <option {% if the_team.tgrade == 'phd' %}selected{% endif %} value="phd">دکتری</option>
+                                </select>
+                            </label>
+
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm12 colm pad-5">
+                            <label for="sidel" class="gui-label pad-5"> سمت در استارت آپ :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-book-reader"></i></span>
+                                <input dir="rtl" class="gui-input sans-digit" name="sidel[]"
+                                    value="{% if the_team.t_the_role %}{{ the_team.t_the_role }}{% endif %}"
+                                    autocomplete="off" placeholder="سمت استارت آپ" required>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm12 colm pad-5">
+                            <label for="sidel" class="gui-label pad-5"> نقش در استارت آپ :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-book-reader"></i></span>
+                                <input dir="rtl" class="gui-input sans-digit" name="role[]"
+                                    value="{% if the_team.t_role_in_startup %}{{ the_team.t_role_in_startup }}{% endif %}"
+                                    autocomplete="off" placeholder="نقش استارت آپ" required>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pad-5 pull-right">
+                            <label for="averagel" class="gui-label pad-5"> زمان اختصاص داده شده به استارتاپ در طول
+                                ماه:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-clock vertical"></i></span>
+                                <input type="number" min="0" max="200" class="gui-input sans-digit" name="averagel[]"
+                                    value="{{ the_team.t_duration_per_month }}" placeholder="مثال : 100 ساعت">
+                            </label>
+                        </div>
+                        <div class="colm6 colm pad-5 pull-right">
+                            <label for="stockl" class="gui-label pad-5">میزان سهام :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-percentage vertical"></i></span>
+                                <input type="number" min="0" max="100" class="gui-input sans-digit" name="stockl[]"
+                                    value="{{ the_team.t_saham }}" placeholder="مثال :  20 درصد">
+                            </label>
+                        </div>
+                        <div class="colm6 colm pad-5 pull-right">
+                            <!-- <input type="file" class="myfile" name="cv[]" >
+                            <input type="hidden" class="myfilehide" name="cv_index" value=""> -->
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="colm12 pad-5">
+                <label for="stockl" class="gui-label pad-5">آپلود رزومه :
+                    {% if the_team.t_cv %}
+                    <a class="color-dashboard font-s12 pull-left" href="{{the_team.t_cv.url}}">دانلود رزومه: {{the_team.t_cv}}</a>
+                    {% endif %}
+                </label>
+                <label class="relative">
+                    <input type="file" class="gui-input myfile" name="cv[]" >
+                    <input type="hidden" class="myfilehide" name="cv_index" value="">
+                </label>
+            <div class="colm12 pad-5">
+                <label for="stockl" class="gui-label pad-5">آپلود تصویر عضو :
+                    {% if the_team.t_avatar %}
+                    <img width="50" height="50" src="{{the_team.t_avatar.url}}" alt="">
+                    <!-- <a class="color-dashboard font-s12 pull-left" href="{{the_team.t_avatar.url}}">دانلود رزومه: {{the_team.t_cv}}</a> -->
+                    {% endif %}
+                </label>
+                <label class="relative">
+                    <input type="file" class="gui-input myfile" name="t_avatar[]" >
+                    <input type="hidden" class="myavatarhide" name="avatar_index" value="">
+                </label>
+            </div>    
+       
+            {% endfor %}
+
+            <div class="team">
+                <div class="hide clone relative">
+                    <div class="remove-group align-right pointer close_user relative close-ta">
+                        <div class="absolute font-s16 flex-center close-u">
+                            <span class="">
+                                <i class="fa fa-times-circle color-red"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <h2 class="bold font-s20 pad-15 bg-gray border-ra5 spacer-t20">عضو گروه</h2>
+                    <input type="text" name="id[]" value="" class="hide" />
+                    <input type="text" name="remove[]" value="" class="remove_web hide" />
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="first-namel" class="gui-label pad-5">نام :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user verticall"></i></span>
+                                <input type="text" class="gui-input sans-digit" value="" name="first_namel[]"
+                                    placeholder="مثال : محمد" data-rule-lettersonly="true" autocomplete="off" required
+                                    aria-selected="true">
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="last-namel" class="gui-label pad-5">نام خانوادگی :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" value="" name="last_namel[]"
+                                    placeholder="مثال : محمدی" data-rule-lettersonly="true" autocomplete="off" required>
+                            </label>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="mobilel" class="gui-label pad-5"> شماره همراه:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-mobile"></i></span>
+                                <input dir="ltr" class="gui-input sans-digit" name="mobilel[]"
+                                    data-rule-customphone="true" value="" autocomplete="off" placeholder="09000000000"
+                                    required>
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="email-l" class="gui-label pad-5">ایمیل :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-at"></i></span>
+                                <input dir="ltr" type="email" class="gui-input sans-digit" name="email_l[]" value=""
+                                    placeholder="example@gmail.com" required>
+                            </label>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label class="gui-label pad-5">لینکدین :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fab fa-linkedin-in vertical"></i></span>
+                                <input dir="ltr" type="text" class="gui-input sans-digit" value="" name="linkdinl[]">
+                            </label>
+                        </div>
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="birthdayl" class="gui-label pad-5"> تاریخ تولد :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-birthday-cake"></i></span>
+                                <input dir="ltr" class="gui-input sans-digit datepicker" name="birthdayl[]" value=""
+                                    autocomplete="off" placeholder="1398/10/02" required>
+                            </label>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pull-right pad-5">
+                            <label for="expertisel" class="gui-label pad-5">تخصص:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-laptop-code vertical"></i></span>
+                                <input type="text" class="gui-input sans-digit" name="expertisel[]" value=""
+                                    placeholder="مثال : نرم افزار" required>
+                            </label>
+                        </div>
+
+                        <div class="colm6 colm pull-right pad-5">
+
+                            <label class="gui-label pad-5">تحصیلات:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-user-graduate vertical"></i></span>
+                                <select class="gui-input sans-digit" name="educationl1[]">
+                                    <option value="">میزان تحصیلات خود را انتخاب کنید</option>
+                                    <option value="diploma">دیپلم</option>
+                                    <option value="associate">کاردانی</option>
+                                    <option value="bachelor">کارشناسی</option>
+                                    <option value="master">کارشناسی ارشد</option>
+                                    <option value="phd">دکتری</option>
+                                </select>
+                            </label>
+
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm12 colm pad-5">
+                            <label for="sidel" class="gui-label pad-5"> سمت در استارت آپ :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-book-reader"></i></span>
+                                <input dir="rtl" class="gui-input sans-digit" name="sidel[]" value="" autocomplete="off"
+                                    placeholder="سمت استارت آپ" required>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm12 colm pad-5">
+                            <label for="sidel" class="gui-label pad-5"> نقش در استارت آپ :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-book-reader"></i></span>
+                                <input dir="rtl" class="gui-input sans-digit" name="role[]"
+                                    value=""
+                                    autocomplete="off" placeholder="نقش استارت آپ" required>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="frm-row">
+                        <div class="colm6 colm pad-5 pull-right">
+                            <label for="averagel" class="gui-label pad-5"> زمان اختصاص داده شده به استارتاپ در طول
+                                ماه:</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-clock vertical"></i></span>
+                                <input type="number" min="0" max="200" class="gui-input sans-digit" name="averagel[]"
+                                    value="" placeholder="مثال : 100 ساعت">
+                            </label>
+                        </div>
+                        <div class="colm6 colm pad-5 pull-right">
+                            <label for="stockl" class="gui-label pad-5">میزان سهام :</label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class=" fa fa-percentage vertical"></i></span>
+                                <input type="number" min="0" max="100" class="gui-input sans-digit" name="stockl[]" value=""
+                                    placeholder="مثال :  20 درصد">
+                            </label>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="colm12 pad-5">
+                            <label for="stockl" class="gui-label pad-5">آپلود رزومه :</label>
+                            <label class="relative">
+                                <input type="file" class="gui-input myfile" name="cv[]" >
+                                <input type="hidden" class="myfilehide" name="cv_index" value="">
+                            </label>
+                        </div>
+                        <div class="colm12 pad-5">
+                            <label for="stockl" class="gui-label pad-5">آپلود تصویر عضو :</label>
+                            <label class="relative">
+                                <input type="file" class="gui-input myfile" name="t_avatar[]" >
+                                <input type="hidden" class="myavatarhide" name="avatar_index" value="">
+                            </label>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div class=" pointer btn-add flex-center">
+                    <i class="add-team plus-rot fa fa-plus-circle vertical spacer-t10"></i>
+                </div>
+                <h3 class="align-center font-s13 spacer-t5">اضافه کردن اعضا</h3>
+            </div>
+            <div class="clearfix"></div>    
+            <div class="align-left spacer-t40">
+                <div class="pull-right colm5-mob pad-5-mob">
+                    <a href="/startup/" class="btn-prv font-s13 colm">مرحله قبل </a>
+                </div>
+                <div class="align-left spacer-t40">
+                    <div class="pull-left colm7-mob pad-5-mob">
+                        <button type="submit" class="btn-web colm">مرحله بعد </button>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+
+<script>
+// function ThisFunction(){
+//     var files = document.getElementById('pdfFile').files;
+//     if (files.length > 0) {
+//     console.log("OK")
+//     var reader = new FileReader();
+//     reader.readAsDataURL(files[0]);
+//     reader.onload = function () {
+//         console.log(reader.result);
+//     };
+//     reader.onerror = function (error) {
+//         console.log('Error: ', error);
+//     };
+//     };
+// }
+
+
+
+    jQuery(document).ready(function ($) {
+
+
+        $(document).on("change", ".myfile", function () {
+             var nme = $(".myfile");
+             var val=nme.val();    
+             var val1=$(this).val 
+             var dad= $(this).parent(); 
+             var child=dad.children(".myfilehide");
+             if(val1.length < 1) {
+                child.val(0);
+             }else{
+                child.val(1);
+             }
+        });
+
+
+
+        $(document).on("click", ".remove-group", function () {
+            var form_idss = $(this).data("idss");
+            var url = $(this).data("url");
+            console.log(form_idss);
+            const e = $(this).parent();
+            if (!form_idss) {
+                e.remove();
+                $('.loader').show();
+                setInterval(function () {
+                    $('.loader').hide();
+                }, 200);
+                return;
+            }
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: { post_idss: form_idss, csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: () => {
+                    console.log('ok');
+                    e.remove();
+                    $('.loader').show();
+                    setInterval(function () {
+                        $('.loader').hide();
+                    }, 200);
+                }
+            })
+
+        });
+    })
+</script>
+{% endblock %}

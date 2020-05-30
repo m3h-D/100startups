@@ -1,0 +1,104 @@
+@font-face {
+	font-family: IRANSans;
+	font-style: normal;
+	font-weight: 500;
+	src: url('../fonts/IRANSans/eot/IRANSansWeb_Medium.eot');
+	src: url('../fonts/IRANSans/eot/IRANSansWeb_Medium.eot?#iefix') format('embedded-opentype'),  /* IE6-8 */
+		 url('../fonts/IRANSans/woff2/IRANSansWeb_Medium.woff2') format('woff2'),  /* FF39+,Chrome36+, Opera24+*/
+		 url('../fonts/IRANSans/woff/IRANSansWeb_Medium.woff') format('woff'),  /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+		 url('../fonts/IRANSans/ttf/IRANSansWeb_Medium.ttf') format('truetype');
+}
+body.login {
+	font-family: IRANSans ;
+	background-color:#f2f2f2;
+
+}
+body.login div#login {
+	width: 330px;
+	height:260;
+	position:relative;
+}
+body.login div#login h1 {}
+body.login div#login h1 a {
+	background : url('../images/logo.png'); 
+	background-size: 100% auto;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color:rgba(255, 255, 255, 0);
+	width:87px;
+}
+body.login div#login form#loginform {
+	  border: 1px solid #d7d7d7;
+	  background-color:#fff;  
+	  border-radius: 5px;
+	  padding: 25px 15px 15px;
+	  
+}
+
+body.login div#login form#loginform p {
+	margin-top:-10px;
+}
+body.login div#login form#loginform p label {
+	font-family: IRANSans;
+	font-size:14px;
+	color:#445566;
+	margin-right:5px;
+}
+body.login div#login form#loginform input ,.login form .input{
+	font-family: sans-serif;;
+	direction: ltr;
+
+}
+body.login div#login form#loginform input#user_login {
+	background: #fff;
+ 	border-color: #dfdfdf;
+  	color: #555; 
+    margin-bottom: 18px;	
+    font-size:18px;
+    border-radius:5px;
+    padding-left: 10px;
+    margin-top:5px;
+    background-color:#f9f9f9;
+    outline:none;
+    padding-bottom: 7px;
+}
+body.login div#login form#loginform input#user_pass {
+	background: #fff;
+	border-color: #dfdfdf;
+ 	color: #555;
+    margin-bottom: 29px;
+    font-size: 18px;
+    border-radius: 5px;
+    padding-left: 10px;
+    margin-top:5px;
+   	background-color:#f9f9f9;
+   	outline:none;
+}
+body.login div#login form#loginform p.forgetmenot,#nav {
+}
+body.login div#login form#loginform p.submit input#wp-submit {
+	font-family: IRANSans;
+	width: 90px;
+	height:37px;
+    border-radius: 5px;
+    background-color: #f3575c; 
+    color: white;
+    border:none;
+    text-shadow:none;
+    box-shadow:none;
+    font-size:15px;
+    margin-top:5px;
+    outline: none;
+	
+}
+body.login div#login p#nav {
+	position: absolute;
+    bottom: 40px;
+    font-size: 12px;
+}
+body.login div#login p#backtoblog a {
+	display:none;
+}
+p.galogin-powered {
+	display:none;
+}

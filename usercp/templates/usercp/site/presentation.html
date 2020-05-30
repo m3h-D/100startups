@@ -1,0 +1,430 @@
+{% extends 'base/base-register.html' %} 
+{% block title %}ارائه استارتاپ{% endblock %}
+{% load static %}
+{% block body %}
+<style>
+    header,
+    footer,
+    .mobile {
+        display: none;
+    }
+
+    .hide-tab {
+        display: none;
+    }
+</style>
+<div id="get-errors">
+                                        
+</div>
+<div class="colm9 colm11-tab colm margin-auto">
+    <div class="pad-b20">
+        <h2 class="font-s30 color6">پیچ دک</h2>
+        <p class="color-darkgray font-s14 pad-t15 align-justify">لطفا اطلاعات مربوط به پیچ دک خود را وارد نمایید.
+            می‌توانید از این موقعیت استفاده کنید و سرمایه گذاران را قانع کنید که استارتاپ شما ارزش سرمایه گذاری دارد.
+            ارائه شما باید به یاد ماندنی و ساده باشد و به سرمایه گذاران هرچیزی که نیاز دارند بشنوند
+            را بگوید.</p>
+    </div>
+    <div class="spacer-t5">
+        <form action="." method="post" id="form" class="smart-validate" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!--      {{ startup_form }}-->
+            <div>
+                <div class="frm-row">
+                    <div class="pad-5 char-count">
+                        <label for="problem" class="gui-label pad-5"> چه مشکلی را حل می کنید ؟ </label>
+                        <label class="relative">
+                            <textarea name="problem" class="gui-textarea sans-digit" maxlength="255" id="problem"
+                                placeholder="وجود واسطه‌ها را در خرید میوه و سبزیجات باعث افزایش قیمت این محصولات می‌شود."
+                                required>{% if request.user.startup.problem %}{{ request.user.startup.problem }}{%endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+                        </label>
+                    </div>
+                    <div class="pad-5 char-count">
+                        <label for="mysolution" class="gui-label pad-5"> راه حل شما چیست ؟ </label>
+                        <label class="relative">
+                            <textarea name="mysolution" class="gui-textarea sans-digit" maxlength="255" id="mysolution"
+                                placeholder="ایجاد یک پلتفرم که بین تولیدکننده و مصرف‌کننده به صورت مستقیم ارتباط بر قرار کند و تضمین خرید و کیفیت محصول را برعهده بگیرد و واسطه‌ها را از این طریق حذف کند و قیمت محصول برای مصرف‌کننده نهایی کاهش یابد و تولیدکننده هم مبلغ منصفانه‌تری برای محصولات خود دریافت کند."
+                                required>{% if request.user.startup.mysolution %}{{ request.user.startup.mysolution }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+                        </label>
+                    </div>
+                    <div class="pad-5 char-count">
+                        <label for="solution" class="gui-label pad-5"> راه حل های موجود چیست ؟ </label>
+                        <label class="relative">
+                            <textarea name="solution" class="gui-textarea sans-digit" maxlength="255" id="solution"
+                                placeholder="راه‌حل‌های موجود برای خریداران و فروشندگان و همچنین کاهش واسطه‌ها عبارت است از خرید از وانتی‌ها و همچنین خرید از بازارهای میوه و تره‌بار که تنها یک واسطه (مغازه‌های میوه‌فروشی) را حذف می‌کنند. راه‌حل ما از نظر کاهش واسطه‌ها و تضمین کیفیت محصولات مناسبتر از این راه‌کارها هستند."
+                                required>{% if request.user.startup.solution %}{{ request.user.startup.solution }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+                        </label>
+                    </div>
+                    <div class="pad-5 char-count">
+                        <label for="market-size" class="gui-label pad-5"> اندازه بازار برای اینکار چقدر است ؟ </label>
+                        <label class="relative">
+                            <textarea name="market_size" class="gui-textarea sans-digit" maxlength="255"
+                                id="market-size"
+                                placeholder="راه‌حل‌های موجود برای خریداران و فروشندگان و همچنین کاهش واسطه‌ها عبارت است از خرید از وانتی‌ها و همچنین خرید از بازارهای میوه و تره‌بار که تنها یک واسطه (مغازه‌های میوه‌فروشی) را حذف می‌کنند. راه‌حل ما از نظر کاهش واسطه‌ها و تضمین کیفیت محصولات مناسبتر از این راه‌کارها هستند."
+                                required>{% if request.user.startup.market_size %}{{ request.user.startup.market_size }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+                        </label>
+                    </div>
+                    <div class="pad-5 char-count">
+                        <label for="defect" class="gui-label pad-5"> رقبای داخلی و خارجی شما چه کسانی هستند ؟ </label>
+                        <label class="relative">
+                            <textarea name="defect" class="gui-textarea sans-digit" maxlength="255" id="defect"
+                                placeholder="در داخل کشور رقیبی برای این کار غیر از استارتاپ ب پیدا نشده است و در خارج از کشور هم در بسیاری از مناطق جامعه با این مساله مواجه نیستند."
+                                required>{% if request.user.startup.defect %}{{ request.user.startup.defect }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5"></p>
+                        </label>
+                    </div>
+                    <div class="pad-5">
+                        <label for="amount" class="gui-label pad-5 pad-b20"> میزان سرمایه درخواستی (تومان): </label>
+                        <label class="relative">
+                            <input name="require_money" maxlength="14" type="text" class="gui-input sans-digit"
+                                id="amount"
+                                value="{% if request.user.startup.require_money %}{{ request.user.startup.require_money }}{% endif %}"
+                                placeholder="مثال: 50،000،000" required>
+                        </label>
+                    </div>
+                    <div class="pad-5 ">
+                        <div class="relative">
+                            {% if request.user.startup.attachfile_e %}
+
+                            <div class="toggle-element2 pad-b20">
+                                <label class="gui-label pad-5">پیش بینی مالی :</label>
+                                <div class="pointer predict-inp width45 colm pull-right" id="download-pitch">
+                                    <a class="color-blue font-s14" href="{{request.user.startup.attachfile_e}}"
+                                        download>دانلود فایل پیش بینی مالی</a>
+                                </div>
+                                <div class="pointer predict-inp width45 colm pull-left" id="" data-type="toggle-3">
+                                    <span class="align-center font-s14 toggle-btn2">تغییر فایل پیش بینی مالی</span>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="pdf22 pad-b20 hide">
+                                <label for="pitch-deck" class="gui-label pad-5">
+                                    فایل پیش بینی مالی خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                </label>
+                                <label class="relative upload-show">
+                                    <div action="{% url 'usercp:pgdeckxwlt' request.user.startup.pk %}" class="dropzone"
+                                        id="upload-pdf2">
+                                    </div>
+                                </label>
+                            </div>
+                            {% else %}
+
+                            <div class="pad-b20">
+                                <label for="pitch-deck" class="gui-label pad-5">
+                                    فایل پیش بینی مالی خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                </label>
+                                <label class="relative upload-show">
+                                    <div action="{% url 'usercp:pgdeckxwlt' request.user.startup.pk %}" class="dropzone"
+                                        id="upload-pdf2">
+                                    </div>
+                                </label>
+                            </div>
+                            {% endif %}
+                            <div class="clearfix"></div>
+                        </div>
+
+                        {% if request.user.startup.attachfile_p %}
+                        <div class="toggle-element1 pad-b30 notempty">
+                            <label class="gui-label pad-5">پیچ دک :</label>
+                            <div class="pointer predict-inp width45 colm pull-right" id="download-pitch">
+                                <a class="color-blue font-s14" href="{{ request.user.startup.attachfile_p }}"
+                                    download>دانلود
+                                    فایل پیچ دک</a>
+                            </div>
+                            <div class="pointer predict-inp width45 colm pull-left nodisable" id="change-pitch"
+                                data-type="toggle-1">
+                                <span class="align-center font-s14 toggle-btnn">تغییر فایل پیچ دک</span>
+                            </div>
+                        </div>
+                        <div class="pdf11 hide">
+                            <label for="pitch-deck" class="gui-label pad-5">
+                                مدل کسب و کار (پیچ دک) خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                <a href="{% static 'files/Pitch-Deck.pdf' %}" class="font-s15 pull-left" download>دانلود نمونه</a>
+                            </label>
+                            <label class="relative upload-show">
+                                <div action="{% url 'usercp:pgdeck_pdf' request.user.startup.pk %}" class="emptyerror2 dropzone " id="upload-pdf">
+                                </div>
+                            </label>
+                            <div id="errorpich" class="color-red font-s12 pad-5"></div>
+                        </div>
+                        {% else %}
+                        <div class="">
+                            <label for="pitch-deck" class="gui-label pad-5">
+                                مدل کسب و کار (پیچ دک) خود را بارگذاری نمایید. (pdf با حجم حداکثر 10 مگ)
+                                <a href="{% static 'files/Pitch-Deck.pdf' %}" class="font-s15 pull-left" download>دانلود نمونه</a>
+                            </label>
+                            <label class="relative upload-show">
+                                <div action="{% url 'usercp:pgdeck_pdf' request.user.startup.pk %}" class="emptyerror dropzone"
+                                    id="upload-pdf">
+                                </div>
+                            </label>
+                            <div id="errorpich" class="color-red font-s12 pad-5"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+    </div>
+
+    <div class="align-left spacer-t40">
+        <div class="pull-right pad-5-mob colm5-mob">
+            <a href="/upload/" class="btn-prv font-s13 colm">مرحله قبل </a>
+        </div>
+        <div class="pull-left pad-5-mob colm7-mob">
+            <button type="submit" name="submit" class="btn-web colm">مرحله بعد</button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    </form>
+</div>
+
+
+<style>
+    .predict {
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .width45 {
+        width: 45%;
+    }
+
+    .predict-inp {
+        color: #747474;
+        font-size: 13px;
+        border: 1px solid #bbb;
+        padding: 8px 52px 8px 20px;
+        border-radius: 24px;
+    }
+</style>
+
+
+{% endblock %} {% block js %}
+<script>
+    jQuery(document).ready(function ($) {
+        var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
+        $(".delete").click(function () {
+            $(".upload-hide").hide();
+            $(".upload-show").removeClass('hide');
+        });
+
+        // $('#change-pitch').click(function () {
+        //     $('#download-pitch').addClass('hide');
+        // })
+    });
+</script>
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    jQuery(document).ready(function ($) {
+         if($("div").hasClass("dz-success")){   
+             $(".btn-web").prop("disabled", false);
+             $("#errorpich").html("");
+         }else{
+             $(".btn-web").prop("disabled", true);
+         
+             $("#errorpich").html("لطفا فایل پیچ دک را بارگذاری کنید");
+         
+        }
+
+        $(document).change(function() {
+            var er= $( "div.emptyerror > div.dz-success" );
+            if (er){
+                $("#errorpich").html("");
+                $(".btn-web").prop("disabled", false);
+            }else{
+                $("#errorpich").html("لطفا فایل پیچ دک را بارگذاری کنید");
+                $(".btn-web").prop("disabled", true);
+            }          
+
+            $(".dz-remove").click(function () {
+                    $(".btn-web").prop("disabled", true);        
+                    $("#errorpich").html("لطفا فایل پیچ دک را بارگذاری کنید");
+
+            });  
+        });
+
+
+        if($("div").hasClass("notempty")){   
+            $(".btn-web").prop("disabled", false);
+            console.log(11);
+        }
+        
+
+
+        (function ($) {
+
+            $(function () {
+
+                var $form = $("#form");
+                var $input = $form.find("#amount");
+
+                $input.on("keyup", function (event) {
+
+
+                    var selection = window.getSelection().toString();
+                    if (selection !== '') {
+                        return;
+                    }
+
+                    if ($.inArray(event.keyCode, [38, 40, 37, 39]) !== -1) {
+                        return;
+                    }
+
+                    var $this = $(this);
+
+                    var input = $this.val();
+
+                    var input = input.replace(/[\D\s\._\-]+/g, "");
+                    input = input ? parseInt(input, 10) : 0;
+
+                    $this.val(function () {
+                        return (input === 0) ? "" : input.toLocaleString("en-US");
+                    });
+                });
+            });
+        })(jQuery);
+        var csrftoken = getCookie('csrftoken');
+        console.log(csrftoken)
+        Dropzone.prototype.defaultOptions.dictFallbackMessage = "مرورگر شما آپلود فایل drag'n'drop را پشتیبانی نمی کند.";
+        Dropzone.prototype.defaultOptions.dictFallbackText = "Please use the fallback form below to upload your files like in the olden days.";
+        Dropzone.prototype.defaultOptions.dictFileTooBig = "فایل خیلی بزرگ است ({{filesize}}MB)  حداکثر اندازه فایل: {{maxFilesize}}MB";
+        Dropzone.prototype.defaultOptions.dictInvalidFileType = "شما مجاز به بارگذاری این نوع فایل نیستید";
+        Dropzone.prototype.defaultOptions.dictResponseError = "Server responded with {{statusCode}} code.";
+        Dropzone.prototype.defaultOptions.dictCancelUpload = "انصراف از بارگذاری";
+        Dropzone.prototype.defaultOptions.dictCancelUploadConfirmation = "آیا مطمئن هستید که میخواهید این بارگذاری را لغو کنید؟";
+        Dropzone.prototype.defaultOptions.dictRemoveFile = "حذف فایل";
+        Dropzone.prototype.defaultOptions.dictRemoveFileConfirmation = null;
+        Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "شما فقط می توانید {{maxFiles}} فایل بارگذاری کنید  .";
+        Dropzone.prototype.defaultOptions.dictDefaultMessage = "برای بارگذاری فایل کلیک کنید";
+        Dropzone.options.uploadPdf = {
+            params: {
+                file_type: "pdf",
+                csrfmiddlewaretoken: csrftoken,
+            },
+            timeout: 1800000,
+            maxFiles: 1,
+            maxFilesize: 20,
+            paramName: "attachfile_p",
+            addRemoveLinks: true,
+            acceptedFiles: '.pdf',
+            init: function () {
+                var self = this;
+                this.on("success", function (file, responseText) {
+                    console.log(responseText);
+                });
+                this.on('error', function (file, response) {
+                    $('.text-error').text(response);
+                    $('.message-alert').fadeIn();
+                    $('.message-alert').delay(4000).fadeOut();
+                });
+                self.on("maxfilesexceeded", function (file) {
+                    self.removeAllFiles();
+                    self.addFile(file);
+                });
+                $("#send-ppt").click(function (e) {
+                    e.preventDefault();
+                    self.processQueue();
+                });
+                self.options.dictRemoveFile = "حذف";
+                self.on("addedfile", function (file) {
+
+                });
+                self.on("removedfile", function (file) {
+
+                });
+            }
+        }
+        Dropzone.options.uploadPdf2 = {
+            params: {
+                file_type: "attachfile_e",
+                csrfmiddlewaretoken: csrftoken,
+            },
+            timeout: 1800000,
+            maxFiles: 1,
+            maxFilesize: 20,
+            paramName: "attachfile_e",
+            addRemoveLinks: true,
+            acceptedFiles: '.pdf',
+            init: function () {
+                var self = this;
+                this.on("success", function (file, responseText) {
+                    console.log(responseText);
+                });
+                this.on('error', function (file, response) {
+                    $('.text-error').text(response);
+                    $('.message-alert').fadeIn();
+                    $('.message-alert').delay(4000).fadeOut();
+                });
+                self.on("maxfilesexceeded", function (file) {
+                    self.removeAllFiles();
+                    self.addFile(file);
+                });
+                $("#send-ppt").click(function (e) {
+                    e.preventDefault();
+                    self.processQueue();
+                });
+                self.options.dictRemoveFile = "حذف";
+                self.on("addedfile", function (file) {
+
+                });
+                self.on("removedfile", function (file) {
+
+                });
+            }
+        }
+        document.querySelectorAll('.toggle-element').forEach(element => {
+            element.addEventListener('DOMSubtreeModified', () => {
+                const toggle1 = element.querySelector('[data-type="toggle-1"]');
+                if (toggle1) {
+                    const toggleButton = toggle1.querySelector('[data-type="toggle-btn"]');
+                    toggleButton.addEventListener('click', function () {
+                        toggle1.classList.add('hide');
+                        toggle2.classList.remove('hide');
+                    });
+                }
+                const toggle2 = element.querySelector('[data-type="toggle-2"]');
+
+
+            });
+        });
+        $(".toggle-btnn").click(function () {
+            $('.toggle-element1').hide();
+            $('.pdf11').show();
+
+        });
+        $(".toggle-btn2").click(function () {
+            $('.toggle-element2').hide();
+            $('.pdf22').show();
+
+        });
+
+
+    })
+</script>
+
+{% endblock %}

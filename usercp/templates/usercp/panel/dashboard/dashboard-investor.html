@@ -1,0 +1,169 @@
+{% load sunny %}
+{% load jalali_tags %}
+<div class="pad-t40">
+    <div class="frm-row pad-t40 spacer-b25-mob pad-5-mob pad-15">
+        <div class="body-form relative wow fadeInUpBig" data-wow-duration="1s">
+            <div class="pad-b10">
+                <div class="bg-chart1 body-form-top absolute flex-center">
+                    <i class="fa fa-pause vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18 font-s12-mob">لیست استارت آپ های قابل سرمایه گذاری</h3>
+                </div>
+                <form method="get" action="" class="pad-20 spacer-t20">
+					<div class="spacer-t20">
+					  <div class="spacer-t10 pad-t40 relative colm3 colm pull-right pad-5 pad-b20">
+						<label for="name-startup-investor" class="gui-label">نام استارتاپ:</label>
+						<label class="relative">
+						  <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+						  <input type="search" value="" name="name_startup_investor" id="name-startup-investor" class="gui-input">
+						</label>
+					  </div>
+					  <div class="pull-left align-center pad-t20 pad-b20">
+						<button name="submit_search" type="submit"
+								class="btn-search btn-panel pad-6 spacer-t54 color-white iransans spacer-t10 pointer">جستجو
+						</button>
+					  </div>
+					  <div class="clearfix"></div>
+					</div>
+				  </form>
+                <div class="frm-row  pad-t25-mob pad-t30-tab">
+                    <div class="colm4 colm12-tab colm pull-left pull-none relative pad-20">
+                        <span class="bar"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="frm-row pad-t40">
+                <div class="overflow-scroll pad-b40">
+                    <table class="table color6 retable">
+                        <thead>
+
+                        <tr>
+                            <th class="center">نام استارت آپ</th>
+                            <th class="center">حوزه فعالیت</th>
+                            <th class="center">میزان سرمایه درخواستی</th>
+                            <th class="center">جلسه حضوری</th>
+                            <th class="center">معرفی مختصر</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for invest in invst_startups %}
+
+                            {% ifchanged %}
+                        <tr>
+                            <input type="hidden" name="the_startup_id" value="{{invest}}">
+                            <td class="center">{{invest.title }}</td>
+                            <td class="center">
+                                {% for cat in invest.category.all %}
+                                {{ cat.title }}
+                                {% if not forloop.last %}
+                                ،
+                                {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="center">{{ invest.require_money }}</td>
+                            <td class="center">
+                                {% add_invest request.user invest.pk as investment %}
+                                {% time_event_startup invest.pk as dates %}
+
+                                {% if invest.theevent_startupsevent.all %}
+                                {% for time in invest.theevent_startupsevent.all %}
+                                <span class="color-blue">
+
+                                        {{ time.schedule.the_date|to_jalali:'%Y/%m/%d' }} | {{ time.schedule.from_time|time:"H:i" }} | {{ time.schedule.to_time|time:"H:i" }}{% if not forloop.last %} و {% endif %}
+ 
+                                       
+                                    </span>
+                                    {% endfor %}
+                                    {% else %}
+                                    <span class="color-blue">
+                                        <i class="align-center font-s20 fa {% if investment == 1 %}fa-check color-green {% elif investment == 0 %}  fa-plus color-blue{% endif %}"></i>
+                                    </span>
+                                    {% endif %}
+                                    
+
+                            </td>
+                            <td class="center">
+                                {% if invest.theevent_startupsevent.all %}
+
+
+                                <a class="color-silver pointer url-investor" title="نمایش اطلاعات پیچ دک" href="{% url 'startup:information_startup' invest.pk %}">
+                                    <i class="align-center font-s20 fa fa-rocket"></i>
+                                </a>
+
+
+
+                                {% else %}
+                                
+                                <span id="invest{{invest.pk}}" class="color-silver btn-intro pointer" title="نمایش" data-introduce="{{invest.about_start}}" data-name="{{ invest.title }}" data-startup-id="{{ invest.pk }}" data-status1="{{investment}}">
+                                    <i class="align-center font-s20 fa fa-rocket"></i>
+                                </span>
+
+                                {% endif %}
+
+
+                            </td>
+                        </tr>
+                        {% endifchanged %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- modal -->
+<div class="modal-overlay2">
+    <div class="modal2">
+
+        <a class="close-modal">
+            <svg viewBox="0 0 20 20">
+                <path fill="#000000" d="M15.898,4.045c-0.271-0.272-0.713-0.272-0.986,0l-4.71,4.711L5.493,4.045c-0.272-0.272-0.714-0.272-0.986,0s-0.272,0.714,0,0.986l4.709,4.711l-4.71,4.711c-0.272,0.271-0.272,0.713,0,0.986c0.136,0.136,0.314,0.203,0.492,0.203c0.179,0,0.357-0.067,0.493-0.203l4.711-4.711l4.71,4.711c0.137,0.136,0.314,0.203,0.494,0.203c0.178,0,0.355-0.067,0.492-0.203c0.273-0.273,0.273-0.715,0-0.986l-4.711-4.711l4.711-4.711C16.172,4.759,16.172,4.317,15.898,4.045z"></path>
+            </svg>
+        </a><!-- close modal -->
+
+        <div class="modal-content" id="modal-delete">
+
+            <div class="colm12">
+                <div class="margin-auto align-center">
+                    <h2>معرفی استارت آپ <span class="name color-red"></span></h2>
+                </div>
+            </div>
+            <div class="clom12 colm spacer-t40">
+                <div class="flex-center">
+                    <p class="description color-black font-s15"></p>
+                </div>
+                <div class="flex-center">
+                    <button type="submit" name="interest" value="" class="btn-interest1 bg-dis spacer-t40 colm12 colm"></button>
+                </div>
+
+                
+                <div class="clearfix"></div>
+                <span class="loader-request spacer-t40"></span>
+            </div>
+        </div><!-- content -->
+
+    </div><!-- modal -->
+</div><!-- overlay -->
+<div id="toast-investor">
+    <div id="img">وضعیت</div>
+    <div id="desc">استارت آپ به علاقه مندی ها اضافه شد</div>
+</div>
+<div id="toast-not-investor">
+    <div id="img-not">وضعیت</div>
+    <div id="desc-not">استارت آپ از علاقه مندی ها حذف شد</div>
+</div>
+<style>
+    rect.highcharts-background{
+        fill:transparent
+    }
+    g.highcharts-exporting-group {
+        display: none;
+    }
+    text.highcharts-credits {
+        display: none;
+    }
+</style>
+

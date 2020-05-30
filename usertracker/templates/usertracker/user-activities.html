@@ -1,0 +1,195 @@
+{% extends 'base/base-panel.html' %}
+{% load static %}
+{% load jalali_tags %}
+{% block title %}فعالیت کاربران{% endblock %}
+{% block body %}
+<style>
+    .bg-red {
+    background: #cc4646;
+}
+</style>
+    <div class="colm12 colm12-tab colm12-tab frm-row colm pad-15 pad-t40 pad-5-mob wow slideInRight" data-wow-duration="1.5s">
+        <div class="body-form relative pad-b10">
+            <div class="payam">
+                <div class="bg-red body-form-top absolute flex-center">
+                    <i class="fa fa-calendar-week vertical font-s30 color-white"></i>
+                </div>
+                <div class="absolute title-panel">
+                    <h3 class="font-w300 font-s18">فعالیت ها</h3>
+                </div>
+            </div>
+            {% if request.user.is_admin or request.user.user_type == 'manager' or is_op in request.user.role.all %}
+            <form method="get" action="" class="pad-20">
+                <div class="spacer-t20">
+                    <!-- <div class="relative colm3 colm pull-right pad-5">
+                        <label for="type-search" class="gui-label">نوع فعالیت : </label>
+                        <label class="relative pad-b20">
+                            <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+                            <select id="type-search" class="gui-search sans-digit" name="type">
+                                <option value="">انتخاب کنید</option>
+                                <option value="activity">Activity</option>
+                                <option value="log">Log</option>
+                            </select>
+                        </label>
+                    </div> -->
+                    <div class="relative colm3 colm pull-right pad-5">
+                        <label for="startup-search" class="gui-label">نام استارت آپ : </label>
+                        <label class="relative pad-b20">
+                            <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+                            <input type="text" name="startup_name" oninput="searchApi('search_companion','companion-result' , 'subscriber')" value="{% if start_up %}{{start_up.content_object.title}}{% endif %}" class="search_companion referee-name gui-input sans-digit choosen-name" placeholder="مثال : رویداد" autocomplete="off">
+                            <input type="hidden" class="choosen-id" name="startup_id" value="{% if start_up %}{{start_up}}{% endif %}" />
+                            <div id="companion-result"></div>
+                        </label>
+                    </div>                    
+                    <div class="relative colm3 colm pull-right pad-5">
+                        <label for="startup-search" class="gui-label">نام کاربر : </label>
+                        <label class="relative pad-b20">
+                            <span class="icon-gui flex-center"><i class=" fa fa-rocket vertical"></i></span>
+                            <input type="text" name="user_name" oninput="searchApi('search_companion1','companion-result1' , 'users')" value="" class="search_companion1 referee-name gui-input sans-digit choosen-name" placeholder="مثال : رویداد" autocomplete="off">
+                            <input type="hidden" class="choosen-id" name="user_id" value="{% if user_id %}{{user_id}}{% endif %}" />
+                            <div id="companion-result1"></div>
+                        </label>
+                    </div>
+                        <div class="colm3 colm pull-right pad-5">
+                            <label for="start-date" class="gui-label ">تاریخ از </label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                                <input dir="ltr" class="gui-input sans-digit log-date1" name="start_date" value="" autocomplete="off" readonly placeholder="1398/10/02">
+                                <input type="hidden" name="observer" id="observer1" value="{{ request.GET.start_date }}">
+                            </label>
+                        </div>
+                        <div class="colm3 colm pull-right pad-5">
+                            <label for="start-date" class="gui-label">تاریخ تا </label>
+                            <label class="relative">
+                                <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                                <input dir="ltr" class="gui-input sans-digit log-date" name="end_date" value="" autocomplete="off" readonly placeholder="1398/10/02">
+                                <input type="hidden" name="observer" id="observer" value="{{ request.GET.end_date }}">
+                            </label>
+                        </div>
+                        <div class="relative colm12 colm pull-right pad-5">
+                            <h2 class="font-w300 font-s16 spacer-t20 spacer-b10 pad-10 border-b-panel">موضوع فعالیت : </h2>
+                                {% for faaliat in the_statuses %}
+
+                                    <div class="colm3 colm pull-right pad-5 spacer-b5">
+                                        <input type="checkbox" id="trackers_{{faaliat.pk}}" name="body[]" value="{{faaliat.name}}" >
+                                        <label for="trackers_{{faaliat.pk}}">{{faaliat.get_name_display}}</label>
+                                    </div>
+
+                                {% endfor %}
+                                    <!-- <div class="colm3 colm pull-right pad-5 spacer-b5">
+                                        <input type="checkbox" id=">" name="body[]" value="">
+                                        <label for=""><?= $body['value']; ?></label>
+                                    </div> -->
+
+                                    <!-- <div class="colm2 colm pull-right pad-5 spacer-b20">
+                                        <input type="checkbox" id="" name="body[]" value="" >
+                                        <label for=""></label>
+                                    </div> -->
+
+                            <div class="clearfix"></div>
+                        </div>
+
+                    <div class="pull-left align-center pad-t20">
+                        <button name="submit_search" type="submit" class="btn-search btn-panel pad-6 color-white iransans spacer-t10 pointer">جستجو</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </form>
+            {% endif %}
+            <div class="pad-table">
+                <div class="frm-row pad-t40">
+                    <div class="overflow-scroll pad-b40">
+                        <table class="table color6 retable">
+                            <thead>
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>استارت آپ / کاربر</th>
+                                    <th>فعالیت</th>
+                                    <th>تاریخ</th>
+                                    <th>متن</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for x in trackers %}
+                            {% if x.status != None %}
+                             <tr class="list">
+                                 <td>{{ forloop.counter0|add:trackers.start_index }}</td>
+                                 <td>{% if x.user %}{{ x.user.first_name }} {{ x.user.last_name }}{% else %}{{x.user_ip}}{% endif %}</td>
+                                 <td>{{ x.the_status.get_name_display }}</td>
+                                 <td>{{ x.created_date|to_jalali:'%Y/%m/%d'}}</td>
+                                 <td {% if x.the_status.name == 'send-email' %} data-toltip="{% if '/forget-password/' in x.url %}برای تغییر رمزعبور اکانت خود وارد لینک زیر شوید{% else %}{{ x.usercontent.first.content }}{% endif %}"{% endif %}>{{ x.status}}</td>
+                             </tr>
+                             {% endif %}
+{% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="paging">
+                            {% if trackers.has_other_pages %}
+                            <div class="pagination">
+                                <br>
+                                {% if trackers.has_previous %}
+                                <a class="" href="?page=1{% if start_up %}&startup_id={{ start_up }}{% endif %}{% if user_id %}&user_id={{user_id}}{% endif %}{% if start_date %}&start_date={{start_date}}{% endif %}{% if end_date %}&end_date={{end_date}}{% endif %}{% if category %}&body[]={{category}}{% endif %}">«</a>
+                                <a class="" href="?page={{ trackers.previous_page_number }}{% if start_up %}&startup_id={{ start_up }}{% endif %}{% if user_id %}&user_id={{user_id}}{% endif %}{% if start_date %}&start_date={{start_date}}{% endif %}{% if end_date %}&end_date={{end_date}}{% endif %}{% if category %}&body[]={{category}}{% endif %}">‹</a>
+                                {% endif %}
+                        
+                                {% for num in trackers.paginator.page_range %}
+                                {% if trackers.number == num %}
+                                <span class="current">{{ num }}</span>
+                                {% elif num > trackers.number|add:'-3' and num < trackers.number|add:'3' %}
+                                <a class="" href="?page={{ num }}{% if start_up %}&startup_id={{ start_up }}{% endif %}{% if user_id %}&user_id={{user_id}}{% endif %}{% if start_date %}&start_date={{start_date}}{% endif %}{% if end_date %}&end_date={{end_date}}{% endif %}{% if category %}&body[]={{category}}{% endif %}">{{ num }}</a>
+                                {% endif %}
+                                {% endfor %}
+                        
+                                {% if trackers.has_next %}
+                                <a class="btn btn-outline-warning mb-4" href="?page={{ trackers.next_page_number }}{% if start_up %}&startup_id={{ start_up }}{% endif %}{% if user_id %}&user_id={{user_id}}{% endif %}{% if start_date %}&start_date={{start_date}}{% endif %}{% if end_date %}&end_date={{end_date}}{% endif %}{% if category %}&body[]={{category}}{% endif %}">›</a>
+                                <a class="btn btn-outline-warning mb-4" href="?page={{ trackers.paginator.num_pages }}{% if start_up %}&startup_id={{ start_up }}{% endif %}{% if user_id %}&user_id={{user_id}}{% endif %}{% if start_date %}&start_date={{start_date}}{% endif %}{% if end_date %}&end_date={{end_date}}{% endif %}{% if category %}&body[]={{category}}{% endif %}">»</a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        header,
+        footer {
+            display: none;
+        }
+
+        input[type=checkbox]+label {
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        input[type=checkbox] {
+            display: none;
+        }
+
+        input[type=checkbox]+label:before {
+            content: "\2714";
+            border: 0.1em solid #bbb;
+            display: inline-block;
+            border-radius: 0.2em;
+            width: 19px;
+            height: 19px;
+            margin-left: 5px;
+            text-align: center;
+            vertical-align: middle;
+            color: transparent;
+            transition: 0.5s;
+        }
+
+        input[type=checkbox]+label:active:before {
+            transform: scale(0);
+        }
+
+        input[type=checkbox]:checked+label:before {
+            background-color: MediumSeaGreen;
+            border-color: MediumSeaGreen;
+            color: #fff;
+        }
+    </style>
+{% endblock %}

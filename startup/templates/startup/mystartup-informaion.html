@@ -1,0 +1,366 @@
+{% extends 'base/base-panel.html' %} {% load static %} {% load sunny %} {% load jalali_tags %} {% block title %}عملیات روی استارتاپ{% endblock %} {% block body %}
+<style>
+.avatar-box {
+    cursor: unset;
+}
+</style>
+<div class="colm9 colm margin-auto spacer-t50">
+    <div class="body-form relative  spacer-b30 pad-15 pad-25 pad-r35 pad-l35 pad-5-mob">
+        <div class="bg-chart1 body-form-top absolute flex-center">
+            <i class="fa fa-rocket vertical font-s30 color-white"></i>
+        </div>
+        <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18 pad-r20">اطلاعات استــارت آپ ها</h3>
+        </div>
+
+        <div class="frm-row pad-40 pad-0 spacer-t30-tab spacer-t30-mob">
+            <div id="avatarbox" class="avatar-box flex-center pad-10">
+                <img class="img-avatar not" src="{% if startup.image %}{{ startup.image.url }}{% else %}{% static 'images/uplod.png' %}{% endif %}">
+            </div>
+
+            <div class="colm4 colm6-tab colm pull-right pad-5">
+                <label for="startup-name" class="gui-label pad-5">نام استارتاپ </label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class="fa fa-rocket vertical"></i></span>
+                    <input type="text" readonly class="gui-input sans-digit" id="startup-name" value="{{ startup.title }}" name="title" placeholder="مثال : رویداد" >
+                </label>
+            </div>
+            <div class="colm4 colm6-tab colm pull-right pad-5">
+                <label for="website" class="gui-label pad-5">سایت استارتاپ </label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class="fa fa-desktop vertical"></i></span>
+                    <input type="text" readonly dir="ltr" class="gui-input sans-digit" value="{{ startup.site }}" name="site" id="website" placeholder="http://100startup.ir" data-rule-website="true" >
+                </label>
+            </div>
+            <div class="colm4 colm6-tab colm pull-right pad-5">
+                <label for="start-date" class="gui-label pad-5">تاریخ شروع به کار</label>
+                <label class="relative">
+                    <span class="icon-gui flex-center"><i class="fa fa-calendar-alt"></i></span>
+                    <input dir="ltr" disabled class="gui-input sans-digit" name="start_date" value="{{ startup.start_date|to_jalali:'%Y/%m/%d' }}" id="start-date" autocomplete="off" readonly placeholder="1398/10/02" >
+                </label>
+            </div>
+            <div class="colm4 colm6-tab colm pull-right pad-5">
+                <label for="province-startup" class="gui-label pad-5"> استان محل استقرار</label>
+                <label class="relative">
+                    <select disabled id="province-startup" class="province gui-input sans-digit" name="province_startup" data-value="{{ startup.province_startup }}" required />
+                    <option value="">لطفا یک استان را انتخاب کنید</option>
+                    </select>
+                </label>
+            </div>
+            <div class="colm4 colm6-tab colm pull-right pad-5">
+                <label for="city-tstartup" class="gui-label pad-5">شهر محل استقرار</label>
+                <label class="relative">
+                    <select disabled id="city-startup" class="city gui-input sans-digit" name="city_startup" data-value="{{ startup.city_startup }}" required />
+                    <option value="{{ startup.city_startup }}">لطفا یک شهر را انتخاب کنید</option>
+                    </select>
+                </label>
+            </div>
+            <div class="colm4 colm6-tab colm pull-right pad-5">
+                <label for="prototype" class="gui-label pad-5">نمونه اولیه</label>
+                <label class="relative">
+                <span for="prototype" class="flex-center icon-select">
+                    <i class="fa fa-chevron-down vertical"></i>
+                </span>
+                    <select disabled class="gui-select sans-digit" id="prototype" name="prototype" >
+                        <option value="">انتخاب کنید</option>
+                        <option {% if startup.prototype == 'yes' %} selected {% endif %} value="yes">بله</option>
+                        <option {% if startup.prototype == 'no' %} selected {% endif %} value="no">خیر</option>
+                    </select>
+                </label>
+            </div>
+            <div class="colm4 colm6-tab colm pull-right pad-5">
+                <label for="investment" class="gui-label pad-5 font-s13">جذب سرمایه</label>
+                <label class="relative">
+                <span class="icon-select flex-center">
+                    <i class="fa fa-chevron-down vertical"></i>
+                </span>
+                    <select disabled class="gui-select sans-digit" id="investment" name="investment" >
+                        <option value="">انتخاب کنید</option>
+                        <option {% if startup.investment == "yes" %} selected {% endif %} value="yes">بله</option>
+                        <option {% if startup.investment == "no" %} selected {% endif %} value="no">خیر</option>
+                    </select>
+                </label>
+            </div>
+
+            <!-- <label for="{{ cat.pk }}">
+                <img width="" src="{% if cat.image %}{{ cat.image.url }}{% endif %}" />
+                <div class="cat-title">{{ cat.title }}</div>
+            </label> -->
+            <div class="colm8 colm6-tab colm pull-right pad-5">
+                <label for="startup-name" class="gui-label pad-5">حوزه فعالیت</label>
+                <label class="relative">
+                    
+                    <span class="icon-gui flex-center"><i class="fa fa-rocket vertical"></i></span>
+                    <input type="text" readonly  class="gui-input sans-digit" value="{% for cat in startup.category.all %}{% if not forloop.first %} ، {% endif %}{{ cat.title }}{% endfor %}">
+                    
+                </label>
+            </div>
+            <div class="frm-row pad-5">
+                <div class="create colm12 colm">
+                    <div class="pad-5 char-count">
+                        <label for="introduction" class="gui-label pad-5"> توضیح استارتاپ در 70 کاراکتر </label>
+                        <label class="relative text-counter">
+                            <textarea name="explain_startup" id="introduction" maxlength="70" class="gui-textarea"
+                                value="{% if startup.explain_startup %}{{ startup.explain_startup }}{% endif %}"
+                                placeholder="آموزش آنلاین - فروشگاه آنلاین ابزار صنعتی"
+                                disabled >{% if startup.explain_startup %}{{ startup.explain_startup }}{% endif %}</textarea>
+                            <p class="align-left font-w200 font-s12 color-blue pad-l5">
+                                {{ startup.explain_startup|length }}</p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+    <div class="body-form relative pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig" data-wow-duration="1s">
+        <div class="bg-chart2 body-form-top absolute flex-center">
+            <a name="team"></a><i class="fa fa-portrait vertical font-s30 color-white"></i>
+        </div>
+        <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18 ">اطلاعات pitch deck </h3>
+        </div>
+        <div class="frm-row pad-t30">
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">چه مشکلی را حل می کنید؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.problem }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">راه حل شما چیست ؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.mysolution }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">راه حل های موجود چیست ؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.solution }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">اندازه بازار برای اینکار چقدر است ؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.market_size }}
+                </p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">رقبای داخلی و خارجی شما چه کسانی هستند ؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">{{ startup.defect }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">میزان سرمایه ی درخواست شده:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10 sarmaye">
+                    {% if startup.require_money %}{{ startup.require_money }}{% else %}مقداری ثبت نشده
+                    است{% endif %}</p>
+                <div class="clearfix"></div>
+            </div>
+            {% if startup.attachfile_p %}
+            <div class="colm12 pad-5 pad-t20">
+                <a href="{{ startup.attachfile_p.url }}">دانلود پیچ
+                    دک</a>
+            </div>
+            {% endif %}
+            {% if startup.attachfile_e %}
+            <div class="colm12 pad-5 pad-t20">
+                <a href="{{ startup.attachfile_e.url }}">دانلود پیش بینی
+                    مالی</a>
+            </div>
+            {% endif %}
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    {% if startup.video %}
+    <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+        data-wow-duration="1s">
+        <div class="bg-chart6 body-form-top absolute flex-center">
+            <i class="fa fa-play vertical font-s30 color-white"></i>
+        </div>
+        <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18 ">ویدیوی معرفی </h3>
+        </div>
+        <div class="frm-row pad-t30">
+            <div class="colm12 pad-5 pad-t20">
+                <video width="100%" height="350" controls>
+                    <source src="{{ startup.video.url }}">
+                    </source>
+                </video>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+        data-wow-duration="1s">
+        <div class="bg-chart3 body-form-top absolute flex-center">
+            <i class="fa fa-user-edit vertical font-s30 color-white"></i>
+        </div>
+        <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18 ">اطلاعات تکمیلی</h3>
+        </div>
+        <div class="frm-row pad-t30">
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">نحوه آشنایی با اعضای تیم؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">
+                    {{ startup.how_mem_meet }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">چه چیز باعث شده شما بهتر از بقیه باشید ؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">
+                    {{ startup.what_m_better }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm12 pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">تیمتون چه چیزی کم داره ؟</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black pad-r10">
+                    {{ startup.what_m_better }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+        data-wow-duration="1s">
+        <div class="bg-chart6 body-form-top absolute flex-center">
+            <i class="fa fa-user-tie  vertical font-s30 color-white"></i>
+        </div>
+        <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18 ">اطلاعات رهبر تیم</h3>
+        </div>
+        <div class="frm-row pad-t30">
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">نام:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black"> {{ startup.owner.first_name }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">نام خانوادگی:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.last_name }}</p>
+                <div class="clearfix"> </div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">شماره همراه:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.phone }}</p>
+                <div class="clearfix"> </div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">ایمیل:</p>
+                <p class="pull-right pad-r10 font-w400 font-s13 color-black">{{ startup.owner.email }}</p>
+                <div class="clearfix"> </div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">لینکدین:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.linkdin }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">تاریخ تولد:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.birth_date|to_jalali:'%Y/%m/%d' }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">تخصص:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.skill }}</p>
+                <div class="clearfix"> </div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">تحصیلات:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.get_grade_display }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">میزان سهام:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.userprofile.saham }}</p>
+                <div class="clearfix"> </div>
+            </div>
+            <div class="colm8 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">میانگین زمان اختصاص داده شده به استارتاپ در طول ماه:
+                </p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ startup.owner.userprofile.duration_per_month }}</p>
+                <div class="clearfix"> </div>
+            </div>
+    
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    
+    {% for team in startup.owner.userprofile.team_member.all %}
+    <div class="body-form relative spacer-t30 pad-25 pad-r35 pad-l35 pad-5-mob wow fadeInUpBig"
+        data-wow-duration="1s">
+        <div class="body-form-top absolute flex-center">
+            <i class="fa fa-users vertical font-s30 color-white"></i>
+        </div>
+        <div class="absolute title-panel">
+            <h3 class="font-w300 font-s18">اطلاعات اعضای تیم</h3>
+        </div>
+        <div class="frm-row pad-t30">
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">نام:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_first_name }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">نام خانوادگی:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_last_name }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">شماره همراه:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_phone }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">ایمیل:</p>
+                <p class="pull-right pad-r10 font-w400 font-s13 color-black">{{ team.t_email }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">لینکدین:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_linkdin }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">تاریخ تولد:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">
+                    {{ team.t_birth_date|to_jalali:'%Y/%m/%d' }}
+                </p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">تخصص:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_skill }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">تحصیلات:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.get_tgrade_display }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">سمت در استارت آپ :</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_the_role }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm8 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">میانگین زمان اختصاص داده شده به استارتاپ در طول ماه:
+                </p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_duration_per_month }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="colm4 colm pull-right pad-5 pad-t20">
+                <p class="pull-right font-w300 font-s14">میزان سهام:</p>
+                <p class="pull-right pad-r10 font-w400 font-s14 color-black">{{ team.t_saham }}</p>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    {% empty %} {% endfor %}    
+</div>
+{% if startup.status == 'failed_document' %}
+<div class="align-center btn-panel spacer-t25 margin-auto pad-10">
+    <a href="{% url 'startup:edit_startup' startup.pk %}" class="pad-10 color-white iransans">ویرایش</a>
+</div>
+{% endif %}
+
+{% endblock %}
