@@ -1,6 +1,6 @@
 Django==2.2.8
 django-jalali-date==0.3.0
-djangorestframework==3.9.4
+djangorestframework==3.11.2
 jdatetime==3.6.2
 kavenegar==1.1.2
 mysqlclient==1.3.13
